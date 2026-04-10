@@ -1,0 +1,184 @@
+/* ==========================================================================
+   Button — unified primary/secondary/tertiary
+   ========================================================================== */
+
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  border-radius: var(--dimension-radius-075);
+  cursor: pointer;
+  position: relative;
+  transition: transform var(--effect-motion-fast);
+  height: var(--dimension-size-400);
+  font-family: inherit;
+  color: var(--color-foreground-primary);
+  background: transparent;
+  box-sizing: border-box;
+}
+
+/* Hover/press overlay */
+.button::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-color: transparent;
+  border-radius: inherit;
+  transition: var(--effect-transition-interaction-background-instant);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.button > * {
+  position: relative;
+  z-index: 1;
+}
+
+.button:active {
+  transform: scale(var(--dimension-scale-subtle));
+}
+
+/* ==========================================================================
+   Variant: Primary
+   Bold background, on-bold content, elevated shadow
+   ========================================================================== */
+
+.primary {
+  box-shadow: var(--effect-surface-elevated);
+  color: var(--color-foreground-on-bold-background-primary);
+}
+
+.primary:hover::after { background-color: var(--color-interaction-on-bold-background-hover); }
+.primary:active::after { background-color: var(--color-interaction-on-bold-background-pressed); }
+
+/* Primary intent backgrounds */
+.primary.intentBrand { background-color: var(--color-background-bold-brand); }
+.primary.intentNeutral { background-color: var(--color-background-bold-neutral); }
+.primary.intentPositive { background-color: var(--color-background-bold-positive); }
+.primary.intentNegative { background-color: var(--color-background-bold-negative); }
+.primary.intentWarning { background-color: var(--color-background-bold-warning); }
+.primary.intentCaution { background-color: var(--color-background-bold-caution); }
+.primary.intentAi { background-color: var(--color-background-bold-ai); }
+
+/* Primary medium contrast */
+.primary.contrastMedium.intentBrand { background-color: var(--color-background-medium-brand); color: var(--color-foreground-strong-brand); }
+.primary.contrastMedium.intentNeutral { background-color: var(--color-background-medium-neutral); color: var(--color-foreground-strong-neutral); }
+.primary.contrastMedium.intentPositive { background-color: var(--color-background-medium-positive); color: var(--color-foreground-strong-positive); }
+.primary.contrastMedium.intentNegative { background-color: var(--color-background-medium-negative); color: var(--color-foreground-strong-negative); }
+.primary.contrastMedium.intentWarning { background-color: var(--color-background-medium-warning); color: var(--color-foreground-strong-warning); }
+.primary.contrastMedium.intentCaution { background-color: var(--color-background-medium-caution); color: var(--color-foreground-strong-caution); }
+.primary.contrastMedium.intentAi { background-color: var(--color-background-medium-ai); color: var(--color-foreground-strong-ai); }
+.primary.contrastMedium:hover::after { background-color: var(--color-interaction-on-medium-background-hover); }
+.primary.contrastMedium:active::after { background-color: var(--color-interaction-on-medium-background-pressed); }
+
+/* Primary strong contrast */
+.primary.contrastStrong.intentBrand { background-color: var(--color-background-strong-brand); color: var(--color-foreground-medium-brand); }
+.primary.contrastStrong.intentNeutral { background-color: var(--color-background-strong-neutral); color: var(--color-foreground-medium-neutral); }
+.primary.contrastStrong.intentPositive { background-color: var(--color-background-strong-positive); color: var(--color-foreground-medium-positive); }
+.primary.contrastStrong.intentNegative { background-color: var(--color-background-strong-negative); color: var(--color-foreground-medium-negative); }
+.primary.contrastStrong.intentWarning { background-color: var(--color-background-strong-warning); color: var(--color-foreground-medium-warning); }
+.primary.contrastStrong.intentCaution { background-color: var(--color-background-strong-caution); color: var(--color-foreground-medium-caution); }
+.primary.contrastStrong.intentAi { background-color: var(--color-background-strong-ai); color: var(--color-foreground-medium-ai); }
+.primary.contrastStrong:hover::after { background-color: var(--color-interaction-on-strong-background-hover); }
+.primary.contrastStrong:active::after { background-color: var(--color-interaction-on-strong-background-pressed); }
+
+/* ==========================================================================
+   Variant: Secondary
+   Elevated border/shadow, transparent background, foreground-primary content
+   ========================================================================== */
+
+.secondary {
+  box-shadow: var(--effect-surface-elevated);
+  background-color: transparent;
+}
+
+.secondary:hover::after { background-color: var(--color-interaction-hover); }
+.secondary:active::after { background-color: var(--color-interaction-pressed); }
+
+/* Secondary selected with background */
+.secondary.selected.selectedWithBg { background-color: var(--color-background-faint-neutral); }
+.secondary.selected.selectedWithBg.intentBrand { background-color: var(--color-background-faint-brand); color: var(--color-foreground-bold-brand); }
+.secondary.selected.selectedWithBg.intentPositive { background-color: var(--color-background-faint-positive); color: var(--color-foreground-bold-positive); }
+.secondary.selected.selectedWithBg.intentNegative { background-color: var(--color-background-faint-negative); color: var(--color-foreground-bold-negative); }
+.secondary.selected.selectedWithBg.intentWarning { background-color: var(--color-background-faint-warning); color: var(--color-foreground-bold-warning); }
+.secondary.selected.selectedWithBg.intentCaution { background-color: var(--color-background-faint-caution); color: var(--color-foreground-bold-caution); }
+.secondary.selected.selectedWithBg.intentAi { background-color: var(--color-background-faint-ai); color: var(--color-foreground-bold-ai); }
+.secondary.selected.selectedWithBg.intentNeutral { background-color: var(--color-background-faint-neutral); color: var(--color-foreground-bold-neutral); }
+
+/* ==========================================================================
+   Variant: Tertiary
+   No border/shadow, transparent background, ghost button
+   ========================================================================== */
+
+.tertiary {
+  background-color: transparent;
+}
+
+.tertiary:hover::after { background-color: var(--color-interaction-hover); }
+.tertiary:active::after { background-color: var(--color-interaction-pressed); }
+
+/* Tertiary selected with background */
+.tertiary.selected.selectedWithBg { background-color: var(--color-interaction-hover); }
+.tertiary.selected.selectedWithBg.intentBrand { background-color: var(--color-background-faint-brand); color: var(--color-foreground-bold-brand); }
+.tertiary.selected.selectedWithBg.intentPositive { background-color: var(--color-background-faint-positive); color: var(--color-foreground-bold-positive); }
+.tertiary.selected.selectedWithBg.intentNegative { background-color: var(--color-background-faint-negative); color: var(--color-foreground-bold-negative); }
+.tertiary.selected.selectedWithBg.intentWarning { background-color: var(--color-background-faint-warning); color: var(--color-foreground-bold-warning); }
+.tertiary.selected.selectedWithBg.intentCaution { background-color: var(--color-background-faint-caution); color: var(--color-foreground-bold-caution); }
+.tertiary.selected.selectedWithBg.intentAi { background-color: var(--color-background-faint-ai); color: var(--color-foreground-bold-ai); }
+.tertiary.selected.selectedWithBg.intentNeutral { background-color: var(--color-background-faint-neutral); color: var(--color-foreground-bold-neutral); }
+
+/* ==========================================================================
+   Layout: icon-only, label-only, icon+label, dropdown
+   ========================================================================== */
+
+.iconOnly { padding: 0; width: var(--dimension-size-400); min-width: var(--dimension-size-400); }
+.labelOnly { padding: 0 var(--dimension-space-100); }
+.iconAndLabel { padding: 0 var(--dimension-space-100); gap: var(--dimension-space-050); }
+.dropdown { gap: var(--dimension-space-050); }
+
+/* ==========================================================================
+   Sizes
+   ========================================================================== */
+
+.sizeSmall { height: var(--dimension-size-300); }
+.sizeSmall.iconOnly { width: var(--dimension-size-300); min-width: var(--dimension-size-300); }
+.sizeSmall.labelOnly, .sizeSmall.iconAndLabel { padding: 0 var(--dimension-space-075); gap: var(--dimension-space-025); }
+
+.sizeExtraSmall { height: var(--dimension-size-250); }
+.sizeExtraSmall.iconOnly { width: var(--dimension-size-250); min-width: var(--dimension-size-250); }
+.sizeExtraSmall.labelOnly, .sizeExtraSmall.iconAndLabel { padding: 0 var(--dimension-space-075); gap: 0; }
+
+/* ==========================================================================
+   Rounded (pill shape)
+   ========================================================================== */
+
+.rounded { border-radius: var(--dimension-radius-half); }
+.rounded.labelOnly, .rounded.iconAndLabel { padding-left: calc(var(--dimension-space-100) + var(--dimension-space-050)); padding-right: calc(var(--dimension-space-100) + var(--dimension-space-050)); }
+.rounded.sizeSmall.labelOnly, .rounded.sizeSmall.iconAndLabel { padding-left: calc(var(--dimension-space-075) + var(--dimension-space-050)); padding-right: calc(var(--dimension-space-075) + var(--dimension-space-050)); }
+.rounded.iconOnly { width: calc(var(--dimension-size-400) + 2 * var(--dimension-space-050)); min-width: calc(var(--dimension-size-400) + 2 * var(--dimension-space-050)); padding: 0 var(--dimension-space-050); }
+.rounded.sizeSmall.iconOnly { width: calc(var(--dimension-size-300) + 2 * var(--dimension-space-050)); min-width: calc(var(--dimension-size-300) + 2 * var(--dimension-space-050)); }
+.rounded.sizeExtraSmall.iconOnly { width: calc(var(--dimension-size-250) + 2 * var(--dimension-space-050)); min-width: calc(var(--dimension-size-250) + 2 * var(--dimension-space-050)); }
+
+/* ==========================================================================
+   Disabled
+   ========================================================================== */
+
+.disabled { opacity: 0.5; cursor: not-allowed; pointer-events: none; }
+.disabled::after { display: none; }
+
+/* ==========================================================================
+   Badge
+   ========================================================================== */
+
+.badge {
+  position: absolute;
+  top: var(--dimension-space-025);
+  right: var(--dimension-space-037);
+  font-size: var(--typography-fontsize-xs);
+  font-weight: var(--typography-weight-semibold);
+  line-height: var(--typography-lineheight-xs);
+  color: var(--color-foreground-secondary);
+  pointer-events: none;
+  z-index: 10;
+}

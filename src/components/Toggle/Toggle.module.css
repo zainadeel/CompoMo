@@ -1,0 +1,85 @@
+.toggle {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-start;
+  width: var(--dimension-size-400);
+  height: var(--dimension-size-250);
+  padding: 0 var(--dimension-space-025);
+  border: none;
+  border-radius: var(--dimension-radius-half);
+  cursor: pointer;
+  outline: none;
+  flex-shrink: 0;
+  background-color: var(--color-background-medium-neutral);
+  box-shadow: var(--effect-inset-depressed);
+  transition: background-color var(--effect-motion-fast);
+}
+
+.toggle::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  box-shadow: var(--effect-outset-depressed);
+  pointer-events: none;
+}
+
+.toggle:focus-visible {
+  outline: var(--dimension-focus-ring-width) solid var(--color-foreground-bold-brand);
+  outline-offset: var(--dimension-focus-ring-offset);
+}
+
+.checked {
+  background-color: var(--color-foreground-bold-brand) !important;
+}
+
+.thumb {
+  position: relative;
+  flex-shrink: 0;
+  width: var(--dimension-size-200);
+  height: var(--dimension-size-200);
+  background-color: var(--color-background-primary);
+  border-radius: var(--dimension-radius-half);
+  box-shadow: var(--effect-surface-elevated);
+  transition: transform var(--effect-motion-fast);
+  transform: translateX(0);
+  z-index: 1;
+}
+
+.thumb::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-color: transparent;
+  border-radius: inherit;
+  transition: var(--effect-transition-interaction-background-instant);
+  pointer-events: none;
+}
+
+.toggle:hover:not(.disabled) .thumb::after {
+  background-color: var(--color-interaction-hover);
+}
+
+.toggle:active:not(.disabled) .thumb::after {
+  background-color: var(--color-interaction-pressed);
+}
+
+.checked .thumb {
+  transform: translateX(var(--dimension-offset-150));
+}
+
+.toggle:active:not(.disabled) .thumb {
+  transform: translateX(0) scale(var(--dimension-scale-subtle)) !important;
+  transition: transform var(--effect-motion-instant);
+}
+
+.checked.toggle:active:not(.disabled) .thumb {
+  transform: translateX(var(--dimension-offset-150)) scale(var(--dimension-scale-subtle)) !important;
+  transition: transform var(--effect-motion-instant);
+}
+
+.disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}

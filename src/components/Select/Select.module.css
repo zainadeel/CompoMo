@@ -1,0 +1,29 @@
+.selectWrapper {
+  width: 100%;
+  position: relative;
+}
+
+.selectButton {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  height: var(--dimension-size-400);
+  padding: 0 var(--dimension-space-075);
+  gap: var(--dimension-space-050);
+  cursor: pointer;
+  border: none;
+  outline: none;
+}
+
+.selectButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.chevron {
+  display: flex;
+  align-items: center;
+  color: var(--color-foreground-secondary);
+  flex-shrink: 0;
+}

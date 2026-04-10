@@ -1,0 +1,36 @@
+/**
+ * Card — structured container with optional header/footer.
+ * Uses TokoMo tokens directly (not built on Surface).
+ */
+
+.card {
+  box-sizing: border-box;
+  background-color: var(--color-background-primary);
+  overflow: hidden;
+}
+
+/* Elevation */
+.elevationFlat { box-shadow: var(--effect-surface-flat); }
+.elevationElevated { box-shadow: var(--effect-surface-elevated); }
+.elevationFloating { box-shadow: var(--effect-surface-floating); }
+
+/* Radius */
+.radiusSm { border-radius: var(--dimension-radius-075); }
+.radiusMd { border-radius: var(--dimension-radius-100); }
+.radiusLg { border-radius: var(--dimension-radius-125); }
+.radiusXl { border-radius: var(--dimension-radius-175); }
+
+/* Sections */
+.header {
+  padding: var(--dimension-space-150) var(--dimension-space-200);
+  box-shadow: var(--effect-edge-bottom);
+}
+
+.body {
+  padding: var(--dimension-space-200);
+}
+
+.footer {
+  padding: var(--dimension-space-150) var(--dimension-space-200);
+  box-shadow: var(--effect-edge-top);
+}

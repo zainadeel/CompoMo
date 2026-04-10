@@ -1,0 +1,92 @@
+.tag {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--dimension-radius-075);
+  box-sizing: border-box;
+  border: var(--dimension-stroke-width-015) solid transparent;
+  color: var(--color-foreground-primary);
+}
+
+.removable { gap: 0; }
+
+.removeButton {
+  padding: 0; margin: 0; border: none; background: none;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; color: inherit; flex-shrink: 0;
+  position: relative; z-index: 0; border-radius: var(--dimension-radius-050);
+}
+
+.removeButton::before {
+  content: ''; position: absolute; inset: 0;
+  border-radius: var(--dimension-radius-050);
+  background-color: transparent;
+  transition: var(--effect-transition-interaction-background-fast);
+  pointer-events: none; z-index: 0;
+}
+
+.removeButton > * { position: relative; z-index: 1; }
+.removeButton:hover::before { background-color: var(--color-interaction-hover); }
+.removeButton:active::before { background-color: var(--color-interaction-pressed); }
+.rounded .removeButton, .rounded .removeButton::before { border-radius: var(--dimension-radius-half); }
+
+/* Sizes */
+.sizeMd { height: var(--dimension-size-400); padding: 0 var(--dimension-space-075); gap: var(--dimension-space-025); }
+.sizeSm { height: var(--dimension-size-300); padding: 0 var(--dimension-space-050); gap: var(--dimension-space-025); }
+.sizeXs { height: var(--dimension-size-250); padding: 0 var(--dimension-space-050); gap: 0; }
+.rounded { border-radius: var(--dimension-radius-half); }
+
+/* Style: filled (default) — no border, just background */
+.styleFilled { border-color: transparent; }
+/* Style: outline — border, no background fill */
+.styleOutline { background-color: transparent !important; }
+
+/* Intent + contrast — faint */
+.intentPositive.contrastFaint { background-color: var(--color-background-faint-positive); color: var(--color-foreground-bold-positive); }
+.intentNegative.contrastFaint { background-color: var(--color-background-faint-negative); color: var(--color-foreground-bold-negative); }
+.intentWarning.contrastFaint { background-color: var(--color-background-faint-warning); color: var(--color-foreground-bold-warning); }
+.intentCaution.contrastFaint { background-color: var(--color-background-faint-caution); color: var(--color-foreground-bold-caution); }
+.intentNeutral.contrastFaint { background-color: var(--color-background-faint-neutral); color: var(--color-foreground-bold-neutral); }
+.intentBrand.contrastFaint { background-color: var(--color-background-faint-brand); color: var(--color-foreground-bold-brand); }
+.intentAi.contrastFaint { background-color: var(--color-background-faint-ai); color: var(--color-foreground-bold-ai); }
+.intentWalkthrough.contrastFaint { background-color: var(--color-background-faint-walkthrough); color: var(--color-foreground-bold-walkthrough); }
+.intentGuide.contrastFaint { background-color: var(--color-background-faint-guide); color: var(--color-foreground-bold-guide); }
+
+/* Intent + contrast — medium */
+.intentPositive.contrastMedium { background-color: var(--color-background-medium-positive); color: var(--color-foreground-strong-positive); }
+.intentNegative.contrastMedium { background-color: var(--color-background-medium-negative); color: var(--color-foreground-strong-negative); }
+.intentWarning.contrastMedium { background-color: var(--color-background-medium-warning); color: var(--color-foreground-strong-warning); }
+.intentCaution.contrastMedium { background-color: var(--color-background-medium-caution); color: var(--color-foreground-strong-caution); }
+.intentNeutral.contrastMedium { background-color: var(--color-background-medium-neutral); color: var(--color-foreground-strong-neutral); }
+.intentBrand.contrastMedium { background-color: var(--color-background-medium-brand); color: var(--color-foreground-strong-brand); }
+.intentAi.contrastMedium { background-color: var(--color-background-medium-ai); color: var(--color-foreground-strong-ai); }
+.intentWalkthrough.contrastMedium { background-color: var(--color-background-medium-walkthrough); color: var(--color-foreground-strong-walkthrough); }
+.intentGuide.contrastMedium { background-color: var(--color-background-medium-guide); color: var(--color-foreground-strong-guide); }
+
+/* Intent + contrast — bold */
+.intentPositive.contrastBold { background-color: var(--color-background-bold-positive); color: var(--color-foreground-on-bold-background-primary); }
+.intentNegative.contrastBold { background-color: var(--color-background-bold-negative); color: var(--color-foreground-on-bold-background-primary); }
+.intentWarning.contrastBold { background-color: var(--color-background-bold-warning); color: var(--color-foreground-on-bold-background-primary); }
+.intentCaution.contrastBold { background-color: var(--color-background-bold-caution); color: var(--color-foreground-on-bold-background-primary); }
+.intentNeutral.contrastBold { background-color: var(--color-background-bold-neutral); color: var(--color-foreground-on-bold-background-primary); }
+.intentBrand.contrastBold { background-color: var(--color-background-bold-brand); color: var(--color-foreground-on-bold-background-primary); }
+.intentAi.contrastBold { background-color: var(--color-background-bold-ai); color: var(--color-foreground-on-bold-background-primary); }
+.intentWalkthrough.contrastBold { background-color: var(--color-background-bold-walkthrough); color: var(--color-foreground-on-bold-background-primary); }
+.intentGuide.contrastBold { background-color: var(--color-background-bold-guide); color: var(--color-foreground-on-bold-background-primary); }
+
+/* Intent + contrast — strong */
+.intentPositive.contrastStrong { background-color: var(--color-background-strong-positive); color: var(--color-foreground-medium-positive); }
+.intentNegative.contrastStrong { background-color: var(--color-background-strong-negative); color: var(--color-foreground-medium-negative); }
+.intentWarning.contrastStrong { background-color: var(--color-background-strong-warning); color: var(--color-foreground-medium-warning); }
+.intentCaution.contrastStrong { background-color: var(--color-background-strong-caution); color: var(--color-foreground-medium-caution); }
+.intentNeutral.contrastStrong { background-color: var(--color-background-strong-neutral); color: var(--color-foreground-medium-neutral); }
+.intentBrand.contrastStrong { background-color: var(--color-background-strong-brand); color: var(--color-foreground-medium-brand); }
+.intentAi.contrastStrong { background-color: var(--color-background-strong-ai); color: var(--color-foreground-medium-ai); }
+.intentWalkthrough.contrastStrong { background-color: var(--color-background-strong-walkthrough); color: var(--color-foreground-medium-walkthrough); }
+.intentGuide.contrastStrong { background-color: var(--color-background-strong-guide); color: var(--color-foreground-medium-guide); }
+
+/* Outline overrides — uses intent color as border */
+.styleOutline.contrastFaint { border-color: currentColor; }
+.styleOutline.contrastMedium { border-color: currentColor; }
+.styleOutline.contrastBold { border-color: currentColor; }
+.styleOutline.contrastStrong { border-color: currentColor; }

@@ -1,0 +1,217 @@
+/**
+ * Surface — lean container primitive.
+ * Backgrounds, elevation, edges, radius, and interactive states.
+ */
+
+.surface {
+  box-sizing: border-box;
+  position: relative;
+}
+
+/* ==========================================================================
+   Backgrounds (intent='default')
+   ========================================================================== */
+
+.bgPrimary {
+  background-color: var(--color-background-primary);
+}
+
+.bgSecondary {
+  background-color: var(--color-background-secondary);
+}
+
+.bgTransparent {
+  background-color: transparent;
+}
+
+.bgTranslucent {
+  background-color: var(--color-background-translucent);
+  backdrop-filter: blur(var(--effect-blur-md));
+  -webkit-backdrop-filter: blur(var(--effect-blur-md));
+}
+
+.bgShade {
+  background-color: var(--color-background-shade);
+}
+
+/* ==========================================================================
+   Semantic Intent Backgrounds — intent{Intent}{Contrast}
+   ========================================================================== */
+
+/* Brand */
+.intentBrandFaint { background-color: var(--color-background-faint-brand); }
+.intentBrandMedium { background-color: var(--color-background-medium-brand); }
+.intentBrandBold { background-color: var(--color-background-bold-brand); }
+.intentBrandStrong { background-color: var(--color-background-strong-brand); }
+
+/* Positive */
+.intentPositiveFaint { background-color: var(--color-background-faint-positive); }
+.intentPositiveMedium { background-color: var(--color-background-medium-positive); }
+.intentPositiveBold { background-color: var(--color-background-bold-positive); }
+.intentPositiveStrong { background-color: var(--color-background-strong-positive); }
+
+/* Negative */
+.intentNegativeFaint { background-color: var(--color-background-faint-negative); }
+.intentNegativeMedium { background-color: var(--color-background-medium-negative); }
+.intentNegativeBold { background-color: var(--color-background-bold-negative); }
+.intentNegativeStrong { background-color: var(--color-background-strong-negative); }
+
+/* Warning */
+.intentWarningFaint { background-color: var(--color-background-faint-warning); }
+.intentWarningMedium { background-color: var(--color-background-medium-warning); }
+.intentWarningBold { background-color: var(--color-background-bold-warning); }
+.intentWarningStrong { background-color: var(--color-background-strong-warning); }
+
+/* Caution */
+.intentCautionFaint { background-color: var(--color-background-faint-caution); }
+.intentCautionMedium { background-color: var(--color-background-medium-caution); }
+.intentCautionBold { background-color: var(--color-background-bold-caution); }
+.intentCautionStrong { background-color: var(--color-background-strong-caution); }
+
+/* AI */
+.intentAiFaint { background-color: var(--color-background-faint-ai); }
+.intentAiMedium { background-color: var(--color-background-medium-ai); }
+.intentAiBold { background-color: var(--color-background-bold-ai); }
+.intentAiStrong { background-color: var(--color-background-strong-ai); }
+
+/* Neutral */
+.intentNeutralFaint { background-color: var(--color-background-faint-neutral); }
+.intentNeutralMedium { background-color: var(--color-background-medium-neutral); }
+.intentNeutralBold { background-color: var(--color-background-bold-neutral); }
+.intentNeutralStrong { background-color: var(--color-background-strong-neutral); }
+
+/* Walkthrough */
+.intentWalkthroughFaint { background-color: var(--color-background-faint-walkthrough); }
+.intentWalkthroughMedium { background-color: var(--color-background-medium-walkthrough); }
+.intentWalkthroughBold { background-color: var(--color-background-bold-walkthrough); }
+.intentWalkthroughStrong { background-color: var(--color-background-strong-walkthrough); }
+
+/* Guide */
+.intentGuideFaint { background-color: var(--color-background-faint-guide); }
+.intentGuideMedium { background-color: var(--color-background-medium-guide); }
+.intentGuideBold { background-color: var(--color-background-bold-guide); }
+.intentGuideStrong { background-color: var(--color-background-strong-guide); }
+
+/* ==========================================================================
+   Elevation
+   ========================================================================== */
+
+.elevationNone {}
+
+.elevationDepressed {
+  box-shadow: var(--effect-surface-depressed);
+}
+
+.elevationFlat {
+  box-shadow: var(--effect-surface-flat);
+}
+
+.elevationElevated {
+  box-shadow: var(--effect-surface-elevated);
+}
+
+.elevationFloating {
+  box-shadow: var(--effect-surface-floating);
+}
+
+.elevationOverlayLeft {
+  box-shadow: var(--effect-surface-overlay-left);
+}
+
+.elevationOverlayRight {
+  box-shadow: var(--effect-surface-overlay-right);
+}
+
+/* ==========================================================================
+   Edge Borders (only when elevation='none')
+   ========================================================================== */
+
+.edgeTop { box-shadow: var(--effect-edge-top); }
+.edgeRight { box-shadow: var(--effect-edge-right); }
+.edgeBottom { box-shadow: var(--effect-edge-bottom); }
+.edgeLeft { box-shadow: var(--effect-edge-left); }
+
+/* ==========================================================================
+   Corner Radius
+   ========================================================================== */
+
+.radiusNone { border-radius: var(--dimension-radius-000); }
+.radiusXs { border-radius: var(--dimension-radius-050); }
+.radiusSm { border-radius: var(--dimension-radius-075); }
+.radiusMd { border-radius: var(--dimension-radius-100); }
+.radiusLg { border-radius: var(--dimension-radius-125); }
+.radiusXl { border-radius: var(--dimension-radius-175); }
+.radius2xl { border-radius: var(--dimension-radius-200); }
+.radiusFull { border-radius: var(--dimension-radius-half); }
+
+/* ==========================================================================
+   Interactive States
+   Stack: bg → selected ::before → hover/press ::after
+   ========================================================================== */
+
+.interactive {
+  cursor: pointer;
+  transition: transform var(--effect-motion-fast);
+}
+
+.interactive::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-color: transparent;
+  border-radius: inherit;
+  transition: var(--effect-transition-interaction-background-instant);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.interactive > * {
+  position: relative;
+  z-index: 1;
+}
+
+.interactive:hover::after {
+  background-color: var(--color-interaction-hover);
+}
+
+.interactive:active {
+  transform: scale(var(--dimension-scale-subtle));
+}
+
+.interactive:active::after {
+  background-color: var(--color-interaction-pressed);
+  transition: var(--effect-transition-interaction-background-instant);
+}
+
+/* ==========================================================================
+   Selected State (layer 2)
+   ========================================================================== */
+
+.selected::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  z-index: 0;
+  background-color: var(--color-interaction-hover);
+}
+
+.selected > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* ==========================================================================
+   Disabled State
+   ========================================================================== */
+
+.disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.disabled::after {
+  display: none;
+}
