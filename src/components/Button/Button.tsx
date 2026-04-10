@@ -14,7 +14,7 @@ export interface ButtonProps {
   variant?: ButtonVariant;
   /** Label text. Required for primary. Optional for secondary/tertiary (icon-only). */
   label?: string;
-  /** Leading icon component from @icomo/icons. */
+  /** Leading icon component from @ds-mo/icons. */
   icon?: IconComponent;
   /** Semantic intent. Defaults to 'brand'. */
   intent?: ButtonIntent;

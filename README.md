@@ -5,15 +5,15 @@ Composable React UI components styled with [TokoMo](https://github.com/zainadeel
 ## Install
 
 ```bash
-npm install @compomo/ui @tokomo/tokens
+npm install @compomo/ui @ds-mo/tokens
 ```
 
-**Required peer dependency:** `@tokomo/tokens` provides all CSS custom properties (colors, dimensions, typography, effects) that CompoMo components consume. Components will not render correctly without it.
+**Required peer dependency:** `@ds-mo/tokens` provides all CSS custom properties (colors, dimensions, typography, effects) that CompoMo components consume. Components will not render correctly without it.
 
-**Optional:** `@icomo/icons` for icon components used via the `icon` prop pattern.
+**Optional:** `@ds-mo/icons` for icon components used via the `icon` prop pattern.
 
 ```bash
-npm install @icomo/icons
+npm install @ds-mo/icons
 ```
 
 ## Setup
@@ -21,9 +21,9 @@ npm install @icomo/icons
 Import TokoMo tokens globally (once, at your app root):
 
 ```tsx
-import '@tokomo/tokens';        // all tokens (colors, dimensions, typography, effects)
-import '@tokomo/tokens/reset';   // CSS reset
-import '@tokomo/tokens/globals'; // global styles
+import '@ds-mo/tokens';        // all tokens (colors, dimensions, typography, effects)
+import '@ds-mo/tokens/reset';   // CSS reset
+import '@ds-mo/tokens/globals'; // global styles
 ```
 
 Then import CompoMo components:
@@ -68,7 +68,7 @@ import { Button, Text, Surface, Card } from '@compomo/ui';
 
 ## Token dependency
 
-All styling uses TokoMo CSS custom properties. No hardcoded colors, sizes, or shadows — everything maps to the token system. Components will render unstyled if `@tokomo/tokens` is not imported.
+All styling uses TokoMo CSS custom properties. No hardcoded colors, sizes, or shadows — everything maps to the token system. Components will render unstyled if `@ds-mo/tokens` is not imported.
 
 ## Icon pattern
 
@@ -78,4 +78,4 @@ Components that accept icons use the typed prop pattern:
 icon?: React.ComponentType<{ size?: number | string }>
 ```
 
-Pass any component that accepts a `size` prop. Works with `@icomo/icons` or custom SVG components.
+Pass any component that accepts a `size` prop. Works with `@ds-mo/icons` or custom SVG components.

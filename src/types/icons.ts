@@ -1,7 +1,7 @@
 import type { ForwardRefExoticComponent, RefAttributes, SVGAttributes } from 'react';
 
 /**
- * Props accepted by icon components (compatible with @icomo/icons).
+ * Props accepted by icon components (compatible with @ds-mo/icons).
  */
 export interface IconProps extends SVGAttributes<SVGSVGElement> {
   size?: number | string;
@@ -10,6 +10,6 @@ export interface IconProps extends SVGAttributes<SVGSVGElement> {
 }
 
 /**
- * An icon component type (compatible with @icomo/icons IconComponent).
+ * An icon component type (compatible with @ds-mo/icons IconComponent).
  */
 export type IconComponent = ForwardRefExoticComponent<IconProps & RefAttributes<SVGSVGElement>>;

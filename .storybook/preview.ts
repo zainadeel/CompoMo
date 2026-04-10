@@ -1,8 +1,8 @@
 import type { Preview } from '@storybook/react-vite';
-import '@tokomo/tokens';
-import '@tokomo/tokens/reset';
-import '@tokomo/tokens/globals';
-import '@tokomo/tokens/utilities';
+import '@ds-mo/tokens';
+import '@ds-mo/tokens/reset';
+import '@ds-mo/tokens/globals';
+import '@ds-mo/tokens/utilities';
 
 const preview: Preview = {
   globalTypes: {
