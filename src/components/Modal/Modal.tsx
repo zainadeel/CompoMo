@@ -100,7 +100,7 @@ export const Modal: React.FC<ModalProps> = ({
         tabIndex={-1}
       >
         <div className={styles.header}>
-          <Text id={titleId} as="h2" style="text-title-small" lineTruncation="none">
+          <Text id={titleId} as="h2" variant="text-title-small">
             {title}
           </Text>
           {subtitle != null && (

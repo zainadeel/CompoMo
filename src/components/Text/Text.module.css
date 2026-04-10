@@ -1,19 +1,7 @@
 .text {
   margin: 0;
-}
-
-/* ============================================
-   TEXT SPACING (Horizontal Padding)
-   ============================================ */
-
-.spaceSm {
-  padding-left: var(--dimension-space-025);
-  padding-right: var(--dimension-space-025);
-}
-
-.spaceNone {
-  padding-left: 0;
-  padding-right: 0;
+  user-select: text;
+  -webkit-user-select: text;
 }
 
 /* ============================================
@@ -73,6 +61,14 @@
   overflow: hidden;
   text-overflow: ellipsis;
   min-width: 0;
+}
+
+.wrapBalance {
+  text-wrap: balance;
+}
+
+.wrapPretty {
+  text-wrap: pretty;
 }
 
 /* ============================================
@@ -169,13 +165,4 @@
 
 .alignRight {
   text-align: right;
-}
-
-/* ============================================
-   TEXT SELECTION
-   ============================================ */
-
-.selectable {
-  user-select: text;
-  -webkit-user-select: text;
 }

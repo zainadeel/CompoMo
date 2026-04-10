@@ -9,7 +9,7 @@
 }
 
 /* ==========================================================================
-   Backgrounds (intent='default')
+   Backgrounds
    ========================================================================== */
 
 .bgPrimary {
@@ -28,10 +28,6 @@
   background-color: var(--color-background-translucent);
   backdrop-filter: blur(var(--effect-blur-md));
   -webkit-backdrop-filter: blur(var(--effect-blur-md));
-}
-
-.bgShade {
-  background-color: var(--color-background-shade);
 }
 
 /* ==========================================================================
@@ -93,43 +89,55 @@
 .intentGuideStrong { background-color: var(--color-background-strong-guide); }
 
 /* ==========================================================================
-   Elevation
+   Elevation — progressive: none → flat → elevated → floating
    ========================================================================== */
 
 .elevationNone {}
 
 .elevationDepressed {
-  box-shadow: var(--effect-surface-depressed);
+  box-shadow: var(--effect-elevation-depressed-sm);
+}
+
+.elevationDepressedMd {
+  box-shadow: var(--effect-elevation-depressed-md);
 }
 
 .elevationFlat {
-  box-shadow: var(--effect-surface-flat);
+  box-shadow: var(--effect-elevation-elevated-sm);
 }
 
 .elevationElevated {
-  box-shadow: var(--effect-surface-elevated);
+  box-shadow: var(--effect-elevation-elevated-md);
 }
 
 .elevationFloating {
-  box-shadow: var(--effect-surface-floating);
+  box-shadow: var(--effect-elevation-elevated-floating);
 }
 
-.elevationOverlayLeft {
-  box-shadow: var(--effect-surface-overlay-left);
+.elevationOverlayTop {
+  box-shadow: var(--effect-elevation-elevated-panel-top);
 }
 
 .elevationOverlayRight {
-  box-shadow: var(--effect-surface-overlay-right);
+  box-shadow: var(--effect-elevation-elevated-panel-right);
+}
+
+.elevationOverlayBottom {
+  box-shadow: var(--effect-elevation-elevated-panel-bottom);
+}
+
+.elevationOverlayLeft {
+  box-shadow: var(--effect-elevation-elevated-panel-left);
 }
 
 /* ==========================================================================
    Edge Borders (only when elevation='none')
    ========================================================================== */
 
-.edgeTop { box-shadow: var(--effect-edge-top); }
-.edgeRight { box-shadow: var(--effect-edge-right); }
-.edgeBottom { box-shadow: var(--effect-edge-bottom); }
-.edgeLeft { box-shadow: var(--effect-edge-left); }
+.edgeTop { border-top: var(--dimension-stroke-width-015) solid var(--color-border-tertiary); }
+.edgeRight { border-right: var(--dimension-stroke-width-015) solid var(--color-border-tertiary); }
+.edgeBottom { border-bottom: var(--dimension-stroke-width-015) solid var(--color-border-tertiary); }
+.edgeLeft { border-left: var(--dimension-stroke-width-015) solid var(--color-border-tertiary); }
 
 /* ==========================================================================
    Corner Radius
@@ -151,7 +159,7 @@
 
 .interactive {
   cursor: pointer;
-  transition: transform var(--effect-motion-fast);
+  transition: transform var(--effect-motion-short-2);
 }
 
 .interactive::after {
@@ -183,6 +191,11 @@
   transition: var(--effect-transition-interaction-background-instant);
 }
 
+.interactive:focus-visible {
+  box-shadow: var(--effect-focus-ring);
+  outline: none;
+}
+
 /* ==========================================================================
    Selected State (layer 2)
    ========================================================================== */
@@ -203,15 +216,15 @@
 }
 
 /* ==========================================================================
-   Disabled State
+   Inactive State
    ========================================================================== */
 
-.disabled {
+.inactive {
   opacity: 0.5;
   cursor: not-allowed;
   pointer-events: none;
 }
 
-.disabled::after {
+.inactive::after {
   display: none;
 }

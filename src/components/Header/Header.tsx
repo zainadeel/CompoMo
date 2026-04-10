@@ -28,7 +28,7 @@ export const Header = forwardRef<HTMLElement, HeaderProps>(
       <div className={styles.left}>
         {left}
         {title && !center && (
-          <Text style="text-title-small" as="h1" lineTruncation={1}>
+          <Text variant="text-title-small" as="h1" lineTruncation={1}>
             {title}
           </Text>
         )}

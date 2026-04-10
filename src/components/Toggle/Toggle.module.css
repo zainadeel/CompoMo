@@ -12,8 +12,8 @@
   outline: none;
   flex-shrink: 0;
   background-color: var(--color-background-medium-neutral);
-  box-shadow: var(--effect-inset-depressed);
-  transition: background-color var(--effect-motion-fast);
+  box-shadow: var(--effect-highlight-depressed-sm);
+  transition: background-color var(--effect-motion-short-2);
 }
 
 .toggle::before {
@@ -21,13 +21,12 @@
   position: absolute;
   inset: 0;
   border-radius: inherit;
-  box-shadow: var(--effect-outset-depressed);
+  box-shadow: var(--effect-shadow-depressed-sm);
   pointer-events: none;
 }
 
 .toggle:focus-visible {
-  outline: var(--dimension-focus-ring-width) solid var(--color-foreground-bold-brand);
-  outline-offset: var(--dimension-focus-ring-offset);
+  box-shadow: var(--effect-focus-ring);
 }
 
 .checked {
@@ -41,8 +40,8 @@
   height: var(--dimension-size-200);
   background-color: var(--color-background-primary);
   border-radius: var(--dimension-radius-half);
-  box-shadow: var(--effect-surface-elevated);
-  transition: transform var(--effect-motion-fast);
+  box-shadow: var(--effect-elevation-elevated-sm);
+  transition: transform var(--effect-motion-short-2);
   transform: translateX(0);
   z-index: 1;
 }

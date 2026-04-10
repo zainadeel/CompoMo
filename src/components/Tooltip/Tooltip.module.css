@@ -2,13 +2,13 @@
   box-sizing: border-box;
   background-color: var(--color-background-primary);
   border-radius: var(--dimension-radius-075);
-  box-shadow: var(--effect-surface-floating);
+  box-shadow: var(--effect-elevation-elevated-floating);
   padding: var(--dimension-space-050);
   line-height: var(--typography-lineheight-sm);
   pointer-events: none;
   backface-visibility: hidden;
   -webkit-font-smoothing: subpixel-antialiased;
-  animation: tooltipFadeIn var(--effect-motion-fast) forwards;
+  animation: tooltipFadeIn var(--effect-motion-short-2) forwards;
 }
 
 .tooltipInner {
@@ -31,7 +31,7 @@
 }
 
 .tooltip.closing {
-  animation: tooltipFadeOut var(--effect-motion-medium) forwards;
+  animation: tooltipFadeOut var(--effect-motion-short-3) forwards;
 }
 
 @keyframes tooltipFadeIn {

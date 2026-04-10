@@ -5,7 +5,7 @@
   align-items: center;
   background-color: var(--color-background-primary);
   border-radius: var(--dimension-radius-075);
-  box-shadow: var(--effect-surface-depressed);
+  box-shadow: var(--effect-elevation-depressed-sm);
   box-sizing: border-box;
 }
 

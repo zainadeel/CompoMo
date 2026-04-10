@@ -53,8 +53,8 @@ export const DestructiveMenuItem = forwardRef<HTMLButtonElement, DestructiveMenu
       >
         <div className={styles.progressFill} style={{ width: `${progress}%` }} />
         <div className={styles.content}>
-          <Text style="text-body-medium" as="span" className={styles.label}>{label}</Text>
-          {subtext && <Text style="text-body-small" as="span" className={styles.subtext}>{subtext}</Text>}
+          <Text variant="text-body-medium" as="span" className={styles.label}>{label}</Text>
+          {subtext && <Text variant="text-body-small" as="span" className={styles.subtext}>{subtext}</Text>}
         </div>
       </button>
     );

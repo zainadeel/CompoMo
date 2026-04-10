@@ -24,7 +24,7 @@ export const SidebarSection = forwardRef<HTMLDivElement, SidebarSectionProps>(
             role={collapsible ? 'button' : undefined}
             aria-expanded={collapsible ? !isCollapsed : undefined}
           >
-            <Text style="text-caption-emphasis" as="span" color="tertiary">
+            <Text variant="text-caption-emphasis" as="span" color="tertiary">
               {label}
             </Text>
           </div>

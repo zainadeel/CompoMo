@@ -10,9 +10,9 @@
 }
 
 /* Elevation */
-.elevationFlat { box-shadow: var(--effect-surface-flat); }
-.elevationElevated { box-shadow: var(--effect-surface-elevated); }
-.elevationFloating { box-shadow: var(--effect-surface-floating); }
+.elevationFlat { box-shadow: var(--effect-elevation-elevated-none); }
+.elevationElevated { box-shadow: var(--effect-elevation-elevated-sm); }
+.elevationFloating { box-shadow: var(--effect-elevation-elevated-floating); }
 
 /* Radius */
 .radiusSm { border-radius: var(--dimension-radius-075); }
@@ -23,7 +23,7 @@
 /* Sections */
 .header {
   padding: var(--dimension-space-150) var(--dimension-space-200);
-  box-shadow: var(--effect-edge-bottom);
+  border-bottom: var(--dimension-stroke-width-015) solid var(--color-border-primary);
 }
 
 .body {
@@ -32,5 +32,5 @@
 
 .footer {
   padding: var(--dimension-space-150) var(--dimension-space-200);
-  box-shadow: var(--effect-edge-top);
+  border-top: var(--dimension-stroke-width-015) solid var(--color-border-primary);
 }

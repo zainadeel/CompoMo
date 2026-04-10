@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import { Surface } from './Surface';
 
 const meta: Meta<typeof Surface> = {
@@ -7,11 +7,11 @@ const meta: Meta<typeof Surface> = {
   argTypes: {
     background: {
       control: 'select',
-      options: ['primary', 'secondary', 'transparent', 'translucent', 'shade'],
+      options: ['primary', 'secondary', 'transparent', 'translucent'],
     },
     intent: {
       control: 'select',
-      options: ['default', 'brand', 'positive', 'negative', 'warning', 'caution', 'ai', 'neutral'],
+      options: ['brand', 'positive', 'negative', 'warning', 'caution', 'ai', 'neutral', 'walkthrough', 'guide'],
     },
     contrast: {
       control: 'select',
@@ -19,7 +19,7 @@ const meta: Meta<typeof Surface> = {
     },
     elevation: {
       control: 'select',
-      options: ['none', 'depressed', 'flat', 'elevated', 'floating'],
+      options: ['none', 'depressed', 'depressed-md', 'flat', 'elevated', 'floating', 'overlayTop', 'overlayRight', 'overlayBottom', 'overlayLeft'],
     },
     radius: {
       control: 'select',
@@ -43,8 +43,8 @@ export const Default: Story = {
 
 export const Elevations: Story = {
   render: () => (
-    <div style={{ display: 'flex', gap: 24, padding: 24 }}>
-      {(['flat', 'elevated', 'floating'] as const).map(elevation => (
+    <div style={{ display: 'flex', gap: 24, padding: 24, flexWrap: 'wrap' }}>
+      {(['none', 'depressed', 'depressed-md', 'flat', 'elevated', 'floating'] as const).map(elevation => (
         <Surface
           key={elevation}
           background="primary"
@@ -55,6 +55,49 @@ export const Elevations: Story = {
           {elevation}
         </Surface>
       ))}
+    </div>
+  ),
+};
+
+export const PanelOverlays: Story = {
+  render: () => (
+    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 32, padding: 24 }}>
+      <div style={{ position: 'relative', height: 120, overflow: 'hidden', borderRadius: 8, background: 'var(--color-background-secondary)' }}>
+        <Surface
+          background="primary"
+          elevation="overlayTop"
+          style={{ position: 'absolute', top: 0, left: 0, right: 0, padding: 16, textAlign: 'center' }}
+        >
+          overlayTop
+        </Surface>
+      </div>
+      <div style={{ position: 'relative', height: 120, overflow: 'hidden', borderRadius: 8, background: 'var(--color-background-secondary)' }}>
+        <Surface
+          background="primary"
+          elevation="overlayBottom"
+          style={{ position: 'absolute', bottom: 0, left: 0, right: 0, padding: 16, textAlign: 'center' }}
+        >
+          overlayBottom
+        </Surface>
+      </div>
+      <div style={{ position: 'relative', height: 120, overflow: 'hidden', borderRadius: 8, background: 'var(--color-background-secondary)' }}>
+        <Surface
+          background="primary"
+          elevation="overlayLeft"
+          style={{ position: 'absolute', top: 0, bottom: 0, left: 0, width: 140, padding: 16, display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+        >
+          overlayLeft
+        </Surface>
+      </div>
+      <div style={{ position: 'relative', height: 120, overflow: 'hidden', borderRadius: 8, background: 'var(--color-background-secondary)' }}>
+        <Surface
+          background="primary"
+          elevation="overlayRight"
+          style={{ position: 'absolute', top: 0, bottom: 0, right: 0, width: 140, padding: 16, display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+        >
+          overlayRight
+        </Surface>
+      </div>
     </div>
   ),
 };
@@ -124,10 +167,10 @@ export const Interactive: Story = {
         background="primary"
         elevation="elevated"
         radius="lg"
-        disabled
+        inactive
         style={{ padding: 24, width: 200, textAlign: 'center' }}
       >
-        Disabled
+        Inactive
       </Surface>
     </div>
   ),

@@ -10,7 +10,7 @@
   border-radius: var(--dimension-radius-075);
   cursor: pointer;
   position: relative;
-  transition: transform var(--effect-motion-fast);
+  transition: transform var(--effect-motion-short-2);
   height: var(--dimension-size-400);
   font-family: inherit;
   color: var(--color-foreground-primary);
@@ -45,7 +45,7 @@
    ========================================================================== */
 
 .primary {
-  box-shadow: var(--effect-surface-elevated);
+  box-shadow: var(--effect-elevation-elevated-sm);
   color: var(--color-foreground-on-bold-background-primary);
 }
 
@@ -89,7 +89,7 @@
    ========================================================================== */
 
 .secondary {
-  box-shadow: var(--effect-surface-elevated);
+  box-shadow: var(--effect-elevation-elevated-sm);
   background-color: transparent;
 }
 
@@ -174,7 +174,7 @@
 .badge {
   position: absolute;
   top: var(--dimension-space-025);
-  right: var(--dimension-space-037);
+  right: var(--dimension-space-025);
   font-size: var(--typography-fontsize-xs);
   font-weight: var(--typography-weight-semibold);
   line-height: var(--typography-lineheight-xs);

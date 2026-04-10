@@ -36,7 +36,7 @@ export const SidebarItem = forwardRef<HTMLButtonElement, SidebarItemProps>(
           </span>
         )}
         <Text
-          style={isSelected ? 'text-body-medium-emphasis' : 'text-body-medium'}
+          variant={isSelected ? 'text-body-medium-emphasis' : 'text-body-medium'}
           as="span"
           className={styles.itemLabel}
           lineTruncation={1}

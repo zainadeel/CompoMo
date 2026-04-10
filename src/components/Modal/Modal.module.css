@@ -8,12 +8,12 @@
   background-color: var(--color-background-shade);
   backdrop-filter: blur(var(--effect-blur-sm));
   -webkit-backdrop-filter: blur(var(--effect-blur-sm));
-  animation: modalBackdropFadeIn var(--effect-motion-fast) forwards;
+  animation: modalBackdropFadeIn var(--effect-motion-short-2) forwards;
   z-index: 9999;
 }
 
 .backdrop.closing {
-  animation: modalBackdropFadeOut var(--effect-motion-medium) forwards;
+  animation: modalBackdropFadeOut var(--effect-motion-short-3) forwards;
 }
 
 @keyframes modalBackdropFadeIn {
@@ -31,11 +31,11 @@
   flex-direction: column;
   max-height: calc(100vh - 32px);
   overflow: hidden;
-  animation: modalDialogFadeIn var(--effect-motion-fast) forwards;
+  animation: modalDialogFadeIn var(--effect-motion-short-2) forwards;
 }
 
 .backdrop.closing .dialog {
-  animation: modalDialogFadeOut var(--effect-motion-medium) forwards;
+  animation: modalDialogFadeOut var(--effect-motion-short-3) forwards;
 }
 
 @keyframes modalDialogFadeIn {

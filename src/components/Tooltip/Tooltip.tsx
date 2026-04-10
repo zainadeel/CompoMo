@@ -38,7 +38,7 @@ export const Tooltip: React.FC<TooltipProps> = ({
   shortcutKeyPosition = 'end',
   usePortal = true,
 }) => {
-  const hoverDelayMs = getCssTimeMs('--effect-motion-delay-alot', HOVER_DELAY_FALLBACK_MS);
+  const hoverDelayMs = getCssTimeMs('--effect-animation-delay-medium-3', HOVER_DELAY_FALLBACK_MS);
   const resolvedDelay = delay ?? hoverDelayMs;
   const anchorRef = useRef<HTMLElement | null>(null);
   const tooltipRef = useRef<HTMLDivElement>(null);
@@ -172,7 +172,7 @@ export const Tooltip: React.FC<TooltipProps> = ({
 
   const keyHint = shortcutKey ? (
     <div className={styles.keyHint} aria-hidden>
-      <Text style="text-caption-emphasis" as="span" color="primary">{shortcutKey}</Text>
+      <Text variant="text-caption-emphasis" as="span" color="primary">{shortcutKey}</Text>
     </div>
   ) : null;
 
@@ -192,7 +192,7 @@ export const Tooltip: React.FC<TooltipProps> = ({
     >
       <div className={styles.tooltipInner}>
         {shortcutKey && shortcutKeyPosition === 'start' && keyHint}
-        <Text style="text-body-small" as="span" color="primary">{label}</Text>
+        <Text variant="text-body-small" as="span" color="primary">{label}</Text>
         {shortcutKey && shortcutKeyPosition === 'end' && keyHint}
       </div>
     </div>

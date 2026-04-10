@@ -2,13 +2,13 @@
   box-sizing: border-box;
   background-color: var(--color-background-primary);
   border-radius: var(--dimension-radius-125);
-  box-shadow: var(--effect-surface-floating);
+  box-shadow: var(--effect-elevation-elevated-floating);
   display: flex;
   flex-direction: column;
   min-width: 200px;
   max-width: 600px;
   overflow: hidden;
-  animation: menuFadeIn var(--effect-motion-fast) forwards;
+  animation: menuFadeIn var(--effect-motion-short-2) forwards;
   backface-visibility: hidden;
   -webkit-font-smoothing: subpixel-antialiased;
 }
@@ -19,7 +19,7 @@
 }
 
 .menuContainer.closing {
-  animation: menuFadeOut var(--effect-motion-medium) forwards;
+  animation: menuFadeOut var(--effect-motion-short-3) forwards;
 }
 
 @keyframes menuFadeOut {

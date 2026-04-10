@@ -3,11 +3,9 @@ import styles from './Surface.module.css';
 
 /**
  * Semantic intent for colored surfaces.
- * When 'default', use the background prop instead.
- * When semantic, pair with the contrast prop.
+ * Each intent has four contrast levels (faint, medium, bold, strong).
  */
 export type SurfaceIntent =
-  | 'default'
   | 'brand'
   | 'positive'
   | 'negative'
@@ -18,21 +16,24 @@ export type SurfaceIntent =
   | 'walkthrough'
   | 'guide';
 
-/** Background type when intent is 'default'. */
-export type SurfaceBackground = 'primary' | 'secondary' | 'transparent' | 'translucent' | 'shade';
+/** Background type for non-intent surfaces. */
+export type SurfaceBackground = 'primary' | 'secondary' | 'transparent' | 'translucent';
 
 /** Contrast level for semantic intents. */
 export type SurfaceContrast = 'faint' | 'medium' | 'bold' | 'strong';
 
-/** Elevation for depth/shadow effects. */
+/** Elevation for depth/shadow effects. Progressive: none → flat → elevated → floating. */
 export type SurfaceElevation =
   | 'none'
   | 'depressed'
+  | 'depressed-md'
   | 'flat'
   | 'elevated'
   | 'floating'
-  | 'overlayLeft'
-  | 'overlayRight';
+  | 'overlayTop'
+  | 'overlayRight'
+  | 'overlayBottom'
+  | 'overlayLeft';
 
 /** Edge divider border direction. */
 export type SurfaceEdge = 'top' | 'right' | 'bottom' | 'left';
@@ -40,8 +41,8 @@ export type SurfaceEdge = 'top' | 'right' | 'bottom' | 'left';
 /** Corner radius presets. */
 export type SurfaceRadiusPreset = 'none' | 'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl' | 'full';
 
-/** Corner radius — preset or CSS variable escape hatch. */
-export type SurfaceRadius = SurfaceRadiusPreset | `var(--${string})`;
+/** Corner radius — preset, CSS variable, or custom string (e.g. '12px 12px 0 0'). */
+export type SurfaceRadius = SurfaceRadiusPreset | (string & {});
 
 /** HTML elements Surface can render as. */
 export type SurfaceElement =
@@ -58,52 +59,64 @@ export type SurfaceElement =
   | 'td'
   | 'th';
 
-export interface SurfaceProps extends React.HTMLAttributes<HTMLElement> {
+/** Props shared by both surface modes. */
+interface SurfaceBaseProps extends React.HTMLAttributes<HTMLElement> {
   children?: React.ReactNode;
-
-  /** Semantic intent for colored surfaces. Defaults to 'default'. */
-  intent?: SurfaceIntent;
-  /** Background type when intent is 'default'. Defaults to 'transparent'. */
-  background?: SurfaceBackground;
-  /** Contrast level when using a semantic intent. Defaults to 'faint'. */
-  contrast?: SurfaceContrast;
   /** Elevation for depth/shadow effects. Defaults to 'none'. */
   elevation?: SurfaceElevation;
   /** Edge divider border(s). Only applies when elevation is 'none'. */
   edge?: SurfaceEdge | SurfaceEdge[];
   /** Corner radius — preset or CSS variable. */
   radius?: SurfaceRadius;
-
   /** Enable hover/pressed interaction overlay. */
   interactive?: boolean;
   /** Apply selected background state. */
   selected?: boolean;
-  /** Disable the component (dims + disables pointer events). */
-  disabled?: boolean;
-
+  /** Dim and disable pointer events. */
+  inactive?: boolean;
   /** HTML element to render. Defaults to 'div'. */
   as?: SurfaceElement;
-
   /** Button type — only used when as='button'. */
   type?: 'button' | 'submit' | 'reset';
 }
+
+/** Non-intent surface — uses a basic background color. */
+interface SurfaceDefaultProps extends SurfaceBaseProps {
+  /** Background color. Defaults to 'transparent'. */
+  background?: SurfaceBackground;
+  intent?: never;
+  contrast?: never;
+}
+
+/** Intent surface — uses a semantic color with contrast level. */
+interface SurfaceIntentProps extends SurfaceBaseProps {
+  /** Semantic intent color. */
+  intent: SurfaceIntent;
+  /** Contrast level for the intent background. Defaults to 'faint'. */
+  contrast?: SurfaceContrast;
+  background?: never;
+}
+
+export type SurfaceProps = SurfaceDefaultProps | SurfaceIntentProps;
 
 const backgroundClassMap: Record<SurfaceBackground, string> = {
   primary: styles.bgPrimary,
   secondary: styles.bgSecondary,
   transparent: styles.bgTransparent,
   translucent: styles.bgTranslucent,
-  shade: styles.bgShade,
 };
 
 const elevationClassMap: Record<SurfaceElevation, string> = {
   none: styles.elevationNone,
   depressed: styles.elevationDepressed,
+  'depressed-md': styles.elevationDepressedMd,
   flat: styles.elevationFlat,
   elevated: styles.elevationElevated,
   floating: styles.elevationFloating,
-  overlayLeft: styles.elevationOverlayLeft,
+  overlayTop: styles.elevationOverlayTop,
   overlayRight: styles.elevationOverlayRight,
+  overlayBottom: styles.elevationOverlayBottom,
+  overlayLeft: styles.elevationOverlayLeft,
 };
 
 const edgeClassMap: Record<SurfaceEdge, string> = {
@@ -125,28 +138,27 @@ const radiusClassMap: Record<SurfaceRadiusPreset, string> = {
 };
 
 const getIntentContrastClass = (intent: SurfaceIntent, contrast: SurfaceContrast): string => {
-  if (intent === 'default') return '';
   const intentKey = intent.charAt(0).toUpperCase() + intent.slice(1);
   const contrastKey = contrast.charAt(0).toUpperCase() + contrast.slice(1);
   return styles[`intent${intentKey}${contrastKey}`] || '';
 };
 
-const isCustomRadius = (radius: SurfaceRadius): radius is `var(--${string})` =>
-  radius.startsWith('var(--');
+const isPresetRadius = (radius: SurfaceRadius): radius is SurfaceRadiusPreset =>
+  radius in radiusClassMap;
 
 export const Surface = forwardRef<HTMLElement, SurfaceProps>(
   (
     {
       children,
-      intent = 'default',
       background = 'transparent',
+      intent,
       contrast = 'faint',
       elevation = 'none',
       edge,
       radius,
       interactive = false,
       selected = false,
-      disabled = false,
+      inactive = false,
       as: Component = 'div',
       className = '',
       style,
@@ -155,30 +167,26 @@ export const Surface = forwardRef<HTMLElement, SurfaceProps>(
     },
     ref
   ) => {
-    // Shade background forces elevation to 'none'
-    const effectiveElevation =
-      intent === 'default' && background === 'shade' ? 'none' : elevation;
-
     const classes = [
       styles.surface,
       // Background or intent+contrast
-      intent === 'default'
-        ? backgroundClassMap[background]
-        : getIntentContrastClass(intent, contrast),
+      intent
+        ? getIntentContrastClass(intent, contrast)
+        : backgroundClassMap[background],
       // Elevation
-      elevationClassMap[effectiveElevation],
+      elevationClassMap[elevation],
       // Edge(s) — only when elevation is 'none'
-      ...(edge && effectiveElevation === 'none'
+      ...(edge && elevation === 'none'
         ? Array.isArray(edge)
           ? edge.map(e => edgeClassMap[e])
           : [edgeClassMap[edge]]
         : []),
-      // Radius (preset only — custom handled via style)
-      radius && !isCustomRadius(radius) ? radiusClassMap[radius] : '',
+      // Radius (preset only — custom handled via inline style)
+      radius && isPresetRadius(radius) ? radiusClassMap[radius] : '',
       // States
       interactive ? styles.interactive : '',
       selected ? styles.selected : '',
-      disabled ? styles.disabled : '',
+      inactive ? styles.inactive : '',
       className,
     ]
       .filter(Boolean)
@@ -186,17 +194,17 @@ export const Surface = forwardRef<HTMLElement, SurfaceProps>(
 
     const computedStyle: React.CSSProperties = {
       ...style,
-      ...(radius && isCustomRadius(radius) ? { borderRadius: radius } : {}),
+      ...(radius && !isPresetRadius(radius) ? { borderRadius: radius } : {}),
     };
 
     const hasStyle =
-      (radius && isCustomRadius(radius)) || (style && Object.keys(style).length > 0);
+      (radius && !isPresetRadius(radius)) || (style && Object.keys(style).length > 0);
 
     const elementProps = {
       ref,
       className: classes,
       style: hasStyle ? computedStyle : undefined,
-      disabled: Component === 'button' ? disabled : undefined,
+      disabled: Component === 'button' ? inactive : undefined,
       type: Component === 'button' ? type || 'button' : undefined,
       ...rest,
     };

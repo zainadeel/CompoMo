@@ -57,7 +57,7 @@ export const Checkbox = forwardRef<HTMLDivElement, CheckboxProps>(
             {(checked || indeterminate) && <span className={styles.checkmark}>{indeterminate ? '−' : '✓'}</span>}
           </span>
         )}
-        <Text style="text-body-medium" as="span" color="inherit" space="none">
+        <Text variant="text-body-medium" as="span" color="inherit">
           {label}
         </Text>
       </div>

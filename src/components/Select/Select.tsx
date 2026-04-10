@@ -56,12 +56,12 @@ export const Select = forwardRef<HTMLDivElement, SelectProps>(
           selected={isMenuOpen}
           className={styles.selectButton}
           onClick={handleToggle}
-          disabled={disabled}
+          inactive={disabled}
         >
           <Text
-            style="text-body-medium"
+            variant="text-body-medium"
             as="span"
-            lineTruncation="none"
+           
             color={selectedOption ? 'primary' : 'secondary'}
           >
             {selectedLabel}

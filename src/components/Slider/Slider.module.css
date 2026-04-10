@@ -9,7 +9,7 @@
 .trackInner {
   position: absolute; inset: 0; border-radius: inherit;
   background-color: var(--color-background-primary);
-  box-shadow: var(--effect-surface-depressed); pointer-events: none; z-index: 1;
+  box-shadow: var(--effect-elevation-depressed-sm); pointer-events: none; z-index: 1;
 }
 
 .fillTrack { position: absolute; top: var(--dimension-space-025); right: 0; bottom: var(--dimension-space-025); left: 0; z-index: 1; }
@@ -18,9 +18,9 @@
   position: absolute; left: var(--dimension-space-025); top: 0; bottom: 0;
   width: max(0px, calc((var(--slider-pct, 0) / 100) * (100% - var(--dimension-size-150)) - var(--dimension-space-025)));
   background-color: var(--color-background-bold-brand);
-  box-shadow: var(--effect-surface-elevated);
+  box-shadow: var(--effect-elevation-elevated-sm);
   border-radius: var(--dimension-radius-050);
-  transition: opacity var(--effect-motion-fast);
+  transition: opacity var(--effect-motion-short-2);
 }
 
 .trackAtMin .fill { opacity: 0; }
@@ -35,7 +35,7 @@
 .thumb::before {
   content: ''; position: absolute; inset: var(--dimension-space-025);
   background-color: var(--color-background-primary);
-  box-shadow: var(--effect-surface-elevated);
+  box-shadow: var(--effect-elevation-elevated-sm);
   border-radius: var(--dimension-radius-050);
 }
 

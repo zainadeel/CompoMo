@@ -61,7 +61,7 @@ export const Tag = forwardRef<HTMLDivElement, TagProps>(
 
     return (
       <div ref={ref} className={classes} style={style}>
-        <Text style={textVariant as never} wrap="nowrap" color="inherit" space="none">
+        <Text variant={textVariant as never} wrap="nowrap" color="inherit">
           {label}
         </Text>
         {removable && onRemove && (

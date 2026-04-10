@@ -21,7 +21,7 @@ export interface EmptyStateProps {
 export const EmptyState = forwardRef<HTMLDivElement, EmptyStateProps>(
   ({ type = 'no-content', message, className }, ref) => (
     <div ref={ref} className={cn(styles.emptyState, className)}>
-      <Text style="text-body-medium" as="p" color="secondary">
+      <Text variant="text-body-medium" as="p" color="secondary">
         {message || defaultMessages[type]}
       </Text>
     </div>

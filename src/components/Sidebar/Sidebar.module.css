@@ -8,7 +8,7 @@
   position: relative;
   flex-shrink: 0;
   overflow: hidden;
-  transition: width var(--effect-motion-fast);
+  transition: width var(--effect-motion-short-2);
 }
 
 .sidebar.resizing { transition: none; }
@@ -110,7 +110,7 @@
   text-align: left;
   position: relative;
   min-height: var(--dimension-size-400);
-  transition: background-color var(--effect-motion-fast);
+  transition: background-color var(--effect-motion-short-2);
 }
 
 .item::before {
@@ -119,7 +119,7 @@
   inset: 0;
   background-color: transparent;
   border-radius: var(--dimension-radius-075);
-  transition: var(--effect-transition-interaction-background-fast);
+  transition: var(--effect-transition-interaction-background-short-2);
   pointer-events: none;
 }
 

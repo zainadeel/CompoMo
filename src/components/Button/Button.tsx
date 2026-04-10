@@ -134,7 +134,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       >
         {Icon && <Icon size={iconSize} />}
         {label && (
-          <Text style={textStyle as never} as="span" color="inherit" lineTruncation="none" space="none">
+          <Text variant={textStyle as never} as="span" color="inherit">
             {label}
           </Text>
         )}

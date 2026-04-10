@@ -2,11 +2,11 @@ import React, { forwardRef } from 'react';
 import styles from './Text.module.css';
 
 /**
- * Text style options.
- * Each style maps to a TokoMo typography class with predefined font-size, line-height,
+ * Text variant options.
+ * Each variant maps to a TokoMo typography class with predefined font-size, line-height,
  * font-weight, and letter-spacing.
  */
-export type TextStyle =
+export type TextVariant =
   | 'text-display-medium'
   | 'text-display-small'
   | 'text-title-large'
@@ -20,6 +20,9 @@ export type TextStyle =
   | 'text-body-small-emphasis'
   | 'text-caption'
   | 'text-caption-emphasis';
+
+/** @deprecated Use `TextVariant` instead. */
+export type TextStyle = TextVariant;
 
 /**
  * Semantic color tokens for text.
@@ -45,13 +48,12 @@ export type TextColor = TextColorToken | `var(--${string})`;
 export type TextDecoration = 'none' | 'underline' | 'dotted-underline';
 export type TextAlign = 'left' | 'center' | 'right';
 export type LineTruncation = 1 | 2 | 3 | 4 | 5 | 'none';
-export type TextWrap = 'wrap' | 'nowrap';
-export type TextSpacing = 'sm' | 'none';
+export type TextWrap = 'wrap' | 'nowrap' | 'balance' | 'pretty';
 export type TextElement = 'p' | 'span' | 'div' | 'label' | 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6';
 
 export interface TextProps {
-  /** Text style — required. Maps to a TokoMo typography class. */
-  style: TextStyle;
+  /** Typography variant. Maps to a TokoMo typography class. Defaults to 'text-body-medium'. */
+  variant?: TextVariant;
   children: React.ReactNode;
 
   // Appearance
@@ -59,17 +61,12 @@ export interface TextProps {
   decoration?: TextDecoration;
   italic?: boolean;
   align?: TextAlign;
-  /** Horizontal padding. Defaults to 'sm'. */
-  space?: TextSpacing;
 
   // Truncation / wrap
-  /** Max lines before ellipsis. Ignored when wrap is 'nowrap'. Defaults to 1. */
+  /** Max lines before ellipsis. Ignored when wrap is 'nowrap'. Defaults to 'none'. */
   lineTruncation?: LineTruncation;
   /** 'nowrap' = single line, truncates with ellipsis when constrained. */
   wrap?: TextWrap;
-
-  // Selection
-  selectable?: boolean;
 
   // Semantic HTML
   as?: TextElement;
@@ -78,7 +75,7 @@ export interface TextProps {
 
   // Escape hatches
   className?: string;
-  inlineStyle?: React.CSSProperties;
+  style?: React.CSSProperties;
 }
 
 const colorClassMap: Record<TextColorToken, string> = {
@@ -117,44 +114,41 @@ const truncationClassMap: Record<LineTruncation, string> = {
   none: styles.noTruncation,
 };
 
-const spaceClassMap: Record<TextSpacing, string> = {
-  sm: styles.spaceSm,
-  none: styles.spaceNone,
-};
-
 const isCustomColor = (color: TextColor): color is `var(--${string})` =>
   color.startsWith('var(--');
 
 export const Text = forwardRef<HTMLElement, TextProps>(
   (
     {
-      style: textStyle,
+      variant = 'text-body-medium',
       children,
       color,
       decoration,
       italic,
       align,
-      space = 'sm',
-      lineTruncation = 1,
+      lineTruncation = 'none',
       wrap,
-      selectable = false,
       as: Component = 'p',
       id,
       htmlFor,
       className = '',
-      inlineStyle,
+      style,
     },
     ref
   ) => {
+    const wrapClass =
+      wrap === 'nowrap' ? styles.wrapNowrap
+      : wrap === 'balance' ? styles.wrapBalance
+      : wrap === 'pretty' ? styles.wrapPretty
+      : '';
     const truncationClass =
-      wrap === 'nowrap' ? styles.wrapNowrap : truncationClassMap[lineTruncation];
+      wrap === 'nowrap' ? '' : truncationClassMap[lineTruncation];
 
     const classes = [
-      textStyle,
+      variant,
       styles.text,
-      spaceClassMap[space],
+      wrapClass,
       truncationClass,
-      selectable ? styles.selectable : '',
       color && !isCustomColor(color) ? colorClassMap[color] : '',
       decoration ? decorationClassMap[decoration] : '',
       italic ? styles.italic : '',
@@ -165,7 +159,7 @@ export const Text = forwardRef<HTMLElement, TextProps>(
       .join(' ');
 
     const computedStyle: React.CSSProperties = {
-      ...inlineStyle,
+      ...style,
       ...(color && isCustomColor(color) ? { color } : {}),
     };
 
@@ -173,7 +167,6 @@ export const Text = forwardRef<HTMLElement, TextProps>(
       className: classes,
       style: Object.keys(computedStyle).length > 0 ? computedStyle : undefined,
       ...(id ? { id } : {}),
-      ...(selectable ? { 'data-selectable': 'true' } : {}),
       ...(Component === 'label' && htmlFor ? { htmlFor } : {}),
     };
 

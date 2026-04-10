@@ -38,7 +38,7 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
         <div className={styles.errorBoundary}>
           <EmptyState type="no-content" />
           <div className={styles.errorDetails}>
-            <Text style="text-body-small" as="p" color="secondary">
+            <Text variant="text-body-small" as="p" color="secondary">
               Something went wrong. Please refresh the page.
             </Text>
           </div>

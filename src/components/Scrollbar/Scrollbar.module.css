@@ -24,7 +24,7 @@
   pointer-events: none;
   z-index: 10;
   opacity: 0;
-  transition: opacity var(--effect-motion-fast);
+  transition: opacity var(--effect-motion-short-2);
 }
 
 .container[data-show-track='true'] .track {
@@ -39,7 +39,7 @@
   cursor: grab;
   border-radius: 0;
   background-color: var(--color-foreground-quaternary);
-  transition: background-color var(--effect-motion-fast);
+  transition: background-color var(--effect-motion-short-2);
   user-select: none;
 }
 
@@ -52,7 +52,7 @@
   pointer-events: none;
   z-index: 10;
   opacity: 0;
-  transition: opacity var(--effect-motion-fast);
+  transition: opacity var(--effect-motion-short-2);
 }
 
 .container[data-show-track='true'] .trackHorizontal {
@@ -67,7 +67,7 @@
   cursor: grab;
   border-radius: 0;
   background-color: var(--color-foreground-quaternary);
-  transition: background-color var(--effect-motion-fast);
+  transition: background-color var(--effect-motion-short-2);
   user-select: none;
 }
 

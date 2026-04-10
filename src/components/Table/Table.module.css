@@ -70,7 +70,7 @@
   border-bottom: var(--dimension-stroke-width-015) solid var(--color-border-primary);
   min-height: var(--dimension-size-500);
   background-color: var(--color-background-primary);
-  transition: background-color var(--effect-motion-fast);
+  transition: background-color var(--effect-motion-short-2);
 }
 
 .alignRight { justify-content: flex-end; text-align: right; }
@@ -116,7 +116,7 @@
   border: none;
   border-radius: var(--dimension-radius-075);
   cursor: pointer;
-  transition: background-color var(--effect-motion-fast);
+  transition: background-color var(--effect-motion-short-2);
 }
 
 .pageButton:hover:not(:disabled) {

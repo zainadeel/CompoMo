@@ -253,7 +253,7 @@ export const Menu: React.FC<MenuProps> = ({
         >
           {section.header && (
             <div className={styles.sectionHeader}>
-              <Text style="text-body-small-emphasis" as="span" className={styles.sectionLabel}>{section.header}</Text>
+              <Text variant="text-body-small-emphasis" as="span" className={styles.sectionLabel}>{section.header}</Text>
             </div>
           )}
           {section.items.map((item, itemIndex) => renderMenuItem(item, itemIndex))}

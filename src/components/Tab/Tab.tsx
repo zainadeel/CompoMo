@@ -22,7 +22,7 @@ export const Tab = forwardRef<HTMLButtonElement, TabProps>(
       aria-selected={isSelected}
       role="tab"
     >
-      <Text style={isSelected ? 'text-body-medium-emphasis' : 'text-body-medium'} as="span">
+      <Text variant={isSelected ? 'text-body-medium-emphasis' : 'text-body-medium'} as="span">
         {label}
       </Text>
     </button>

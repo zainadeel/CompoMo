@@ -2,6 +2,7 @@
 export { Text } from './components/Text';
 export type {
   TextProps,
+  TextVariant,
   TextStyle,
   TextColor,
   TextColorToken,
@@ -9,7 +10,6 @@ export type {
   TextAlign,
   LineTruncation,
   TextWrap,
-  TextSpacing,
   TextElement,
 } from './components/Text';
 

@@ -49,11 +49,11 @@
 .floatingToast {
   backface-visibility: hidden;
   -webkit-font-smoothing: subpixel-antialiased;
-  animation: toastFadeIn var(--effect-motion-fast) forwards;
+  animation: toastFadeIn var(--effect-motion-short-2) forwards;
 }
 
 .floatingToast.closing {
-  animation: toastFadeOut var(--effect-motion-medium) forwards;
+  animation: toastFadeOut var(--effect-motion-short-3) forwards;
 }
 
 @keyframes toastFadeIn {

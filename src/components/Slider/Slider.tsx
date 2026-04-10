@@ -39,8 +39,8 @@ export const Slider = forwardRef<HTMLDivElement, SliderProps>(
     return (
       <div ref={ref} className={cn(styles.field, className)}>
         <div className={styles.labelRow}>
-          <Text style="text-body-small-emphasis" as="label" htmlFor={id}>{label}</Text>
-          <Text style="text-body-small-emphasis" as="span">{value}</Text>
+          <Text variant="text-body-small-emphasis" as="label" htmlFor={id}>{label}</Text>
+          <Text variant="text-body-small-emphasis" as="span">{value}</Text>
         </div>
         <div
           ref={containerRef}

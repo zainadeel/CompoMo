@@ -128,7 +128,7 @@ export function Table<T>({
                 style={col.minWidth ? { minWidth: typeof col.minWidth === 'number' ? `${col.minWidth}px` : col.minWidth } : undefined}
               >
                 {typeof col.header === 'string' ? (
-                  <Text style="text-body-small-emphasis" as="span" color="secondary">
+                  <Text variant="text-body-small-emphasis" as="span" color="secondary">
                     {col.header}
                   </Text>
                 ) : col.header}
@@ -155,7 +155,7 @@ export function Table<T>({
           {/* Empty state */}
           {isEmpty && (
             <div className={styles.emptyRow} style={{ gridColumn: `1 / -1` }}>
-              <Text style="text-body-medium" as="p" color="secondary">{emptyMessage}</Text>
+              <Text variant="text-body-medium" as="p" color="secondary">{emptyMessage}</Text>
             </div>
           )}
 
@@ -185,7 +185,7 @@ export function Table<T>({
                   >
                     {col.renderCell
                       ? col.renderCell(row, rowIndex)
-                      : <Text style="text-body-medium" as="span" lineTruncation={1}>{String(getColumnValue(col, row) ?? '')}</Text>
+                      : <Text variant="text-body-medium" as="span" lineTruncation={1}>{String(getColumnValue(col, row) ?? '')}</Text>
                     }
                   </div>
                 ))}
@@ -204,9 +204,9 @@ export function Table<T>({
             onClick={() => onPaginationChange(pagination.pageIndex - 1, pagination.pageSize)}
             type="button"
           >
-            <Text style="text-body-small" as="span">Previous</Text>
+            <Text variant="text-body-small" as="span">Previous</Text>
           </button>
-          <Text style="text-body-small" as="span" color="secondary">
+          <Text variant="text-body-small" as="span" color="secondary">
             {`Page ${pagination.pageIndex + 1} of ${totalPages}`}
           </Text>
           <button
@@ -215,7 +215,7 @@ export function Table<T>({
             onClick={() => onPaginationChange(pagination.pageIndex + 1, pagination.pageSize)}
             type="button"
           >
-            <Text style="text-body-small" as="span">Next</Text>
+            <Text variant="text-body-small" as="span">Next</Text>
           </button>
         </div>
       )}

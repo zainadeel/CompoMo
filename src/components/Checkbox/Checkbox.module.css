@@ -7,7 +7,7 @@
   box-sizing: border-box;
   cursor: pointer;
   border-radius: var(--dimension-radius-075);
-  transition: background-color var(--effect-motion-fast);
+  transition: background-color var(--effect-motion-short-2);
 }
 
 .checkbox:hover { background-color: var(--color-interaction-hover); }
@@ -29,7 +29,7 @@
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  transition: all var(--effect-motion-fast);
+  transition: all var(--effect-motion-short-2);
 }
 
 .boxChecked {

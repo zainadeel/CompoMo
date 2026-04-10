@@ -13,7 +13,7 @@ export const Badge: React.FC<BadgeProps> = ({ count, isSelected = false, classNa
   const displayText = count > 9 ? '+' : count.toString();
   return (
     <span className={`${styles.badge} ${className || ''}`} aria-label={`${count} unread`}>
-      <Text style="text-caption-emphasis" as="span" color={isSelected ? 'primary' : 'secondary'} space="none">
+      <Text variant="text-caption-emphasis" as="span" color={isSelected ? 'primary' : 'secondary'}>
         {displayText}
       </Text>
     </span>

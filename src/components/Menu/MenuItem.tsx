@@ -54,7 +54,7 @@ export const MenuItem = forwardRef<HTMLButtonElement, MenuItemProps>(
         className={`${styles.menuItem} ${isSelected ? styles.menuItemSelected : ''} ${isInactive ? styles.menuItemInactive : ''} ${intent === 'negative' ? styles.menuItemNegative : ''} ${labelColor === 'tertiary' ? styles.menuItemLabelTertiary : ''}`}
         onClick={onClick}
         type="button"
-        disabled={isInactive}
+        inactive={isInactive}
       >
         {Icon && (
           <div className={styles.iconPrefix}>
@@ -63,7 +63,7 @@ export const MenuItem = forwardRef<HTMLButtonElement, MenuItemProps>(
         )}
         <div className={styles.content}>
           <Text
-            style={isSelected ? 'text-body-medium-emphasis' : 'text-body-medium'}
+            variant={isSelected ? 'text-body-medium-emphasis' : 'text-body-medium'}
             color={labelColor}
             as="span"
             className={styles.label}
@@ -71,7 +71,7 @@ export const MenuItem = forwardRef<HTMLButtonElement, MenuItemProps>(
             {label}
           </Text>
           {subtext && (
-            <Text style="text-body-small" as="span" className={styles.subtext}>
+            <Text variant="text-body-small" as="span" className={styles.subtext}>
               {subtext}
             </Text>
           )}

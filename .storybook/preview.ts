@@ -1,4 +1,4 @@
-import type { Preview } from '@storybook/react';
+import type { Preview } from '@storybook/react-vite';
 import '@tokomo/tokens';
 import '@tokomo/tokens/reset';
 import '@tokomo/tokens/globals';
@@ -21,11 +21,17 @@ const preview: Preview = {
   },
   initialGlobals: {
     theme: 'light',
+
+    backgrounds: {
+      value: 'light'
+    }
   },
   decorators: [
     (Story, context) => {
       const theme = context.globals.theme || 'light';
-      document.documentElement.setAttribute('data-theme', theme);
+      const html = document.documentElement;
+      html.setAttribute('data-theme', theme);
+
       return Story();
     },
   ],
@@ -35,6 +41,13 @@ const preview: Preview = {
         color: /(background|color)$/i,
         date: /Date$/i,
       },
+    },
+    backgrounds: {
+      options: {
+        light: { name: 'light', value: '#f0f0f0' },
+        dark: { name: 'dark', value: '#1a1a1a' },
+        white: { name: 'white', value: '#ffffff' }
+      }
     },
   },
 };

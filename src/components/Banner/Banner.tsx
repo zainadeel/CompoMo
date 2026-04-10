@@ -39,7 +39,7 @@ export const Banner: React.FC<BannerProps> = ({
   floating = false,
   onDismiss,
 }) => {
-  const toastDurationMs = getCssTimeMs('--effect-motion-delay-toomuch', TOAST_DURATION_FALLBACK_MS);
+  const toastDurationMs = getCssTimeMs('--effect-animation-delay-long-2', TOAST_DURATION_FALLBACK_MS);
   const messageColor = getContentColorVar(intent, contrast);
   const [isClosing, setIsClosing] = useState(false);
   const dismissTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -84,7 +84,7 @@ export const Banner: React.FC<BannerProps> = ({
           </div>
         )}
         <div className={styles.bannerBody}>
-          <Text style="text-body-medium" as="span" className={styles.message} lineTruncation="none">
+          <Text variant="text-body-medium" as="span" className={styles.message}>
             {message}
           </Text>
         </div>

@@ -1,6 +1,7 @@
 export { Text } from './Text';
 export type {
   TextProps,
+  TextVariant,
   TextStyle,
   TextColor,
   TextColorToken,
@@ -8,6 +9,5 @@ export type {
   TextAlign,
   LineTruncation,
   TextWrap,
-  TextSpacing,
   TextElement,
 } from './Text';
