@@ -31,16 +31,25 @@ export type { CardProps, CardElevation, CardRadius } from './components/Card';
 
 // Core Interactive
 export { Button } from './components/Button';
-export type { ButtonProps, ButtonVariant, ButtonIntent, ButtonSize } from './components/Button';
+export type { ButtonProps, ButtonVariant, ButtonElevation, ButtonIntent, ButtonSize, ButtonContrast } from './components/Button';
 
 export { ToggleButton } from './components/ToggleButton';
-export type { ToggleButtonProps, ToggleButtonVariant, ToggleButtonSize } from './components/ToggleButton';
+export type { ToggleButtonProps, ToggleButtonElevation, ToggleButtonSize } from './components/ToggleButton';
+
+export { ButtonGroup } from './components/ButtonGroup';
+export type { ButtonGroupProps } from './components/ButtonGroup';
+
+export { ToggleButtonGroup } from './components/ToggleButtonGroup';
+export type { ToggleButtonGroupProps } from './components/ToggleButtonGroup';
 
 export { Tag } from './components/Tag';
-export type { TagProps, TagIntent, TagContrast, TagStyle, TagSize } from './components/Tag';
+export type { TagProps, TagIntent, TagContrast, TagVariant, TagSize } from './components/Tag';
 
 export { Badge } from './components/Badge';
 export type { BadgeProps } from './components/Badge';
+
+export { Loader } from './components/Loader';
+export type { LoaderProps } from './components/Loader';
 
 export { Toggle } from './components/Toggle';
 export type { ToggleProps } from './components/Toggle';

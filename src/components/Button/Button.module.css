@@ -1,5 +1,5 @@
 /* ==========================================================================
-   Button — unified primary/secondary/tertiary
+   Button — unified primary/secondary
    ========================================================================== */
 
 .button {
@@ -17,6 +17,7 @@
   background: transparent;
   box-sizing: border-box;
   text-decoration: none;
+  user-select: none;
 }
 
 /* Hover/press overlay */
@@ -47,18 +48,17 @@
 
 /* ==========================================================================
    Variant: Primary
-   Bold background, on-bold content, elevated shadow
+   Bold background, on-bold content. Elevation controls shadow.
    ========================================================================== */
 
 .primary {
-  box-shadow: var(--effect-elevation-elevated-sm);
   color: var(--color-foreground-on-bold-background-primary);
 }
 
 .primary:hover::after { background-color: var(--color-interaction-on-bold-background-hover); }
 .primary:active::after { background-color: var(--color-interaction-on-bold-background-pressed); }
 
-/* Primary intent: none — surface colors, no semantic intent */
+/* Primary intent: none — surface colors */
 .primary.intentNone {
   background-color: var(--color-background-primary);
   color: var(--color-foreground-primary);
@@ -66,7 +66,7 @@
 .primary.intentNone:hover::after { background-color: var(--color-interaction-hover); }
 .primary.intentNone:active::after { background-color: var(--color-interaction-pressed); }
 
-/* Primary bold contrast — faint fg on bold bg */
+/* Primary bold contrast */
 .primary.intentBrand    { background-color: var(--color-background-bold-brand);    color: var(--color-foreground-faint-brand); }
 .primary.intentNeutral  { background-color: var(--color-background-bold-neutral);  color: var(--color-foreground-faint-neutral); }
 .primary.intentPositive { background-color: var(--color-background-bold-positive); color: var(--color-foreground-faint-positive); }
@@ -76,46 +76,47 @@
 .primary.intentAi       { background-color: var(--color-background-bold-ai);       color: var(--color-foreground-faint-ai); }
 
 /* Primary medium contrast */
-.primary.contrastMedium.intentBrand { background-color: var(--color-background-medium-brand); color: var(--color-foreground-strong-brand); }
-.primary.contrastMedium.intentNeutral { background-color: var(--color-background-medium-neutral); color: var(--color-foreground-strong-neutral); }
+.primary.contrastMedium.intentBrand    { background-color: var(--color-background-medium-brand);    color: var(--color-foreground-strong-brand); }
+.primary.contrastMedium.intentNeutral  { background-color: var(--color-background-medium-neutral);  color: var(--color-foreground-strong-neutral); }
 .primary.contrastMedium.intentPositive { background-color: var(--color-background-medium-positive); color: var(--color-foreground-strong-positive); }
 .primary.contrastMedium.intentNegative { background-color: var(--color-background-medium-negative); color: var(--color-foreground-strong-negative); }
-.primary.contrastMedium.intentWarning { background-color: var(--color-background-medium-warning); color: var(--color-foreground-strong-warning); }
-.primary.contrastMedium.intentCaution { background-color: var(--color-background-medium-caution); color: var(--color-foreground-strong-caution); }
-.primary.contrastMedium.intentAi { background-color: var(--color-background-medium-ai); color: var(--color-foreground-strong-ai); }
-.primary.contrastMedium:hover::after { background-color: var(--color-interaction-on-medium-background-hover); }
+.primary.contrastMedium.intentWarning  { background-color: var(--color-background-medium-warning);  color: var(--color-foreground-strong-warning); }
+.primary.contrastMedium.intentCaution  { background-color: var(--color-background-medium-caution);  color: var(--color-foreground-strong-caution); }
+.primary.contrastMedium.intentAi       { background-color: var(--color-background-medium-ai);       color: var(--color-foreground-strong-ai); }
+.primary.contrastMedium:hover::after  { background-color: var(--color-interaction-on-medium-background-hover); }
 .primary.contrastMedium:active::after { background-color: var(--color-interaction-on-medium-background-pressed); }
 
 /* Primary strong contrast */
-.primary.contrastStrong.intentBrand { background-color: var(--color-background-strong-brand); color: var(--color-foreground-medium-brand); }
-.primary.contrastStrong.intentNeutral { background-color: var(--color-background-strong-neutral); color: var(--color-foreground-medium-neutral); }
+.primary.contrastStrong.intentBrand    { background-color: var(--color-background-strong-brand);    color: var(--color-foreground-medium-brand); }
+.primary.contrastStrong.intentNeutral  { background-color: var(--color-background-strong-neutral);  color: var(--color-foreground-medium-neutral); }
 .primary.contrastStrong.intentPositive { background-color: var(--color-background-strong-positive); color: var(--color-foreground-medium-positive); }
 .primary.contrastStrong.intentNegative { background-color: var(--color-background-strong-negative); color: var(--color-foreground-medium-negative); }
-.primary.contrastStrong.intentWarning { background-color: var(--color-background-strong-warning); color: var(--color-foreground-medium-warning); }
-.primary.contrastStrong.intentCaution { background-color: var(--color-background-strong-caution); color: var(--color-foreground-medium-caution); }
-.primary.contrastStrong.intentAi { background-color: var(--color-background-strong-ai); color: var(--color-foreground-medium-ai); }
-.primary.contrastStrong:hover::after { background-color: var(--color-interaction-on-strong-background-hover); }
+.primary.contrastStrong.intentWarning  { background-color: var(--color-background-strong-warning);  color: var(--color-foreground-medium-warning); }
+.primary.contrastStrong.intentCaution  { background-color: var(--color-background-strong-caution);  color: var(--color-foreground-medium-caution); }
+.primary.contrastStrong.intentAi       { background-color: var(--color-background-strong-ai);       color: var(--color-foreground-medium-ai); }
+.primary.contrastStrong:hover::after  { background-color: var(--color-interaction-on-strong-background-hover); }
 .primary.contrastStrong:active::after { background-color: var(--color-interaction-on-strong-background-pressed); }
 
 /* Primary faint contrast */
-.primary.contrastFaint.intentBrand { background-color: var(--color-background-faint-brand); color: var(--color-foreground-bold-brand); }
-.primary.contrastFaint.intentNeutral { background-color: var(--color-background-faint-neutral); color: var(--color-foreground-bold-neutral); }
+.primary.contrastFaint.intentBrand    { background-color: var(--color-background-faint-brand);    color: var(--color-foreground-bold-brand); }
+.primary.contrastFaint.intentNeutral  { background-color: var(--color-background-faint-neutral);  color: var(--color-foreground-bold-neutral); }
 .primary.contrastFaint.intentPositive { background-color: var(--color-background-faint-positive); color: var(--color-foreground-bold-positive); }
 .primary.contrastFaint.intentNegative { background-color: var(--color-background-faint-negative); color: var(--color-foreground-bold-negative); }
-.primary.contrastFaint.intentWarning { background-color: var(--color-background-faint-warning); color: var(--color-foreground-bold-warning); }
-.primary.contrastFaint.intentCaution { background-color: var(--color-background-faint-caution); color: var(--color-foreground-bold-caution); }
-.primary.contrastFaint.intentAi { background-color: var(--color-background-faint-ai); color: var(--color-foreground-bold-ai); }
-.primary.contrastFaint:hover::after { background-color: var(--color-interaction-hover); }
+.primary.contrastFaint.intentWarning  { background-color: var(--color-background-faint-warning);  color: var(--color-foreground-bold-warning); }
+.primary.contrastFaint.intentCaution  { background-color: var(--color-background-faint-caution);  color: var(--color-foreground-bold-caution); }
+.primary.contrastFaint.intentAi       { background-color: var(--color-background-faint-ai);       color: var(--color-foreground-bold-ai); }
+.primary.contrastFaint:hover::after  { background-color: var(--color-interaction-hover); }
 .primary.contrastFaint:active::after { background-color: var(--color-interaction-pressed); }
 
 /* ==========================================================================
    Variant: Secondary
-   Elevated border/shadow, transparent background, foreground-primary content
+   Base is ghost (transparent, no border, no shadow).
+   Elevation classes add the chrome — flat=border, elevated=bg+shadow, floating=bg+floating.
    ========================================================================== */
 
 .secondary {
-  box-shadow: var(--effect-elevation-elevated-sm);
   background-color: transparent;
+  color: var(--color-foreground-secondary);
 }
 
 .secondary:hover::after { background-color: var(--color-interaction-hover); }
@@ -131,28 +132,45 @@
 .secondary.intentAi       { color: var(--color-foreground-bold-ai); }
 
 /* ==========================================================================
-   Variant: Tertiary
-   No border/shadow, transparent background, ghost button
+   Elevation
    ========================================================================== */
 
-.tertiary {
-  background-color: transparent;
+/* ── Secondary chrome ───────────────────────────────────────────────── */
+
+/* elevationNone = ghost base — no extra CSS needed */
+
+.secondary.elevationFlat {
+  box-shadow: inset 0 0 0 1px var(--color-border-tertiary);
 }
 
-.tertiary:hover::after { background-color: var(--color-interaction-hover); }
-.tertiary:active::after { background-color: var(--color-interaction-pressed); }
+.secondary.elevationElevated {
+  background-color: var(--color-background-primary);
+  box-shadow: var(--effect-elevation-elevated-sm);
+}
 
-/* Tertiary intent none — secondary fg */
-.tertiary.intentNone { color: var(--color-foreground-secondary); }
+.secondary.elevationFloating {
+  background-color: var(--color-background-primary);
+  box-shadow: var(--effect-elevation-elevated-floating);
+}
 
-/* Tertiary intent — bold fg color */
-.tertiary.intentBrand    { color: var(--color-foreground-bold-brand); }
-.tertiary.intentNeutral  { color: var(--color-foreground-bold-neutral); }
-.tertiary.intentPositive { color: var(--color-foreground-bold-positive); }
-.tertiary.intentNegative { color: var(--color-foreground-bold-negative); }
-.tertiary.intentWarning  { color: var(--color-foreground-bold-warning); }
-.tertiary.intentCaution  { color: var(--color-foreground-bold-caution); }
-.tertiary.intentAi       { color: var(--color-foreground-bold-ai); }
+/* ── Primary shadow + border control ───────────────────────────────── */
+
+/* elevated */
+.primary.elevationElevated { box-shadow: var(--effect-elevation-elevated-sm); }
+
+/* none = no shadow, no border (flat colored button — default for primary) */
+.primary.elevationNone { box-shadow: none; }
+
+/* flat = inset ring against the page background (not the button fill) */
+.primary.elevationFlat { box-shadow: inset 0 0 0 1px var(--color-border-tertiary); }
+
+/* intentNone: also clear the background */
+.primary.intentNone.elevationFlat { background-color: transparent; }
+.primary.intentNone.elevationNone { background-color: transparent; box-shadow: none; }
+
+/* floating = FAB-strength shadow for both variants */
+.primary.elevationFloating   { box-shadow: var(--effect-elevation-elevated-floating) !important; }
+.secondary.elevationFloating { box-shadow: var(--effect-elevation-elevated-floating) !important; }
 
 /* ==========================================================================
    Layout: icon-only, label-only, icon+label, dropdown
@@ -193,16 +211,6 @@
 .rounded.sizeXS.iconOnly { width: var(--dimension-size-200); min-width: var(--dimension-size-200); }
 
 /* ==========================================================================
-   Elevation off
-   Primary: remove shadow. Secondary: swap shadow for border.
-   Tertiary: unaffected (class not applied).
-   ========================================================================== */
-
-.primary.noElevation { box-shadow: none; }
-.primary.intentNone.noElevation { background-color: transparent; border: 1px solid var(--color-border-secondary); }
-.secondary.noElevation { box-shadow: none; border: 1px solid var(--color-border-secondary); }
-
-/* ==========================================================================
    Disabled
    ========================================================================== */
 
@@ -212,16 +220,6 @@
 /* ==========================================================================
    Badge
    ========================================================================== */
-
-/* Label wrapper — horizontal optical balance padding only, no height impact.
-   line-height: 0 kills the inherited strut so the inner span's own
-   line-height determines the line box height. */
-.labelWrap {
-  line-height: 0;
-  padding: 0 var(--dimension-space-025);
-  white-space: nowrap;
-  flex-shrink: 0;
-}
 
 .badge {
   position: absolute;
@@ -242,33 +240,4 @@
 .fullWidth {
   display: flex;
   width: 100%;
-}
-
-/* Label shrinks and truncates when content group doesn't fit — icon/chevron stay adjacent */
-.labelWrapFull {
-  flex-shrink: 1;
-  min-width: 0;
-  overflow: hidden;
-  white-space: nowrap;
-}
-
-.labelWrapFull > span {
-  display: block;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-/* ==========================================================================
-   Loading spinner
-   ========================================================================== */
-
-.spinner {
-  flex-shrink: 0;
-  animation: spin 0.75s linear infinite;
-}
-
-@keyframes spin {
-  from { transform: rotate(0deg); }
-  to   { transform: rotate(360deg); }
 }

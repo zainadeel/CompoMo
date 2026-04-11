@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import React, { useState } from 'react';
 import { ToggleButton } from './ToggleButton';
-import type { ToggleButtonVariant, ToggleButtonSize } from './ToggleButton';
+import type { ToggleButtonElevation, ToggleButtonSize } from './ToggleButton';
 import type { IconComponent } from '@/types/icons';
 
 const PlaceholderIcon: IconComponent = ({ size = 20 }) => (
@@ -11,23 +11,23 @@ const PlaceholderIcon: IconComponent = ({ size = 20 }) => (
 );
 
 const meta: Meta<typeof ToggleButton> = {
-  title: 'Primitives/ToggleButton',
+  title: 'Primitives (Reviewed)/ToggleButton',
   component: ToggleButton,
   args: {
-    label: 'Toggle',
-    variant: 'primary',
-    size: 'md',
-    rounded: false,
-    pressed: false,
-    disabled: false,
+    label:     'Toggle',
+    elevation: 'elevated',
+    size:      'md',
+    rounded:   false,
+    pressed:   false,
+    disabled:  false,
   },
   argTypes: {
-    variant: { control: 'select', options: ['primary', 'secondary'] },
-    size: { control: 'select', options: ['md', 'sm', 'xs'] },
-    label: { control: 'text' },
-    rounded: { control: 'boolean' },
-    pressed: { control: 'boolean' },
-    disabled: { control: 'boolean' },
+    elevation: { control: 'select', options: ['elevated', 'flat', 'none', 'floating'] },
+    size:      { control: 'select', options: ['md', 'sm', 'xs'] },
+    label:     { control: 'text' },
+    rounded:   { control: 'boolean' },
+    pressed:   { control: 'boolean' },
+    disabled:  { control: 'boolean' },
     icon: {
       control: 'boolean',
       mapping: { true: PlaceholderIcon, false: undefined },
@@ -49,12 +49,13 @@ export const Playground: Story = {
 
 // ─── Matrix ───────────────────────────────────────────────────────────────────
 
-const VARIANTS: ToggleButtonVariant[] = ['primary', 'secondary'];
+const ELEVATIONS: ToggleButtonElevation[] = ['elevated', 'flat', 'none', 'floating'];
 const SIZES: ToggleButtonSize[] = ['md', 'sm', 'xs'];
 
 const col: React.CSSProperties = { display: 'flex', flexDirection: 'column', gap: 8, alignItems: 'flex-start' };
 const row: React.CSSProperties = { display: 'flex', gap: 8, alignItems: 'center' };
-const labelStyle = (): React.CSSProperties => ({ fontSize: 10, fontFamily: 'monospace', color: '#888', minWidth: 80, flexShrink: 0 });
+const lbl = (): React.CSSProperties => ({ fontSize: 10, fontFamily: 'monospace', color: '#888', minWidth: 100, flexShrink: 0 });
+const cell = (w = 110): React.CSSProperties => ({ minWidth: w, display: 'flex', justifyContent: 'center' });
 const section = (text: string) => (
   <div style={{ fontSize: 11, fontWeight: 600, letterSpacing: '0.05em', textTransform: 'uppercase', color: '#555', marginTop: 8 }}>
     {text}
@@ -67,21 +68,21 @@ export const Matrix: Story = {
   render: () => (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 0, fontFamily: 'sans-serif' }}>
 
-      {/* ── SECTION 1: Variants × States ── */}
-      {section('Variants × States')}
+      {/* ── Elevation levels × States ── */}
+      {section('Elevation × States')}
       <div style={{ ...col, marginTop: 12 }}>
         <div style={row}>
-          <span style={labelStyle()}></span>
-          {VARIANTS.map(v => (
-            <span key={v} style={{ ...labelStyle(), minWidth: 100, textAlign: 'center' }}>{v}</span>
+          <span style={lbl()}></span>
+          {ELEVATIONS.map(e => (
+            <span key={e} style={{ ...lbl(), textAlign: 'center' }}>{e}</span>
           ))}
         </div>
         {(['unpressed', 'pressed'] as const).map(state => (
           <div key={state} style={row}>
-            <span style={labelStyle()}>{state}</span>
-            {VARIANTS.map(v => (
-              <div key={v} style={{ minWidth: 100, display: 'flex', justifyContent: 'center' }}>
-                <Controlled variant={v} label="Label" pressed={state === 'pressed'} />
+            <span style={lbl()}>{state}</span>
+            {ELEVATIONS.map(e => (
+              <div key={e} style={cell()}>
+                <Controlled elevation={e} label="Label" pressed={state === 'pressed'} />
               </div>
             ))}
           </div>
@@ -90,29 +91,29 @@ export const Matrix: Story = {
 
       {divider}
 
-      {/* ── SECTION 2: Sizes ── */}
-      {section('Sizes')}
+      {/* ── Sizes × Elevations ── */}
+      {section('Sizes × Elevations')}
       <div style={{ ...col, marginTop: 12 }}>
         <div style={row}>
-          <span style={labelStyle()}></span>
-          {VARIANTS.map(v => (
-            <span key={v} style={{ ...labelStyle(), minWidth: 100, textAlign: 'center' }}>{v}</span>
+          <span style={lbl()}></span>
+          {ELEVATIONS.map(e => (
+            <span key={e} style={{ ...lbl(), textAlign: 'center' }}>{e}</span>
           ))}
         </div>
         {SIZES.flatMap(size => ([
-          { key: `${size} label`,     size, iconProp: false, labelProp: true  },
-          { key: `${size} icon`,      size, iconProp: true,  labelProp: false },
-          { key: `${size} icon+label`,size, iconProp: true,  labelProp: true  },
-        ])).map(({ key, size, iconProp, labelProp }) => (
+          { key: `${size} label`,      size, hasIcon: false, hasLabel: true  },
+          { key: `${size} icon`,       size, hasIcon: true,  hasLabel: false },
+          { key: `${size} icon+label`, size, hasIcon: true,  hasLabel: true  },
+        ])).map(({ key, size, hasIcon, hasLabel }) => (
           <div key={key} style={row}>
-            <span style={labelStyle()}>{key}</span>
-            {VARIANTS.map(v => (
-              <div key={v} style={{ minWidth: 100, display: 'flex', justifyContent: 'center' }}>
+            <span style={lbl()}>{key}</span>
+            {ELEVATIONS.map(e => (
+              <div key={e} style={cell()}>
                 <Controlled
-                  variant={v}
+                  elevation={e}
                   size={size}
-                  label={labelProp ? 'Label' : undefined}
-                  icon={iconProp ? PlaceholderIcon : undefined}
+                  label={hasLabel ? 'Label' : undefined}
+                  icon={hasIcon ? PlaceholderIcon : undefined}
                   aria-label="toggle"
                 />
               </div>
@@ -123,25 +124,29 @@ export const Matrix: Story = {
 
       {divider}
 
-      {/* ── SECTION 3: Icon states ── */}
-      {section('Icon states')}
+      {/* ── Rounded ── */}
+      {section('Rounded')}
       <div style={{ ...col, marginTop: 12 }}>
+        <div style={row}>
+          <span style={lbl()}></span>
+          {ELEVATIONS.map(e => (
+            <span key={e} style={{ ...lbl(), textAlign: 'center' }}>{e}</span>
+          ))}
+        </div>
         {([
-          { combo: 'icon only',        iconProp: true,  labelProp: false, roundedProp: false },
-          { combo: 'icon only rounded', iconProp: true,  labelProp: false, roundedProp: true  },
-          { combo: 'icon + label',      iconProp: true,  labelProp: true,  roundedProp: false },
-          { combo: 'label only',        iconProp: false, labelProp: true,  roundedProp: false },
-          { combo: 'label rounded',     iconProp: false, labelProp: true,  roundedProp: true  },
-        ] as const).map(({ combo, iconProp, labelProp, roundedProp }) => (
-          <div key={combo} style={row}>
-            <span style={labelStyle()}>{combo}</span>
-            {VARIANTS.map(v => (
-              <div key={v} style={{ minWidth: 100, display: 'flex', justifyContent: 'center' }}>
+          { key: 'label',      hasIcon: false, hasLabel: true  },
+          { key: 'icon',       hasIcon: true,  hasLabel: false },
+          { key: 'icon+label', hasIcon: true,  hasLabel: true  },
+        ] as const).map(({ key, hasIcon, hasLabel }) => (
+          <div key={key} style={row}>
+            <span style={lbl()}>{key}</span>
+            {ELEVATIONS.map(e => (
+              <div key={e} style={cell()}>
                 <Controlled
-                  variant={v}
-                  label={labelProp ? 'Label' : undefined}
-                  icon={iconProp ? PlaceholderIcon : undefined}
-                  rounded={roundedProp}
+                  elevation={e}
+                  rounded
+                  label={hasLabel ? 'Label' : undefined}
+                  icon={hasIcon ? PlaceholderIcon : undefined}
                   aria-label="toggle"
                 />
               </div>
@@ -152,21 +157,26 @@ export const Matrix: Story = {
 
       {divider}
 
-      {/* ── SECTION 4: Other states ── */}
-      {section('Other states')}
+      {/* ── States ── */}
+      {section('States')}
       <div style={{ ...col, marginTop: 12 }}>
+        <div style={row}>
+          <span style={lbl()}></span>
+          {ELEVATIONS.map(e => (
+            <span key={e} style={{ ...lbl(), textAlign: 'center' }}>{e}</span>
+          ))}
+        </div>
         {([
-          { label: 'default',  props: { pressed: false } },
-          { label: 'pressed',  props: { pressed: true  } },
-          { label: 'disabled', props: { pressed: false, disabled: true } },
-          { label: 'disabled pressed', props: { pressed: true, disabled: true } },
-          { label: 'rounded',  props: { pressed: false, rounded: true } },
-        ] as const).map(({ label: stateLabel, props }) => (
-          <div key={stateLabel} style={row}>
-            <span style={labelStyle()}>{stateLabel}</span>
-            {VARIANTS.map(v => (
-              <div key={v} style={{ minWidth: 100, display: 'flex', justifyContent: 'center' }}>
-                <Controlled variant={v} label="Label" {...(props as object)} />
+          { key: 'default',          pressed: false, disabled: false },
+          { key: 'pressed',          pressed: true,  disabled: false },
+          { key: 'disabled',         pressed: false, disabled: true  },
+          { key: 'disabled+pressed', pressed: true,  disabled: true  },
+        ] as const).map(({ key, pressed, disabled }) => (
+          <div key={key} style={row}>
+            <span style={lbl()}>{key}</span>
+            {ELEVATIONS.map(e => (
+              <div key={e} style={cell()}>
+                <Controlled elevation={e} label="Label" pressed={pressed} disabled={disabled} />
               </div>
             ))}
           </div>
@@ -177,11 +187,15 @@ export const Matrix: Story = {
   ),
 };
 
-export const Variants: Story = {
+// ─── Individual stories ───────────────────────────────────────────────────────
+
+export const ElevationLevels: Story = {
   render: () => (
     <div style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
-      <Controlled variant="primary" label="Primary" />
-      <Controlled variant="secondary" label="Secondary" />
+      <Controlled elevation="elevated" label="Elevated" />
+      <Controlled elevation="flat"     label="Flat" />
+      <Controlled elevation="none"     label="Ghost" />
+      <Controlled elevation="floating" label="Floating" />
     </div>
   ),
 };
@@ -189,8 +203,23 @@ export const Variants: Story = {
 export const Pressed: Story = {
   render: () => (
     <div style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
-      <Controlled variant="primary" label="Primary" pressed />
-      <Controlled variant="secondary" label="Secondary" pressed />
+      <Controlled elevation="elevated" label="Elevated" pressed />
+      <Controlled elevation="flat"     label="Flat"     pressed />
+      <Controlled elevation="none"     label="Ghost"    pressed />
+      <Controlled elevation="floating" label="Floating" pressed />
+    </div>
+  ),
+};
+
+export const Rounded: Story = {
+  render: () => (
+    <div style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
+      <Controlled elevation="elevated" label="Label" rounded />
+      <Controlled elevation="flat"     label="Label" rounded />
+      <Controlled elevation="none"     label="Label" rounded />
+      <Controlled elevation="elevated" icon={PlaceholderIcon} rounded aria-label="Toggle" />
+      <Controlled elevation="flat"     icon={PlaceholderIcon} rounded aria-label="Toggle" />
+      <Controlled elevation="none"     icon={PlaceholderIcon} rounded aria-label="Toggle" />
     </div>
   ),
 };
@@ -198,29 +227,32 @@ export const Pressed: Story = {
 export const IconOnly: Story = {
   render: () => (
     <div style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
-      <Controlled variant="primary" icon={PlaceholderIcon} aria-label="Toggle" />
-      <Controlled variant="secondary" icon={PlaceholderIcon} aria-label="Toggle" />
-      <Controlled variant="primary" icon={PlaceholderIcon} rounded aria-label="Toggle" />
-      <Controlled variant="secondary" icon={PlaceholderIcon} rounded aria-label="Toggle" />
+      <Controlled elevation="elevated" icon={PlaceholderIcon} aria-label="Toggle" />
+      <Controlled elevation="flat"     icon={PlaceholderIcon} aria-label="Toggle" />
+      <Controlled elevation="none"     icon={PlaceholderIcon} aria-label="Toggle" />
+      <Controlled elevation="elevated" icon={PlaceholderIcon} rounded aria-label="Toggle" />
+      <Controlled elevation="none"     icon={PlaceholderIcon} rounded aria-label="Toggle" />
     </div>
   ),
 };
 
-export const Group: Story = {
-  render: () => {
-    const [selected, setSelected] = React.useState<'day' | 'week' | 'month'>('week');
-    return (
-      <div style={{ display: 'flex', gap: 4 }}>
-        {(['day', 'week', 'month'] as const).map(opt => (
-          <ToggleButton
-            key={opt}
-            variant="primary"
-            label={opt.charAt(0).toUpperCase() + opt.slice(1)}
-            pressed={selected === opt}
-            onPressedChange={() => setSelected(opt)}
-          />
-        ))}
-      </div>
-    );
-  },
+export const Disabled: Story = {
+  render: () => (
+    <div style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
+      <Controlled elevation="elevated" label="Elevated" disabled />
+      <Controlled elevation="flat"     label="Flat"     disabled />
+      <Controlled elevation="none"     label="Ghost"    disabled />
+      <Controlled elevation="elevated" label="Pressed"  disabled pressed />
+      <Controlled elevation="none"     label="Pressed"  disabled pressed />
+    </div>
+  ),
+};
+
+export const FAB: Story = {
+  render: () => (
+    <div style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
+      <Controlled elevation="floating" icon={PlaceholderIcon} rounded aria-label="FAB" />
+      <Controlled elevation="floating" icon={PlaceholderIcon} rounded aria-label="FAB" pressed />
+    </div>
+  ),
 };

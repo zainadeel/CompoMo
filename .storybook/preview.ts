@@ -21,17 +21,14 @@ const preview: Preview = {
   },
   initialGlobals: {
     theme: 'light',
-
-    backgrounds: {
-      value: 'light'
-    }
   },
   decorators: [
     (Story, context) => {
       const theme = context.globals.theme || 'light';
-      const html = document.documentElement;
-      html.setAttribute('data-theme', theme);
-
+      document.documentElement.setAttribute('data-theme', theme);
+      // Drive the canvas background from the active theme token so it always
+      // matches — no separate backgrounds toolbar needed.
+      document.body.style.backgroundColor = 'var(--color-background-primary)';
       return Story();
     },
   ],
@@ -42,13 +39,7 @@ const preview: Preview = {
         date: /Date$/i,
       },
     },
-    backgrounds: {
-      options: {
-        light: { name: 'light', value: '#f0f0f0' },
-        dark: { name: 'dark', value: '#1a1a1a' },
-        white: { name: 'white', value: '#ffffff' }
-      }
-    },
+    backgrounds: { disable: true },
   },
 };
 

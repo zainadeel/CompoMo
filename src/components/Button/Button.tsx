@@ -1,13 +1,16 @@
 import React, { forwardRef } from 'react';
 import { cn } from '@/utils/cn';
 import { Text } from '@/components/Text';
+import { LabelWrap } from '@/components/LabelWrap';
+import { Loader } from '@/components/Loader';
 import { ChevronDown } from '@ds-mo/icons';
 import type { IconComponent } from '@/types/icons';
 import styles from './Button.module.css';
 
-export type ButtonVariant = 'primary' | 'secondary' | 'tertiary';
-export type ButtonIntent = 'none' | 'neutral' | 'brand' | 'ai' | 'negative' | 'warning' | 'caution' | 'positive';
-export type ButtonSize = 'xs' | 'sm' | 'md' | 'lg';
+export type ButtonVariant  = 'primary' | 'secondary';
+export type ButtonElevation = 'none' | 'flat' | 'elevated' | 'floating';
+export type ButtonIntent   = 'none' | 'neutral' | 'brand' | 'ai' | 'negative' | 'warning' | 'caution' | 'positive';
+export type ButtonSize     = 'xs' | 'sm' | 'md' | 'lg';
 export type ButtonContrast = 'strong' | 'bold' | 'medium' | 'faint';
 
 export interface ButtonProps {
@@ -35,8 +38,14 @@ export interface ButtonProps {
   dropdown?: boolean;
   /** Badge count. */
   badgeCount?: number;
-  /** Show elevation shadow. When false, secondary gets a border instead. Defaults to true. */
-  elevation?: boolean;
+  /**
+   * Chrome level for secondary; shadow level for primary.
+   *   none     — ghost (transparent, no border, no shadow)
+   *   flat     — border only, transparent bg  [default for secondary]
+   *   elevated — bg-primary + shadow          [default for primary]
+   *   floating — bg-primary + FAB-strength shadow
+   */
+  elevation?: ButtonElevation;
   /** Show loading spinner in place of icon. Prevents interaction. */
   loading?: boolean;
 
@@ -62,28 +71,6 @@ const TEXT_STYLE_MAP: Record<ButtonSize, string> = {
   lg: 'text-body-large-emphasis',
 };
 
-/** Inline spinner placeholder — swap for <Loader> when that component is built. */
-const Spinner = ({ size }: { size: number }) => (
-  <svg
-    width={size}
-    height={size}
-    viewBox="0 0 20 20"
-    fill="none"
-    className={styles.spinner}
-    aria-hidden="true"
-  >
-    <circle
-      cx="10"
-      cy="10"
-      r="7"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeDasharray="44"
-      strokeDashoffset="33"
-    />
-  </svg>
-);
 
 export const Button = forwardRef<HTMLElement, ButtonProps>(
   (
@@ -100,7 +87,7 @@ export const Button = forwardRef<HTMLElement, ButtonProps>(
       contrast = 'bold',
       dropdown = false,
       badgeCount,
-      elevation = true,
+      elevation,
       loading = false,
       onClick,
       onMouseEnter,
@@ -129,6 +116,10 @@ export const Button = forwardRef<HTMLElement, ButtonProps>(
     const iconSize = ICON_SIZE_MAP[size];
     const textStyle = TEXT_STYLE_MAP[size];
 
+    // Derive default elevation per variant: primary→none, secondary→flat
+    const effectiveElevation: ButtonElevation = elevation ?? (variant === 'primary' ? 'none' : 'flat');
+    const elevKey = effectiveElevation.charAt(0).toUpperCase() + effectiveElevation.slice(1);
+
     const classes = cn(
       styles.button,
       styles[variant],
@@ -141,7 +132,7 @@ export const Button = forwardRef<HTMLElement, ButtonProps>(
       isIconAndLabel && styles.iconAndLabel,
       dropdown && styles.dropdown,
       variant === 'primary' && intent !== 'none' && contrast !== 'bold' && styles[`contrast${contrast.charAt(0).toUpperCase() + contrast.slice(1)}`],
-      !elevation && variant !== 'tertiary' && styles.noElevation,
+      styles[`elevation${elevKey}`],
       fullWidth && styles.fullWidth,
       className,
     );
@@ -171,16 +162,16 @@ export const Button = forwardRef<HTMLElement, ButtonProps>(
         {...extraProps}
       >
         {loading ? (
-          <Spinner size={iconSize} />
+          <Loader size={iconSize} />
         ) : (
           Icon && <Icon size={iconSize} />
         )}
         {label && (
-          <span className={cn(styles.labelWrap, fullWidth && styles.labelWrapFull)}>
+          <LabelWrap truncate={fullWidth}>
             <Text variant={textStyle as never} as="span" color="inherit">
               {label}
             </Text>
-          </span>
+          </LabelWrap>
         )}
         {dropdown && <ChevronDown size={iconSize} />}
         {badgeCount != null && badgeCount > 0 && (

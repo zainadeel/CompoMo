@@ -1,15 +1,22 @@
 import React, { forwardRef } from 'react';
 import { cn } from '@/utils/cn';
 import { Text } from '@/components/Text';
+import { LabelWrap } from '@/components/LabelWrap';
 import type { IconComponent } from '@/types/icons';
 import styles from './ToggleButton.module.css';
 
-export type ToggleButtonVariant = 'primary' | 'secondary';
-export type ToggleButtonSize = 'md' | 'sm' | 'xs';
+export type ToggleButtonElevation = 'none' | 'flat' | 'elevated' | 'floating';
+export type ToggleButtonSize      = 'md' | 'sm' | 'xs';
 
 export interface ToggleButtonProps {
-  /** Visual variant. primary = elevated/bordered, secondary = ghost. Defaults to 'primary'. */
-  variant?: ToggleButtonVariant;
+  /**
+   * Chrome level.
+   *   none     — ghost (transparent, no border, no shadow)
+   *   flat     — border only, transparent bg
+   *   elevated — bg-primary + shadow  [default]
+   *   floating — bg-primary + FAB-strength shadow
+   */
+  elevation?: ToggleButtonElevation;
   /** Label text. */
   label?: string;
   /** Leading icon component. */
@@ -39,7 +46,7 @@ const TEXT_STYLE_MAP: Record<ToggleButtonSize, string> = {
 export const ToggleButton = forwardRef<HTMLButtonElement, ToggleButtonProps>(
   (
     {
-      variant = 'primary',
+      elevation = 'elevated',
       label,
       icon: Icon,
       size = 'md',
@@ -61,9 +68,11 @@ export const ToggleButton = forwardRef<HTMLButtonElement, ToggleButtonProps>(
     const iconSize = ICON_SIZE_MAP[size];
     const textStyle = TEXT_STYLE_MAP[size];
 
+    const elevKey = elevation.charAt(0).toUpperCase() + elevation.slice(1);
+
     const classes = cn(
       styles.toggleButton,
-      styles[variant],
+      styles[`elevation${elevKey}`],
       size !== 'md' && styles[`size${size.toUpperCase()}`],
       rounded && styles.rounded,
       disabled && styles.disabled,
@@ -87,11 +96,11 @@ export const ToggleButton = forwardRef<HTMLButtonElement, ToggleButtonProps>(
       >
         {Icon && <Icon size={iconSize} />}
         {label && (
-          <span className={styles.labelWrap}>
+          <LabelWrap>
             <Text variant={textStyle as never} as="span" color="inherit">
               {label}
             </Text>
-          </span>
+          </LabelWrap>
         )}
       </button>
     );
