@@ -5,42 +5,81 @@ import { Toggle } from './Toggle';
 const meta: Meta<typeof Toggle> = {
   title: 'Primitives/Toggle',
   component: Toggle,
-};
-
-export default meta;
-type Story = StoryObj<typeof Toggle>;
-
-export const Default: Story = {
   args: {
     checked: false,
     disabled: false,
     'aria-label': 'Toggle',
   },
-  render: args => {
-    const [checked, setChecked] = useState(args.checked ?? false);
-    return <Toggle {...args} checked={checked} onChange={setChecked} />;
+  argTypes: {
+    checked: { control: 'boolean' },
+    disabled: { control: 'boolean' },
   },
+};
+
+export default meta;
+type Story = StoryObj<typeof Toggle>;
+
+const Controlled = (props: React.ComponentProps<typeof Toggle>) => {
+  const [checked, setChecked] = useState(props.checked ?? false);
+  return <Toggle {...props} checked={checked} onChange={setChecked} />;
+};
+
+export const Playground: Story = {
+  render: (args) => <Controlled {...args} />,
+};
+
+// ─── Matrix ───────────────────────────────────────────────────────────────────
+
+const row: React.CSSProperties = { display: 'flex', gap: 16, alignItems: 'center' };
+const col: React.CSSProperties = { display: 'flex', flexDirection: 'column', gap: 12 };
+const labelStyle: React.CSSProperties = { fontSize: 10, fontFamily: 'monospace', color: '#888', minWidth: 80, flexShrink: 0 };
+
+export const Matrix: Story = {
+  parameters: { layout: 'padded' },
+  render: () => (
+    <div style={{ ...col, fontFamily: 'sans-serif' }}>
+      <div style={row}>
+        <span style={labelStyle}></span>
+        <span style={{ ...labelStyle, textAlign: 'center' }}>off</span>
+        <span style={{ ...labelStyle, textAlign: 'center' }}>on</span>
+      </div>
+      <div style={row}>
+        <span style={labelStyle}>enabled</span>
+        <div style={{ minWidth: 80, display: 'flex', justifyContent: 'center' }}>
+          <Controlled aria-label="Toggle" checked={false} />
+        </div>
+        <div style={{ minWidth: 80, display: 'flex', justifyContent: 'center' }}>
+          <Controlled aria-label="Toggle" checked={true} />
+        </div>
+      </div>
+      <div style={row}>
+        <span style={labelStyle}>disabled</span>
+        <div style={{ minWidth: 80, display: 'flex', justifyContent: 'center' }}>
+          <Toggle aria-label="Toggle" checked={false} disabled onChange={() => {}} />
+        </div>
+        <div style={{ minWidth: 80, display: 'flex', justifyContent: 'center' }}>
+          <Toggle aria-label="Toggle" checked={true} disabled onChange={() => {}} />
+        </div>
+      </div>
+    </div>
+  ),
+};
+
+// ─── Individual stories ───────────────────────────────────────────────────────
+
+export const Default: Story = {
+  render: () => <Controlled aria-label="Toggle" />,
 };
 
 export const Checked: Story = {
-  render: () => {
-    const [checked, setChecked] = useState(true);
-    return <Toggle checked={checked} onChange={setChecked} aria-label="Toggle" />;
-  },
+  render: () => <Controlled aria-label="Toggle" checked />,
 };
 
 export const Disabled: Story = {
-  args: {
-    checked: false,
-    disabled: true,
-    'aria-label': 'Toggle',
-  },
-};
-
-export const DisabledChecked: Story = {
-  args: {
-    checked: true,
-    disabled: true,
-    'aria-label': 'Toggle',
-  },
+  render: () => (
+    <div style={{ display: 'flex', gap: 16, alignItems: 'center' }}>
+      <Toggle aria-label="Off disabled" checked={false} disabled onChange={() => {}} />
+      <Toggle aria-label="On disabled" checked={true} disabled onChange={() => {}} />
+    </div>
+  ),
 };

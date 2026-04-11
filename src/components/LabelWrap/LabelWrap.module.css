@@ -1,0 +1,28 @@
+/* ==========================================================================
+   LabelWrap — internal utility
+   Kills the inherited line-height strut so the component's fixed height
+   is not inflated by body { line-height: 1.5 }, then adds optical
+   horizontal padding around the text.
+   ========================================================================== */
+
+.labelWrap {
+  line-height: 0;
+  padding: 0 var(--dimension-space-025);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+/* Truncation mode — used when parent is full-width and label must ellipsize */
+.truncate {
+  flex-shrink: 1;
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.truncate > span {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
