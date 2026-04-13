@@ -1,5 +1,6 @@
 /* ==========================================================================
-   ToggleButton
+   ToggleButton — hover/pressed via direct background-color + color-mix().
+   No pseudo-element overlays.
    Elevation controls the chrome level:
      elevated — bg-primary + shadow  (default)
      flat     — border only
@@ -21,23 +22,11 @@
   background: transparent;
   box-sizing: border-box;
   user-select: none;
-}
 
-/* Hover/press overlay */
-.toggleButton::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background-color: transparent;
-  border-radius: inherit;
-  transition: var(--effect-transition-interaction-background-instant);
-  pointer-events: none;
-  z-index: 0;
-}
-
-.toggleButton > * {
-  position: relative;
-  z-index: 1;
+  /* Interaction — ghost defaults */
+  --_hover-bg: var(--color-interaction-hover);
+  --_pressed-bg: var(--color-interaction-pressed);
+  --_border: var(--color-border-tertiary);
 }
 
 .toggleButton:focus-visible {
@@ -45,13 +34,42 @@
   outline-offset: var(--dimension-space-025);
 }
 
-.toggleButton:active {
+.toggleButton:hover:not(.inactive) {
+  background-color: var(--_hover-bg);
+}
+
+.toggleButton:active:not(.inactive) {
+  background-color: var(--_pressed-bg);
   transform: scale(var(--dimension-scale-subtle));
 }
 
-/* Shared hover/active overlay — same for all elevation levels */
-.toggleButton:hover::after  { background-color: var(--color-interaction-hover); }
-.toggleButton:active::after { background-color: var(--color-interaction-pressed); }
+/* ==========================================================================
+   Background context — parent surface awareness
+   ========================================================================== */
+
+.onMedium {
+  --_hover-bg: var(--color-interaction-on-medium-background-hover);
+  --_pressed-bg: var(--color-interaction-on-medium-background-pressed);
+  --_border: var(--color-border-on-medium-background-tertiary);
+}
+
+.onBold {
+  --_hover-bg: var(--color-interaction-on-bold-background-hover);
+  --_pressed-bg: var(--color-interaction-on-bold-background-pressed);
+  --_border: var(--color-border-on-bold-background-tertiary);
+}
+
+.onStrong {
+  --_hover-bg: var(--color-interaction-on-strong-background-hover);
+  --_pressed-bg: var(--color-interaction-on-strong-background-pressed);
+  --_border: var(--color-border-on-strong-background-tertiary);
+}
+
+.onAlwaysDark {
+  --_hover-bg: var(--color-interaction-on-bold-background-hover);
+  --_pressed-bg: var(--color-interaction-on-bold-background-pressed);
+  --_border: var(--color-border-on-bold-background-tertiary);
+}
 
 /* ==========================================================================
    Elevation levels
@@ -63,12 +81,14 @@
   background-color: var(--color-background-primary);
   box-shadow: var(--effect-elevation-elevated-sm);
   color: var(--color-foreground-secondary);
+  --_hover-bg: color-mix(in oklch, var(--color-background-primary) 90%, var(--color-foreground-primary));
+  --_pressed-bg: color-mix(in oklch, var(--color-background-primary) 85%, var(--color-foreground-primary));
 }
 
 /* ── Flat: border only, transparent bg ─────────────────────────────────── */
 
 .elevationFlat {
-  box-shadow: inset 0 0 0 1px var(--color-border-tertiary);
+  box-shadow: inset 0 0 0 1px var(--_border);
   color: var(--color-foreground-secondary);
 }
 
@@ -84,6 +104,16 @@
   background-color: var(--color-background-primary);
   box-shadow: var(--effect-elevation-elevated-floating);
   color: var(--color-foreground-secondary);
+  --_hover-bg: color-mix(in oklch, var(--color-background-primary) 90%, var(--color-foreground-primary));
+  --_pressed-bg: color-mix(in oklch, var(--color-background-primary) 85%, var(--color-foreground-primary));
+}
+
+/* ── Fg on bold / always-dark surface ───────────────────────────────────── */
+
+.onBold.elevationNone, .onBold.elevationFlat,
+.onAlwaysDark.elevationNone, .onAlwaysDark.elevationFlat,
+.onStrong.elevationNone, .onStrong.elevationFlat {
+  color: var(--color-foreground-on-bold-background-secondary);
 }
 
 /* ==========================================================================
@@ -134,4 +164,3 @@
    ========================================================================== */
 
 .inactive { opacity: 0.5; cursor: not-allowed; pointer-events: none; }
-.inactive::after { display: none; }

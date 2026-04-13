@@ -1,5 +1,6 @@
 /* ==========================================================================
-   Tag
+   Tag — hover/pressed via direct background-color + color-mix().
+   No pseudo-element overlays.
    ========================================================================== */
 
 .tag {
@@ -10,21 +11,11 @@
   box-sizing: border-box;
   color: var(--color-foreground-primary);
   position: relative;
-}
 
-/* Interaction overlay */
-.tag::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background-color: transparent;
-  border-radius: inherit;
-  transition: var(--effect-transition-interaction-background-instant);
-  pointer-events: none;
-  z-index: 0;
+  /* Interaction — ghost defaults */
+  --_hover-bg: var(--color-interaction-hover);
+  --_pressed-bg: var(--color-interaction-pressed);
 }
-
-.tag > * { position: relative; z-index: 1; }
 
 /* ==========================================================================
    Sizes
@@ -83,6 +74,30 @@
 
 .iconLeftXS  { padding-left:  0; }
 .iconRightXS { padding-right: 0; }
+
+/* ==========================================================================
+   Background context — parent surface awareness
+   ========================================================================== */
+
+.onMedium {
+  --_hover-bg: var(--color-interaction-on-medium-background-hover);
+  --_pressed-bg: var(--color-interaction-on-medium-background-pressed);
+}
+
+.onBold {
+  --_hover-bg: var(--color-interaction-on-bold-background-hover);
+  --_pressed-bg: var(--color-interaction-on-bold-background-pressed);
+}
+
+.onStrong {
+  --_hover-bg: var(--color-interaction-on-strong-background-hover);
+  --_pressed-bg: var(--color-interaction-on-strong-background-pressed);
+}
+
+.onAlwaysDark {
+  --_hover-bg: var(--color-interaction-on-bold-background-hover);
+  --_pressed-bg: var(--color-interaction-on-bold-background-pressed);
+}
 
 /* ==========================================================================
    Elevation
@@ -194,8 +209,8 @@
   outline: none;
 }
 
-.interactive:hover::after  { background-color: var(--color-interaction-hover); }
-.interactive:active::after { background-color: var(--color-interaction-pressed); }
+.interactive:hover  { background-color: var(--_hover-bg); }
+.interactive:active { background-color: var(--_pressed-bg); }
 
 .interactive:focus-visible {
   outline: var(--dimension-stroke-width-025) solid var(--color-interaction-focus);
@@ -214,7 +229,7 @@
 }
 
 /* ==========================================================================
-   Remove button
+   Remove button — keeps ::before overlay for its own isolated hit area
    ========================================================================== */
 
 .removable { gap: var(--dimension-space-025); }

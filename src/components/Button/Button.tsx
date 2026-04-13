@@ -12,6 +12,7 @@ export type ButtonElevation = 'none' | 'flat' | 'elevated' | 'floating';
 export type ButtonIntent   = 'none' | 'neutral' | 'brand' | 'ai' | 'negative' | 'warning' | 'caution' | 'positive';
 export type ButtonSize     = 'xs' | 'sm' | 'md' | 'lg';
 export type ButtonContrast = 'strong' | 'bold' | 'medium' | 'faint';
+export type ButtonBackground = 'faint' | 'medium' | 'bold' | 'strong' | 'always-dark';
 
 export interface ButtonProps {
   /** Polymorphic element type. Defaults to 'button'. */
@@ -34,6 +35,16 @@ export interface ButtonProps {
   width?: React.CSSProperties['width'];
   /** Contrast level (primary variant only). Defaults to 'bold'. */
   contrast?: ButtonContrast;
+  /**
+   * Parent surface context. Adjusts hover tokens and secondary fg colors
+   * for buttons placed on colored backgrounds.
+   *   faint      — default, no adjustment
+   *   medium     — use on-medium-background interaction tokens
+   *   bold       — use on-bold-background interaction + inverted fg
+   *   strong     — use on-strong-background interaction + inverted fg
+   *   always-dark — dark surface (no theme flip), on-bold-background tokens
+   */
+  background?: ButtonBackground;
   /** Show trailing ChevronDown dropdown indicator. */
   dropdown?: boolean;
   /** Badge count. */
@@ -85,6 +96,7 @@ export const Button = forwardRef<HTMLElement, ButtonProps>(
       fullWidth = false,
       width,
       contrast = 'bold',
+      background,
       dropdown = false,
       badgeCount,
       elevation,
@@ -133,6 +145,10 @@ export const Button = forwardRef<HTMLElement, ButtonProps>(
       dropdown && styles.dropdown,
       variant === 'primary' && intent !== 'none' && contrast !== 'bold' && styles[`contrast${contrast.charAt(0).toUpperCase() + contrast.slice(1)}`],
       styles[`elevation${elevKey}`],
+      background && background !== 'faint' && styles[
+        background === 'always-dark' ? 'onAlwaysDark'
+          : `on${background.charAt(0).toUpperCase() + background.slice(1)}`
+      ],
       fullWidth && styles.fullWidth,
       className,
     );

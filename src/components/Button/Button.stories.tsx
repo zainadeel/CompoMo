@@ -1,7 +1,8 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import React from 'react';
 import { Button } from './Button';
-import type { ButtonVariant, ButtonElevation, ButtonIntent, ButtonContrast, ButtonSize } from './Button';
+import { Surface } from '@/components/Surface';
+import type { ButtonVariant, ButtonElevation, ButtonIntent, ButtonContrast, ButtonSize, ButtonBackground } from './Button';
 import type { IconComponent } from '@/types/icons';
 
 /** Placeholder icon component for stories (no real icon dependency). */
@@ -38,6 +39,7 @@ const meta: Meta<typeof Button> = {
     inactive:  { control: 'boolean' },
     loading:   { control: 'boolean' },
     dropdown:  { control: 'boolean' },
+    background: { control: 'select', options: ['faint', 'medium', 'bold', 'strong', 'always-dark'] },
     fullWidth: { control: 'boolean' },
     badgeCount:{ control: 'number' },
     width:     { control: 'text' },
@@ -399,6 +401,59 @@ export const AsLink: Story = {
       <Button as="a" href="#" variant="primary" label="Link button" />
       <Button as="a" href="#" variant="secondary" label="Link button" />
       <Button as="a" href="#" variant="secondary" elevation="none" label="Link button" />
+    </div>
+  ),
+};
+
+// ─── Background Context ──────────────────────────────────────────────────────
+
+const BG_CONTEXTS: { bg: ButtonBackground; intent: 'brand'; contrast: 'faint' | 'medium' | 'bold' | 'strong' }[] = [
+  { bg: 'faint',  intent: 'brand', contrast: 'faint'  },
+  { bg: 'medium', intent: 'brand', contrast: 'medium' },
+  { bg: 'bold',   intent: 'brand', contrast: 'bold'   },
+  { bg: 'strong', intent: 'brand', contrast: 'strong' },
+];
+
+export const BackgroundContext: Story = {
+  parameters: { layout: 'padded' },
+  render: () => (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 24, fontFamily: 'sans-serif' }}>
+      <div style={{ fontSize: 11, fontWeight: 600, letterSpacing: '0.05em', textTransform: 'uppercase', color: '#555' }}>
+        Secondary + ghost buttons on colored surfaces — hover to test interaction
+      </div>
+
+      {BG_CONTEXTS.map(({ bg, intent, contrast }) => (
+        <Surface key={bg} intent={intent} contrast={contrast} radius="md" style={{ padding: 20 }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+            <span style={{ fontSize: 10, fontFamily: 'monospace', opacity: 0.7 }}>
+              background="{bg}" — {contrast} {intent}
+            </span>
+            <div style={{ display: 'flex', gap: 8, alignItems: 'center', flexWrap: 'wrap' }}>
+              <Button variant="secondary" elevation="flat" label="Flat" background={bg} />
+              <Button variant="secondary" elevation="none" label="Ghost" background={bg} />
+              <Button variant="secondary" elevation="flat" intent="brand" label="Brand" background={bg} />
+              <Button variant="secondary" elevation="none" intent="brand" label="Brand ghost" background={bg} />
+              <Button variant="secondary" elevation="flat" icon={PlaceholderIcon} label="Icon" background={bg} />
+              <Button variant="primary" intent="none" label="Primary none" background={bg} />
+            </div>
+          </div>
+        </Surface>
+      ))}
+
+      {/* Always-dark surface */}
+      <div style={{ background: '#1a1a2e', borderRadius: 8, padding: 20 }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+          <span style={{ fontSize: 10, fontFamily: 'monospace', color: 'rgba(255,255,255,0.5)' }}>
+            background="always-dark" — custom dark surface
+          </span>
+          <div style={{ display: 'flex', gap: 8, alignItems: 'center', flexWrap: 'wrap' }}>
+            <Button variant="secondary" elevation="flat" label="Flat" background="always-dark" />
+            <Button variant="secondary" elevation="none" label="Ghost" background="always-dark" />
+            <Button variant="secondary" elevation="flat" intent="brand" label="Brand" background="always-dark" />
+            <Button variant="secondary" elevation="none" intent="negative" label="Negative" background="always-dark" />
+          </div>
+        </div>
+      </div>
     </div>
   ),
 };

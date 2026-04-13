@@ -1,7 +1,8 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import React, { useState } from 'react';
 import { Tag } from './Tag';
-import type { TagIntent, TagContrast, TagElevation, TagSize } from './Tag';
+import { Surface } from '@/components/Surface';
+import type { TagIntent, TagContrast, TagElevation, TagSize, TagBackground } from './Tag';
 import type { IconComponent } from '@/types/icons';
 
 const PlaceholderIcon: IconComponent = ({ size = 16 }) => (
@@ -353,6 +354,46 @@ export const Inactive: Story = {
       <Tag label="Inactive"         intent="brand" inactive />
       <Tag label="Inactive remove"  intent="brand" inactive removable onRemove={() => {}} />
       <Tag label="Inactive flat"    intent="brand" inactive elevation="flat" />
+    </div>
+  ),
+};
+
+// ─── Background Context ──────────────────────────────────────────────────────
+
+const TAG_BG_CONTEXTS: { bg: TagBackground; contrast: 'faint' | 'medium' | 'bold' | 'strong' }[] = [
+  { bg: 'faint',  contrast: 'faint'  },
+  { bg: 'medium', contrast: 'medium' },
+  { bg: 'bold',   contrast: 'bold'   },
+  { bg: 'strong', contrast: 'strong' },
+];
+
+export const BackgroundContext: Story = {
+  parameters: { layout: 'padded' },
+  render: () => (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
+      {TAG_BG_CONTEXTS.map(({ bg, contrast }) => (
+        <Surface key={bg} intent="neutral" contrast={contrast} radius="md" style={{ padding: 20 }}>
+          <span style={{ fontSize: 10, fontFamily: 'monospace', opacity: 0.7, display: 'block', marginBottom: 12 }}>
+            background="{bg}" — interactive tags, hover to test
+          </span>
+          <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', alignItems: 'center' }}>
+            <Tag label="Brand"    intent="brand"    background={bg} onClick={() => {}} />
+            <Tag label="Neutral"  intent="neutral"  background={bg} onClick={() => {}} />
+            <Tag label="Negative" intent="negative" background={bg} onClick={() => {}} />
+            <Tag label="With Icon" intent="brand"   background={bg} onClick={() => {}} icon={PlaceholderIcon} />
+            <Tag label="Removable" intent="brand"   background={bg} removable onRemove={() => {}} />
+          </div>
+        </Surface>
+      ))}
+      <div style={{ background: '#1a1a2e', borderRadius: 8, padding: 20 }}>
+        <span style={{ fontSize: 10, fontFamily: 'monospace', color: 'rgba(255,255,255,0.5)', display: 'block', marginBottom: 12 }}>
+          background="always-dark"
+        </span>
+        <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', alignItems: 'center' }}>
+          <Tag label="Brand"   intent="brand"   background="always-dark" onClick={() => {}} />
+          <Tag label="Neutral" intent="neutral" background="always-dark" onClick={() => {}} />
+        </div>
+      </div>
     </div>
   ),
 };

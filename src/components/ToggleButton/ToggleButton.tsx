@@ -5,8 +5,9 @@ import { LabelWrap } from '@/components/LabelWrap';
 import type { IconComponent } from '@/types/icons';
 import styles from './ToggleButton.module.css';
 
-export type ToggleButtonElevation = 'none' | 'flat' | 'elevated' | 'floating';
-export type ToggleButtonSize      = 'md' | 'sm' | 'xs';
+export type ToggleButtonElevation  = 'none' | 'flat' | 'elevated' | 'floating';
+export type ToggleButtonSize       = 'md' | 'sm' | 'xs';
+export type ToggleButtonBackground = 'faint' | 'medium' | 'bold' | 'strong' | 'always-dark';
 
 export interface ToggleButtonProps {
   /**
@@ -25,6 +26,8 @@ export interface ToggleButtonProps {
   size?: ToggleButtonSize;
   /** Pill shape. */
   rounded?: boolean;
+  /** Parent surface context. Adjusts hover tokens for toggle buttons on colored backgrounds. */
+  background?: ToggleButtonBackground;
   /** Controlled pressed state. */
   pressed: boolean;
   /** Called when pressed state changes. */
@@ -51,6 +54,7 @@ export const ToggleButton = forwardRef<HTMLButtonElement, ToggleButtonProps>(
       icon: Icon,
       size = 'md',
       rounded = false,
+      background,
       pressed,
       onPressedChange,
       inactive = false,
@@ -79,6 +83,10 @@ export const ToggleButton = forwardRef<HTMLButtonElement, ToggleButtonProps>(
       isIconOnly && styles.iconOnly,
       isLabelOnly && styles.labelOnly,
       isIconAndLabel && styles.iconAndLabel,
+      background && background !== 'faint' && styles[
+        background === 'always-dark' ? 'onAlwaysDark'
+          : `on${background.charAt(0).toUpperCase() + background.slice(1)}`
+      ],
       pressed && styles.pressed,
       className,
     );

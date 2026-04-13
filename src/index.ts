@@ -31,10 +31,10 @@ export type { CardProps, CardElevation, CardRadius } from './components/Card';
 
 // Core Interactive
 export { Button } from './components/Button';
-export type { ButtonProps, ButtonVariant, ButtonElevation, ButtonIntent, ButtonSize, ButtonContrast } from './components/Button';
+export type { ButtonProps, ButtonVariant, ButtonElevation, ButtonIntent, ButtonSize, ButtonContrast, ButtonBackground } from './components/Button';
 
 export { ToggleButton } from './components/ToggleButton';
-export type { ToggleButtonProps, ToggleButtonElevation, ToggleButtonSize } from './components/ToggleButton';
+export type { ToggleButtonProps, ToggleButtonElevation, ToggleButtonSize, ToggleButtonBackground } from './components/ToggleButton';
 
 export { ButtonGroup } from './components/ButtonGroup';
 export type { ButtonGroupProps } from './components/ButtonGroup';
@@ -43,7 +43,7 @@ export { ToggleButtonGroup } from './components/ToggleButtonGroup';
 export type { ToggleButtonGroupProps } from './components/ToggleButtonGroup';
 
 export { Tag } from './components/Tag';
-export type { TagProps, TagIntent, TagContrast, TagElevation, TagSize } from './components/Tag';
+export type { TagProps, TagIntent, TagContrast, TagElevation, TagSize, TagBackground } from './components/Tag';
 
 export { Badge } from './components/Badge';
 export type { BadgeProps } from './components/Badge';
@@ -100,7 +100,7 @@ export type {
 } from './components/Table';
 
 export { Tab } from './components/Tab';
-export type { TabProps } from './components/Tab';
+export type { TabProps, TabBackground } from './components/Tab';
 
 export { EmptyState } from './components/EmptyState';
 export type { EmptyStateProps, EmptyStateType } from './components/EmptyState';

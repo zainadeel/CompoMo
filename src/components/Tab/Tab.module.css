@@ -1,3 +1,7 @@
+/* ==========================================================================
+   Tab — hover/pressed via direct background-color, no pseudo-element overlay.
+   ========================================================================== */
+
 .tab {
   display: flex;
   align-items: center;
@@ -11,26 +15,51 @@
   color: var(--color-foreground-secondary);
   position: relative;
   will-change: color;
-  transition: color var(--effect-motion-short-2);
+  transition: color var(--effect-motion-short-2),
+              background-color var(--effect-motion-short-2);
   flex-shrink: 0;
   height: var(--dimension-size-400);
   box-sizing: border-box;
+
+  /* Interaction — ghost defaults */
+  --_hover-bg: var(--color-interaction-hover);
+  --_pressed-bg: var(--color-interaction-pressed);
 }
 
-.tab::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background-color: transparent;
-  border-radius: var(--dimension-radius-075);
-  transition: var(--effect-transition-interaction-background-short-2);
-  pointer-events: none;
-  z-index: 0;
-}
-
-.tab > * { position: relative; z-index: 1; }
-
-.tab:hover::before { background-color: var(--color-interaction-hover); }
-.tab:active::before { background-color: var(--color-interaction-pressed); transition: var(--effect-transition-interaction-background-instant); }
+.tab:hover { background-color: var(--_hover-bg); }
+.tab:active { background-color: var(--_pressed-bg); }
 
 .tabSelected { color: var(--color-foreground-primary); }
+
+/* ==========================================================================
+   Background context — parent surface awareness
+   ========================================================================== */
+
+.onMedium {
+  --_hover-bg: var(--color-interaction-on-medium-background-hover);
+  --_pressed-bg: var(--color-interaction-on-medium-background-pressed);
+}
+
+.onBold {
+  --_hover-bg: var(--color-interaction-on-bold-background-hover);
+  --_pressed-bg: var(--color-interaction-on-bold-background-pressed);
+  color: var(--color-foreground-on-bold-background-secondary);
+}
+
+.onBold.tabSelected { color: var(--color-foreground-on-bold-background-primary); }
+
+.onStrong {
+  --_hover-bg: var(--color-interaction-on-strong-background-hover);
+  --_pressed-bg: var(--color-interaction-on-strong-background-pressed);
+  color: var(--color-foreground-on-bold-background-secondary);
+}
+
+.onStrong.tabSelected { color: var(--color-foreground-on-bold-background-primary); }
+
+.onAlwaysDark {
+  --_hover-bg: var(--color-interaction-on-bold-background-hover);
+  --_pressed-bg: var(--color-interaction-on-bold-background-pressed);
+  color: var(--color-foreground-on-bold-background-secondary);
+}
+
+.onAlwaysDark.tabSelected { color: var(--color-foreground-on-bold-background-primary); }

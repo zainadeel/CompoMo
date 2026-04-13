@@ -6,4 +6,5 @@ export type {
   ButtonIntent,
   ButtonSize,
   ButtonContrast,
+  ButtonBackground,
 } from './Button';

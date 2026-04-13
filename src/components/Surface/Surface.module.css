@@ -1,6 +1,7 @@
 /**
  * Surface — lean container primitive.
  * Backgrounds, elevation, edges, radius, and interactive states.
+ * Hover/pressed via direct background-color + color-mix(). No pseudo-element overlays.
  */
 
 .surface {
@@ -165,42 +166,25 @@
 .radiusFull { border-radius: var(--dimension-radius-half); }
 
 /* ==========================================================================
-   Interactive States
-   Stack: bg → selected ::before → hover/press ::after
+   Interactive States — direct background-color, no pseudo-elements
    ========================================================================== */
 
 .interactive {
   cursor: pointer;
   transition: transform var(--effect-motion-short-2);
+
+  /* Interaction — ghost defaults */
+  --_hover-bg: var(--color-interaction-hover);
+  --_pressed-bg: var(--color-interaction-pressed);
 }
 
-.interactive::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background-color: transparent;
-  border-radius: inherit;
-  transition: var(--effect-transition-interaction-background-instant);
-  pointer-events: none;
-  z-index: 0;
-}
-
-.interactive > * {
-  position: relative;
-  z-index: 1;
-}
-
-.interactive:hover::after {
-  background-color: var(--color-interaction-hover);
+.interactive:hover {
+  background-color: var(--_hover-bg);
 }
 
 .interactive:active {
+  background-color: var(--_pressed-bg);
   transform: scale(var(--dimension-scale-subtle));
-}
-
-.interactive:active::after {
-  background-color: var(--color-interaction-pressed);
-  transition: var(--effect-transition-interaction-background-instant);
 }
 
 .interactive:focus-visible {
@@ -209,7 +193,7 @@
 }
 
 /* ==========================================================================
-   Selected State (layer 2)
+   Selected State — persistent overlay on any background via ::before
    ========================================================================== */
 
 .selected::before {
@@ -235,8 +219,4 @@
   opacity: 0.5;
   cursor: not-allowed;
   pointer-events: none;
-}
-
-.inactive::after {
-  display: none;
 }

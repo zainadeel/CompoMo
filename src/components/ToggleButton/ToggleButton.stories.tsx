@@ -1,7 +1,8 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import React, { useState } from 'react';
 import { ToggleButton } from './ToggleButton';
-import type { ToggleButtonElevation, ToggleButtonSize } from './ToggleButton';
+import { Surface } from '@/components/Surface';
+import type { ToggleButtonElevation, ToggleButtonSize, ToggleButtonBackground } from './ToggleButton';
 import type { IconComponent } from '@/types/icons';
 
 const PlaceholderIcon: IconComponent = ({ size = 20 }) => (
@@ -253,6 +254,46 @@ export const FAB: Story = {
     <div style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
       <Controlled elevation="floating" icon={PlaceholderIcon} rounded aria-label="FAB" />
       <Controlled elevation="floating" icon={PlaceholderIcon} rounded aria-label="FAB" pressed />
+    </div>
+  ),
+};
+
+// ─── Background Context ──────────────────────────────────────────────────────
+
+const TB_BG_CONTEXTS: { bg: ToggleButtonBackground; contrast: 'faint' | 'medium' | 'bold' | 'strong' }[] = [
+  { bg: 'faint',  contrast: 'faint'  },
+  { bg: 'medium', contrast: 'medium' },
+  { bg: 'bold',   contrast: 'bold'   },
+  { bg: 'strong', contrast: 'strong' },
+];
+
+export const BackgroundContext: Story = {
+  parameters: { layout: 'padded' },
+  render: () => (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
+      {TB_BG_CONTEXTS.map(({ bg, contrast }) => (
+        <Surface key={bg} intent="brand" contrast={contrast} radius="md" style={{ padding: 20 }}>
+          <span style={{ fontSize: 10, fontFamily: 'monospace', opacity: 0.7, display: 'block', marginBottom: 12 }}>
+            background="{bg}" — hover to test interaction
+          </span>
+          <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+            <Controlled elevation="none" label="Ghost" background={bg} />
+            <Controlled elevation="flat" label="Flat" background={bg} />
+            <Controlled elevation="none" icon={PlaceholderIcon} aria-label="Toggle" background={bg} />
+            <Controlled elevation="flat" icon={PlaceholderIcon} label="Icon+Label" background={bg} />
+          </div>
+        </Surface>
+      ))}
+      <div style={{ background: '#1a1a2e', borderRadius: 8, padding: 20 }}>
+        <span style={{ fontSize: 10, fontFamily: 'monospace', color: 'rgba(255,255,255,0.5)', display: 'block', marginBottom: 12 }}>
+          background="always-dark"
+        </span>
+        <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+          <Controlled elevation="none" label="Ghost" background="always-dark" />
+          <Controlled elevation="flat" label="Flat" background="always-dark" />
+          <Controlled elevation="none" icon={PlaceholderIcon} aria-label="Toggle" background="always-dark" />
+        </div>
+      </div>
     </div>
   ),
 };

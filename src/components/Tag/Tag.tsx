@@ -6,10 +6,11 @@ import { CrossUI } from '@ds-mo/icons';
 import type { IconComponent } from '@/types/icons';
 import styles from './Tag.module.css';
 
-export type TagIntent    = 'neutral' | 'brand' | 'ai' | 'negative' | 'warning' | 'caution' | 'positive';
-export type TagContrast  = 'strong' | 'bold' | 'medium' | 'faint';
-export type TagElevation = 'none' | 'flat' | 'elevated';
-export type TagSize      = 'md' | 'sm' | 'xs';
+export type TagIntent      = 'neutral' | 'brand' | 'ai' | 'negative' | 'warning' | 'caution' | 'positive';
+export type TagContrast    = 'strong' | 'bold' | 'medium' | 'faint';
+export type TagElevation   = 'none' | 'flat' | 'elevated';
+export type TagSize        = 'md' | 'sm' | 'xs';
+export type TagBackground  = 'faint' | 'medium' | 'bold' | 'strong' | 'always-dark';
 
 export interface TagProps {
   label: string;
@@ -32,6 +33,8 @@ export interface TagProps {
   removeIcon?: IconComponent;
   maxWidth?: string | number;
   inactive?: boolean;
+  /** Parent surface context. Adjusts hover tokens for tags on colored backgrounds. */
+  background?: TagBackground;
   /** Makes the tag clickable. Pair with pressed/onPressedChange for filter-chip behaviour. */
   onClick?: () => void;
   pressed?: boolean;
@@ -62,6 +65,7 @@ export const Tag = forwardRef<HTMLDivElement, TagProps>(
       removeIcon: RemoveIcon,
       maxWidth,
       inactive  = false,
+      background,
       onClick,
       pressed,
       onPressedChange,
@@ -91,6 +95,10 @@ export const Tag = forwardRef<HTMLDivElement, TagProps>(
       hasRemove && (styles as Record<string, string>)[`iconRight${sizeKey}`],
       removable  && styles.removable,
       isInteractive && styles.interactive,
+      background && background !== 'faint' && styles[
+        background === 'always-dark' ? 'onAlwaysDark'
+          : `on${background.charAt(0).toUpperCase() + background.slice(1)}`
+      ],
       inactive   && styles.inactive,
       pressed    && styles.pressed,
       className,
