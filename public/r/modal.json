@@ -1,0 +1,93 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "modal",
+  "title": "Modal",
+  "description": "Dialog overlay with portal rendering, escape-to-close, backdrop click, focus management, and entry/exit animations.",
+  "type": "registry:ui",
+  "meta": {
+    "library": "@compomo/ui",
+    "distribution": "npm",
+    "storybook": "https://zainadeel.github.io/CompoMo/?path=/story/modal",
+    "consumption": {
+      "install": "npm install @compomo/ui @ds-mo/tokens",
+      "cssSetup": "Import tokens CSS at your app entry point: import '@ds-mo/tokens/css';\nThis provides all var(--color-*), var(--dimension-*), var(--effect-*), and var(--typography-*) custom properties.\nFor dark mode, set data-theme=\"dark\" on <html>.",
+      "import": "import { Modal } from '@compomo/ui';",
+      "cssImport": "import '@compomo/ui/css';",
+      "typeImport": "import type { ModalProps, ModalWidth } from '@compomo/ui';",
+      "internalDependencies": [
+        {
+          "component": "Surface",
+          "note": "Used internally by Modal. No action needed — it's bundled in @compomo/ui."
+        },
+        {
+          "component": "Text",
+          "note": "Used internally by Modal. No action needed — it's bundled in @compomo/ui."
+        }
+      ],
+      "peerDependencies": {
+        "required": [
+          "react >=17",
+          "react-dom >=17",
+          "@ds-mo/tokens >=0.1.0"
+        ],
+        "optional": []
+      }
+    },
+    "props": {
+      "isOpen": {
+        "type": "boolean",
+        "required": true
+      },
+      "onClose": {
+        "type": "() => void",
+        "required": true
+      },
+      "title": {
+        "type": "string",
+        "required": true
+      },
+      "children": {
+        "type": "React.ReactNode",
+        "required": true
+      },
+      "subtitle": {
+        "type": "React.ReactNode"
+      },
+      "footer": {
+        "type": "React.ReactNode"
+      },
+      "width": {
+        "type": "'sm' | 'md' | 'lg' | string",
+        "default": "'md'",
+        "description": "sm=400px, md=560px, lg=720px, or custom CSS value."
+      }
+    },
+    "exports": [
+      "Modal"
+    ],
+    "types": [
+      "ModalProps",
+      "ModalWidth"
+    ]
+  },
+  "dependencies": [
+    "@compomo/ui",
+    "@ds-mo/tokens"
+  ],
+  "registryDependencies": [
+    "surface",
+    "text"
+  ],
+  "files": [
+    {
+      "path": "src/components/Modal/Modal.module.css",
+      "content": ".backdrop {\n  position: fixed;\n  inset: 0;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  padding: var(--dimension-space-200);\n  background-color: var(--color-background-shade);\n  backdrop-filter: blur(var(--effect-blur-sm));\n  -webkit-backdrop-filter: blur(var(--effect-blur-sm));\n  animation: modalBackdropFadeIn var(--effect-motion-short-2) forwards;\n  z-index: 9999;\n}\n\n.backdrop.closing {\n  animation: modalBackdropFadeOut var(--effect-motion-short-3) forwards;\n}\n\n@keyframes modalBackdropFadeIn {\n  from { opacity: 0; }\n  to { opacity: 1; }\n}\n\n@keyframes modalBackdropFadeOut {\n  from { opacity: 1; }\n  to { opacity: 0; }\n}\n\n.dialog {\n  display: flex;\n  flex-direction: column;\n  max-height: calc(100vh - 32px);\n  overflow: hidden;\n  animation: modalDialogFadeIn var(--effect-motion-short-2) forwards;\n}\n\n.backdrop.closing .dialog {\n  animation: modalDialogFadeOut var(--effect-motion-short-3) forwards;\n}\n\n@keyframes modalDialogFadeIn {\n  from { opacity: 0; }\n  to { opacity: 1; }\n}\n\n@keyframes modalDialogFadeOut {\n  from { opacity: 1; }\n  to { opacity: 0; }\n}\n\n.header {\n  padding: var(--dimension-space-200) var(--dimension-space-200) var(--dimension-space-100) var(--dimension-space-200);\n}\n\n.subtitle {\n  margin-top: var(--dimension-space-100);\n  text-wrap: balance;\n}\n\n.body {\n  padding: var(--dimension-space-100) var(--dimension-space-200);\n  overflow-y: auto;\n}\n\n.footer {\n  padding: var(--dimension-space-100) var(--dimension-space-200) var(--dimension-space-200) var(--dimension-space-200);\n}\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/Modal/Modal.tsx",
+      "content": "import React, { useEffect, useId, useMemo, useRef, useState } from 'react';\nimport { createPortal } from 'react-dom';\nimport { Surface } from '@/components/Surface';\nimport { Text } from '@/components/Text';\nimport styles from './Modal.module.css';\n\nexport type ModalWidth = 'sm' | 'md' | 'lg';\n\nconst WIDTH_MAP: Record<ModalWidth, string> = {\n  sm: 'var(--dimension-modal-width-sm, 400px)',\n  md: 'var(--dimension-modal-width-md, 560px)',\n  lg: 'var(--dimension-modal-width-lg, 720px)',\n};\n\nconst CLOSE_ANIMATION_MS = 220;\n\nexport interface ModalProps {\n  isOpen: boolean;\n  onClose: () => void;\n  title: string;\n  subtitle?: React.ReactNode;\n  children: React.ReactNode;\n  footer?: React.ReactNode;\n  width?: ModalWidth | string;\n  bodyClassName?: string;\n}\n\nexport const Modal: React.FC<ModalProps> = ({\n  isOpen,\n  onClose,\n  title,\n  subtitle,\n  children,\n  footer,\n  width = 'md',\n  bodyClassName,\n}) => {\n  const dialogRef = useRef<HTMLDivElement>(null);\n  const titleId = useId();\n  const [isClosing, setIsClosing] = useState(false);\n  const [shouldRender, setShouldRender] = useState(isOpen);\n\n  const resolvedWidth = useMemo(() => {\n    if (width === 'sm' || width === 'md' || width === 'lg') {\n      return WIDTH_MAP[width];\n    }\n    return width;\n  }, [width]);\n\n  useEffect(() => {\n    if (isOpen) {\n      setShouldRender(true);\n      setIsClosing(false);\n    } else if (shouldRender) {\n      setIsClosing(true);\n      const timer = setTimeout(() => {\n        setShouldRender(false);\n        setIsClosing(false);\n      }, CLOSE_ANIMATION_MS);\n      return () => clearTimeout(timer);\n    }\n  }, [isOpen, shouldRender]);\n\n  useEffect(() => {\n    if (!isOpen) return;\n    const handleEscape = (e: KeyboardEvent) => {\n      if (e.key === 'Escape') onClose();\n    };\n    document.addEventListener('keydown', handleEscape);\n    return () => document.removeEventListener('keydown', handleEscape);\n  }, [isOpen, onClose]);\n\n  useEffect(() => {\n    if (!isOpen || !shouldRender) return;\n    const id = requestAnimationFrame(() => {\n      dialogRef.current?.focus();\n    });\n    return () => cancelAnimationFrame(id);\n  }, [isOpen, shouldRender]);\n\n  if (!shouldRender) return null;\n\n  return createPortal(\n    <div\n      className={`${styles.backdrop} ${isClosing ? styles.closing : ''}`}\n      onMouseDown={(e) => {\n        if (e.target === e.currentTarget) onClose();\n      }}\n    >\n      <Surface\n        ref={dialogRef}\n        background=\"primary\"\n        elevation=\"floating\"\n        radius=\"var(--dimension-radius-275, 22px)\"\n        className={styles.dialog}\n        style={{ width: `min(${resolvedWidth}, calc(100vw - 32px))` }}\n        role=\"dialog\"\n        aria-modal=\"true\"\n        aria-labelledby={titleId}\n        tabIndex={-1}\n      >\n        <div className={styles.header}>\n          <Text id={titleId} as=\"h2\" variant=\"text-title-small\">\n            {title}\n          </Text>\n          {subtitle != null && (\n            <div className={styles.subtitle}>{subtitle}</div>\n          )}\n        </div>\n        <div className={`${styles.body} ${bodyClassName ?? ''}`.trim()}>\n          {children}\n        </div>\n        {footer != null && (\n          <div className={styles.footer}>{footer}</div>\n        )}\n      </Surface>\n    </div>,\n    document.body\n  );\n};\n\nModal.displayName = 'Modal';\n",
+      "type": "registry:ui"
+    }
+  ]
+}

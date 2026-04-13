@@ -1,0 +1,85 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "radio",
+  "title": "RadioGroup",
+  "description": "Radio selection group with vertical/horizontal layout, per-option inactive, and keyboard navigation.",
+  "type": "registry:ui",
+  "meta": {
+    "library": "@compomo/ui",
+    "distribution": "npm",
+    "storybook": "https://zainadeel.github.io/CompoMo/?path=/story/radio",
+    "consumption": {
+      "install": "npm install @compomo/ui @ds-mo/tokens",
+      "cssSetup": "Import tokens CSS at your app entry point: import '@ds-mo/tokens/css';\nThis provides all var(--color-*), var(--dimension-*), var(--effect-*), and var(--typography-*) custom properties.\nFor dark mode, set data-theme=\"dark\" on <html>.",
+      "import": "import { RadioGroup, RadioItem } from '@compomo/ui';",
+      "cssImport": "import '@compomo/ui/css';",
+      "typeImport": "import type { RadioGroupProps, RadioItemProps, RadioOption } from '@compomo/ui';",
+      "internalDependencies": [
+        {
+          "component": "Text",
+          "note": "Used internally by RadioGroup. No action needed — it's bundled in @compomo/ui."
+        }
+      ],
+      "peerDependencies": {
+        "required": [
+          "react >=17",
+          "react-dom >=17",
+          "@ds-mo/tokens >=0.1.0"
+        ],
+        "optional": []
+      }
+    },
+    "props": {
+      "value": {
+        "type": "string",
+        "required": true
+      },
+      "onChange": {
+        "type": "(value: string) => void",
+        "required": true
+      },
+      "options": {
+        "type": "RadioOption[]",
+        "required": true
+      },
+      "direction": {
+        "type": "'vertical' | 'horizontal'",
+        "default": "'vertical'"
+      },
+      "inactive": {
+        "type": "boolean"
+      },
+      "aria-label": {
+        "type": "string"
+      }
+    },
+    "exports": [
+      "RadioGroup",
+      "RadioItem"
+    ],
+    "types": [
+      "RadioGroupProps",
+      "RadioItemProps",
+      "RadioOption"
+    ]
+  },
+  "dependencies": [
+    "@compomo/ui",
+    "@ds-mo/tokens"
+  ],
+  "registryDependencies": [
+    "text"
+  ],
+  "files": [
+    {
+      "path": "src/components/Radio/Radio.module.css",
+      "content": ".group {\n  display: flex;\n  flex-direction: column;\n  gap: var(--dimension-space-025);\n}\n\n.horizontal {\n  flex-direction: row;\n  gap: var(--dimension-space-100);\n}\n\n/* ─── Radio item ────────────────────────────────────────────────────────────── */\n\n.radio {\n  display: flex;\n  align-items: center;\n  gap: var(--dimension-space-050);\n  padding: var(--dimension-space-075);\n  height: var(--dimension-size-400);\n  box-sizing: border-box;\n  cursor: pointer;\n  user-select: none;\n  border-radius: var(--dimension-radius-075);\n  transition: background-color var(--effect-motion-short-2);\n}\n\n.radio:hover { background-color: var(--color-interaction-hover); }\n.radio:active { background-color: var(--color-interaction-pressed); }\n\n.inactive {\n  cursor: not-allowed;\n  opacity: 0.5;\n  pointer-events: none;\n}\n\n/* ─── Circle indicator ──────────────────────────────────────────────────────── */\n\n.circle {\n  width: 20px;\n  height: 20px;\n  border: 1.5px solid var(--color-foreground-secondary);\n  border-radius: var(--dimension-radius-half);\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  flex-shrink: 0;\n  transition: all var(--effect-motion-short-2);\n  box-sizing: border-box;\n}\n\n.circleChecked {\n  border-color: var(--color-foreground-primary);\n}\n\n.dot {\n  width: 10px;\n  height: 10px;\n  border-radius: var(--dimension-radius-half);\n  background-color: var(--color-foreground-primary);\n}\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/Radio/Radio.tsx",
+      "content": "import React, { forwardRef } from 'react';\nimport { cn } from '@/utils/cn';\nimport { Text } from '@/components/Text';\nimport styles from './Radio.module.css';\n\nexport interface RadioOption {\n  label: string;\n  value: string;\n  inactive?: boolean;\n}\n\nexport interface RadioGroupProps {\n  /** Currently selected value. */\n  value: string;\n  /** Called when selection changes. */\n  onChange: (value: string) => void;\n  /** Radio options to render. */\n  options: RadioOption[];\n  /** Group label for accessibility. */\n  'aria-label'?: string;\n  /** Layout direction. */\n  direction?: 'vertical' | 'horizontal';\n  /** Disables the entire group. */\n  inactive?: boolean;\n  className?: string;\n}\n\nexport const RadioGroup = forwardRef<HTMLDivElement, RadioGroupProps>(\n  (\n    {\n      value,\n      onChange,\n      options,\n      'aria-label': ariaLabel,\n      direction = 'vertical',\n      inactive = false,\n      className,\n    },\n    ref\n  ) => (\n    <div\n      ref={ref}\n      role=\"radiogroup\"\n      aria-label={ariaLabel}\n      className={cn(\n        styles.group,\n        direction === 'horizontal' && styles.horizontal,\n        className\n      )}\n    >\n      {options.map(opt => (\n        <RadioItem\n          key={opt.value}\n          label={opt.label}\n          checked={value === opt.value}\n          inactive={inactive || opt.inactive}\n          onChange={() => onChange(opt.value)}\n        />\n      ))}\n    </div>\n  )\n);\n\nRadioGroup.displayName = 'RadioGroup';\n\n/* ─── Individual Radio Item ─────────────────────────────────────────────────── */\n\nexport interface RadioItemProps {\n  label: string;\n  checked?: boolean;\n  onChange?: () => void;\n  inactive?: boolean;\n  className?: string;\n}\n\nexport const RadioItem = forwardRef<HTMLDivElement, RadioItemProps>(\n  ({ label, checked = false, onChange, inactive = false, className }, ref) => {\n    const handleClick = () => {\n      if (!inactive && !checked) onChange?.();\n    };\n\n    return (\n      <div\n        ref={ref}\n        role=\"radio\"\n        aria-checked={checked}\n        tabIndex={inactive ? -1 : 0}\n        className={cn(styles.radio, inactive && styles.inactive, className)}\n        onClick={handleClick}\n        onKeyDown={e => {\n          if (e.key === ' ' || e.key === 'Enter') {\n            e.preventDefault();\n            handleClick();\n          }\n        }}\n      >\n        <span className={cn(styles.circle, checked && styles.circleChecked)}>\n          {checked && <span className={styles.dot} />}\n        </span>\n        <Text variant=\"text-body-medium\" as=\"span\" color=\"inherit\">\n          {label}\n        </Text>\n      </div>\n    );\n  }\n);\n\nRadioItem.displayName = 'RadioItem';\n",
+      "type": "registry:ui"
+    }
+  ]
+}

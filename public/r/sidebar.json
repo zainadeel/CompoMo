@@ -1,0 +1,105 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "sidebar",
+  "title": "Sidebar",
+  "description": "Resizable navigation sidebar with drag handle, snap-to-collapse, mobile mode, and nested sections/items.",
+  "type": "registry:ui",
+  "meta": {
+    "library": "@compomo/ui",
+    "distribution": "npm",
+    "storybook": "https://zainadeel.github.io/CompoMo/?path=/story/sidebar",
+    "consumption": {
+      "install": "npm install @compomo/ui @ds-mo/tokens",
+      "cssSetup": "Import tokens CSS at your app entry point: import '@ds-mo/tokens/css';\nThis provides all var(--color-*), var(--dimension-*), var(--effect-*), and var(--typography-*) custom properties.\nFor dark mode, set data-theme=\"dark\" on <html>.",
+      "import": "import { Sidebar, SidebarSection, SidebarItem } from '@compomo/ui';",
+      "cssImport": "import '@compomo/ui/css';",
+      "typeImport": "import type { SidebarProps, SidebarWidth, SidebarSectionProps, SidebarItemProps } from '@compomo/ui';",
+      "internalDependencies": [
+        {
+          "component": "Text",
+          "note": "Used internally by Sidebar. No action needed — it's bundled in @compomo/ui."
+        },
+        {
+          "component": "Surface",
+          "note": "Used internally by Sidebar. No action needed — it's bundled in @compomo/ui."
+        }
+      ],
+      "peerDependencies": {
+        "required": [
+          "react >=17",
+          "react-dom >=17",
+          "@ds-mo/tokens >=0.1.0"
+        ],
+        "optional": []
+      }
+    },
+    "props": {
+      "children": {
+        "type": "React.ReactNode",
+        "required": true
+      },
+      "isCollapsed": {
+        "type": "boolean",
+        "default": "false"
+      },
+      "onToggle": {
+        "type": "() => void"
+      },
+      "width": {
+        "type": "'mini' | 'default' | number",
+        "default": "'default'"
+      },
+      "resizable": {
+        "type": "boolean",
+        "default": "true"
+      },
+      "footer": {
+        "type": "React.ReactNode"
+      },
+      "isMobile": {
+        "type": "boolean"
+      }
+    },
+    "exports": [
+      "Sidebar",
+      "SidebarSection",
+      "SidebarItem"
+    ],
+    "types": [
+      "SidebarProps",
+      "SidebarWidth",
+      "SidebarSectionProps",
+      "SidebarItemProps"
+    ]
+  },
+  "dependencies": [
+    "@compomo/ui",
+    "@ds-mo/tokens"
+  ],
+  "registryDependencies": [
+    "text",
+    "surface"
+  ],
+  "files": [
+    {
+      "path": "src/components/Sidebar/Sidebar.tsx",
+      "content": "import React, { forwardRef, useRef, useCallback, useEffect, useState } from 'react';\nimport { cn } from '@/utils/cn';\nimport styles from './Sidebar.module.css';\n\nexport type SidebarWidth = 'mini' | 'default' | number;\n\nexport interface SidebarProps {\n  children: React.ReactNode;\n  isCollapsed?: boolean;\n  onToggle?: () => void;\n  width?: SidebarWidth;\n  onWidthChange?: (width: SidebarWidth) => void;\n  resizable?: boolean;\n  footer?: React.ReactNode;\n  className?: string;\n  isMobile?: boolean;\n}\n\nconst MINI_WIDTH = 56;\nconst DEFAULT_WIDTH = 240;\nconst MIN_DRAG_WIDTH = 180;\nconst SNAP_THRESHOLD = 140;\n\nexport const Sidebar = forwardRef<HTMLElement, SidebarProps>(\n  ({\n    children,\n    isCollapsed = false,\n    onToggle,\n    width = 'default',\n    onWidthChange,\n    resizable = true,\n    footer,\n    className,\n    isMobile = false,\n  }, ref) => {\n    const internalRef = useRef<HTMLElement>(null);\n    const sidebarRef = (ref as React.RefObject<HTMLElement>) || internalRef;\n    const [isResizing, setIsResizing] = useState(false);\n\n    const isMini = width === 'mini';\n    const resolvedWidth = width === 'mini' ? MINI_WIDTH : width === 'default' ? DEFAULT_WIDTH : width;\n\n    const handleMouseDown = useCallback((e: React.MouseEvent) => {\n      if (!resizable || !onWidthChange) return;\n      e.preventDefault();\n      setIsResizing(true);\n      const startX = e.clientX;\n\n      const handleMouseMove = (e: MouseEvent) => {\n        const newWidth = e.clientX;\n        if (newWidth < SNAP_THRESHOLD) {\n          onWidthChange('mini');\n        } else if (newWidth < MIN_DRAG_WIDTH) {\n          onWidthChange('default');\n        } else {\n          onWidthChange(newWidth);\n        }\n      };\n\n      const handleMouseUp = () => {\n        setIsResizing(false);\n        document.removeEventListener('mousemove', handleMouseMove);\n        document.removeEventListener('mouseup', handleMouseUp);\n        document.body.style.cursor = '';\n        document.body.style.userSelect = '';\n      };\n\n      document.body.style.cursor = 'col-resize';\n      document.body.style.userSelect = 'none';\n      document.addEventListener('mousemove', handleMouseMove);\n      document.addEventListener('mouseup', handleMouseUp);\n    }, [resizable, onWidthChange]);\n\n    // Close sidebar on Escape (mobile)\n    useEffect(() => {\n      if (!isMobile || isCollapsed) return;\n      const handleEscape = (e: KeyboardEvent) => {\n        if (e.key === 'Escape') onToggle?.();\n      };\n      document.addEventListener('keydown', handleEscape);\n      return () => document.removeEventListener('keydown', handleEscape);\n    }, [isMobile, isCollapsed, onToggle]);\n\n    if (isCollapsed && !isMobile) return null;\n\n    return (\n      <>\n        {/* Mobile backdrop */}\n        {isMobile && !isCollapsed && (\n          <div className={styles.backdrop} onClick={onToggle} aria-hidden />\n        )}\n        <aside\n          ref={sidebarRef}\n          className={cn(\n            styles.sidebar,\n            isMini && styles.mini,\n            isMobile && styles.mobile,\n            isCollapsed && styles.collapsed,\n            isResizing && styles.resizing,\n            className\n          )}\n          style={{ width: isCollapsed ? 0 : resolvedWidth }}\n          role=\"navigation\"\n          aria-label=\"Sidebar\"\n        >\n          <div className={styles.content}>\n            {children}\n          </div>\n          {footer && (\n            <div className={styles.footer}>\n              {footer}\n            </div>\n          )}\n          {resizable && !isMobile && (\n            <div\n              className={styles.resizeHandle}\n              onMouseDown={handleMouseDown}\n              role=\"separator\"\n              aria-orientation=\"vertical\"\n              aria-label=\"Resize sidebar\"\n            />\n          )}\n        </aside>\n      </>\n    );\n  }\n);\n\nSidebar.displayName = 'Sidebar';\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/Sidebar/Sidebar.module.css",
+      "content": "/* Sidebar */\n.sidebar {\n  display: flex;\n  flex-direction: column;\n  height: 100%;\n  background-color: var(--color-background-secondary);\n  border-right: var(--dimension-stroke-width-015) solid var(--color-border-primary);\n  position: relative;\n  flex-shrink: 0;\n  overflow: hidden;\n  transition: width var(--effect-motion-short-2);\n}\n\n.sidebar.resizing { transition: none; }\n\n.sidebar.collapsed { width: 0 !important; border-right: none; }\n\n.sidebar.mobile {\n  position: fixed;\n  top: 0;\n  left: 0;\n  bottom: 0;\n  z-index: 9997;\n}\n\n.sidebar.mini .itemLabel { display: none; }\n.sidebar.mini .itemBadge { display: none; }\n.sidebar.mini .sectionHeader { display: none; }\n\n.backdrop {\n  position: fixed;\n  inset: 0;\n  background-color: var(--color-background-shade);\n  z-index: 9996;\n}\n\n.content {\n  flex: 1;\n  overflow-y: auto;\n  overflow-x: hidden;\n  padding: var(--dimension-space-050);\n  scrollbar-width: none;\n}\n\n.content::-webkit-scrollbar { display: none; }\n\n.footer {\n  flex-shrink: 0;\n  padding: var(--dimension-space-050);\n  border-top: var(--dimension-stroke-width-015) solid var(--color-border-primary);\n}\n\n/* Resize Handle */\n.resizeHandle {\n  position: absolute;\n  top: 0;\n  right: -3px;\n  bottom: 0;\n  width: 6px;\n  cursor: col-resize;\n  z-index: 10;\n}\n\n.resizeHandle:hover {\n  background-color: var(--color-border-brand);\n  opacity: 0.5;\n}\n\n/* Sections */\n.section {\n  display: flex;\n  flex-direction: column;\n}\n\n.section + .section {\n  margin-top: var(--dimension-space-050);\n  padding-top: var(--dimension-space-050);\n  border-top: var(--dimension-stroke-width-015) solid var(--color-border-primary);\n}\n\n.sectionHeader {\n  padding: var(--dimension-space-050) var(--dimension-space-075);\n  user-select: none;\n}\n\n.sectionHeaderClickable { cursor: pointer; }\n\n.sectionItems {\n  display: flex;\n  flex-direction: column;\n  gap: var(--dimension-space-025);\n}\n\n/* Items */\n.itemWrapper {\n  display: flex;\n  flex-direction: column;\n}\n\n.item {\n  display: flex;\n  align-items: center;\n  gap: var(--dimension-space-075);\n  padding: var(--dimension-space-075);\n  background-color: transparent;\n  border: none;\n  border-radius: var(--dimension-radius-075);\n  cursor: pointer;\n  width: 100%;\n  text-align: left;\n  position: relative;\n  min-height: var(--dimension-size-400);\n  transition: background-color var(--effect-motion-short-2);\n}\n\n.item::before {\n  content: '';\n  position: absolute;\n  inset: 0;\n  background-color: transparent;\n  border-radius: var(--dimension-radius-075);\n  transition: var(--effect-transition-interaction-background-short-2);\n  pointer-events: none;\n}\n\n.item:hover::before { background-color: var(--color-interaction-hover); }\n.item:active::before { background-color: var(--color-interaction-pressed); }\n\n.itemSelected { background-color: var(--color-background-faint-brand); }\n.itemSelected::before { display: none; }\n\n.itemDisabled { opacity: 0.5; cursor: not-allowed; pointer-events: none; }\n\n.itemIcon {\n  flex-shrink: 0;\n  display: flex;\n  align-items: center;\n  color: var(--color-foreground-secondary);\n}\n\n.itemSelected .itemIcon { color: var(--color-foreground-primary); }\n\n.itemLabel {\n  flex: 1;\n  min-width: 0;\n}\n\n.itemBadge {\n  flex-shrink: 0;\n  display: flex;\n  align-items: center;\n}\n\n/* Sub-items */\n.subItems {\n  display: flex;\n  flex-direction: column;\n  padding-left: var(--dimension-space-300);\n  gap: var(--dimension-space-025);\n}\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/Sidebar/SidebarItem.tsx",
+      "content": "import React, { forwardRef } from 'react';\nimport { cn } from '@/utils/cn';\nimport { Text } from '@/components/Text';\nimport type { IconComponent } from '@/types';\nimport styles from './Sidebar.module.css';\n\nexport interface SidebarItemProps {\n  label: string;\n  icon?: IconComponent;\n  isSelected?: boolean;\n  isDisabled?: boolean;\n  onClick?: () => void;\n  badge?: React.ReactNode;\n  children?: React.ReactNode;\n  className?: string;\n}\n\nexport const SidebarItem = forwardRef<HTMLButtonElement, SidebarItemProps>(\n  ({ label, icon: Icon, isSelected = false, isDisabled = false, onClick, badge, children, className }, ref) => (\n    <div className={cn(styles.itemWrapper, className)}>\n      <button\n        ref={ref}\n        className={cn(\n          styles.item,\n          isSelected && styles.itemSelected,\n          isDisabled && styles.itemDisabled\n        )}\n        onClick={onClick}\n        disabled={isDisabled}\n        type=\"button\"\n        aria-current={isSelected ? 'page' : undefined}\n      >\n        {Icon && (\n          <span className={styles.itemIcon}>\n            <Icon size={20} />\n          </span>\n        )}\n        <Text\n          variant={isSelected ? 'text-body-medium-emphasis' : 'text-body-medium'}\n          as=\"span\"\n          className={styles.itemLabel}\n          lineTruncation={1}\n        >\n          {label}\n        </Text>\n        {badge && <span className={styles.itemBadge}>{badge}</span>}\n      </button>\n      {children && isSelected && (\n        <div className={styles.subItems}>\n          {children}\n        </div>\n      )}\n    </div>\n  )\n);\n\nSidebarItem.displayName = 'SidebarItem';\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/Sidebar/SidebarSection.tsx",
+      "content": "import React, { forwardRef, useState } from 'react';\nimport { cn } from '@/utils/cn';\nimport { Text } from '@/components/Text';\nimport styles from './Sidebar.module.css';\n\nexport interface SidebarSectionProps {\n  label?: string;\n  children: React.ReactNode;\n  collapsible?: boolean;\n  defaultCollapsed?: boolean;\n  className?: string;\n}\n\nexport const SidebarSection = forwardRef<HTMLDivElement, SidebarSectionProps>(\n  ({ label, children, collapsible = false, defaultCollapsed = false, className }, ref) => {\n    const [isCollapsed, setIsCollapsed] = useState(defaultCollapsed);\n\n    return (\n      <div ref={ref} className={cn(styles.section, className)}>\n        {label && (\n          <div\n            className={cn(styles.sectionHeader, collapsible && styles.sectionHeaderClickable)}\n            onClick={collapsible ? () => setIsCollapsed(prev => !prev) : undefined}\n            role={collapsible ? 'button' : undefined}\n            aria-expanded={collapsible ? !isCollapsed : undefined}\n          >\n            <Text variant=\"text-caption-emphasis\" as=\"span\" color=\"tertiary\">\n              {label}\n            </Text>\n          </div>\n        )}\n        {!isCollapsed && (\n          <div className={styles.sectionItems}>\n            {children}\n          </div>\n        )}\n      </div>\n    );\n  }\n);\n\nSidebarSection.displayName = 'SidebarSection';\n",
+      "type": "registry:ui"
+    }
+  ]
+}

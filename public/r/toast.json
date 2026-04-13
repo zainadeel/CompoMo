@@ -1,0 +1,77 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "toast",
+  "title": "Toast",
+  "description": "Imperative toast notification system. Use toast.success()/error()/warning()/info() to show toasts. Place <ToastContainer /> once at the app root.",
+  "type": "registry:ui",
+  "meta": {
+    "library": "@compomo/ui",
+    "distribution": "npm",
+    "storybook": "https://zainadeel.github.io/CompoMo/?path=/story/toast",
+    "consumption": {
+      "install": "npm install @compomo/ui @ds-mo/tokens",
+      "cssSetup": "Import tokens CSS at your app entry point: import '@ds-mo/tokens/css';\nThis provides all var(--color-*), var(--dimension-*), var(--effect-*), and var(--typography-*) custom properties.\nFor dark mode, set data-theme=\"dark\" on <html>.",
+      "import": "import { ToastContainer, toast, useToasts } from '@compomo/ui';",
+      "cssImport": "import '@compomo/ui/css';",
+      "typeImport": "import type { ToastContainerProps, ToastData, ToastOptions, ToastIntent, ToastPosition } from '@compomo/ui';",
+      "internalDependencies": [
+        {
+          "component": "Surface",
+          "note": "Used internally by Toast. No action needed — it's bundled in @compomo/ui."
+        },
+        {
+          "component": "Text",
+          "note": "Used internally by Toast. No action needed — it's bundled in @compomo/ui."
+        }
+      ],
+      "peerDependencies": {
+        "required": [
+          "react >=17",
+          "react-dom >=17",
+          "@ds-mo/tokens >=0.1.0"
+        ],
+        "optional": []
+      },
+      "notes": "Place <ToastContainer /> once at app root. Then call toast.success(\"Done!\") anywhere."
+    },
+    "props": {
+      "position": {
+        "type": "'top-center' | 'top-right' | 'bottom-center' | 'bottom-right'",
+        "default": "'top-center'",
+        "description": "ToastContainer position prop."
+      }
+    },
+    "exports": [
+      "ToastContainer",
+      "toast",
+      "useToasts"
+    ],
+    "types": [
+      "ToastContainerProps",
+      "ToastData",
+      "ToastOptions",
+      "ToastIntent",
+      "ToastPosition"
+    ]
+  },
+  "dependencies": [
+    "@compomo/ui",
+    "@ds-mo/tokens"
+  ],
+  "registryDependencies": [
+    "surface",
+    "text"
+  ],
+  "files": [
+    {
+      "path": "src/components/Toast/Toast.module.css",
+      "content": "/* ─── Container ─────────────────────────────────────────────────────────────── */\n\n.container {\n  position: fixed;\n  z-index: 9999;\n  display: flex;\n  flex-direction: column;\n  gap: var(--dimension-space-075);\n  pointer-events: none;\n  padding: var(--dimension-space-100);\n  max-width: 480px;\n  width: 100%;\n  box-sizing: border-box;\n}\n\n.topCenter {\n  top: 0;\n  left: 50%;\n  transform: translateX(-50%);\n  align-items: center;\n}\n\n.topRight {\n  top: 0;\n  right: 0;\n  align-items: flex-end;\n}\n\n.bottomCenter {\n  bottom: 0;\n  left: 50%;\n  transform: translateX(-50%);\n  align-items: center;\n}\n\n.bottomRight {\n  bottom: 0;\n  right: 0;\n  align-items: flex-end;\n}\n\n/* ─── Toast ─────────────────────────────────────────────────────────────────── */\n\n.toast {\n  display: flex;\n  align-items: center;\n  gap: var(--dimension-space-075);\n  padding: var(--dimension-space-075) var(--dimension-space-100);\n  min-height: var(--dimension-size-400);\n  pointer-events: auto;\n  animation: slideIn var(--effect-motion-short-3) ease-out;\n}\n\n.toastExit {\n  animation: fadeOut 200ms ease-in forwards;\n}\n\n.dismiss {\n  background: none;\n  border: none;\n  color: inherit;\n  cursor: pointer;\n  padding: var(--dimension-space-025);\n  margin-left: auto;\n  font-size: 16px;\n  line-height: 1;\n  opacity: 0.7;\n  border-radius: var(--dimension-radius-050);\n  transition: opacity var(--effect-motion-short-2);\n  flex-shrink: 0;\n}\n\n.dismiss:hover { opacity: 1; }\n\n/* ─── Animations ────────────────────────────────────────────────────────────── */\n\n@keyframes slideIn {\n  from {\n    opacity: 0;\n    transform: translateY(-8px);\n  }\n  to {\n    opacity: 1;\n    transform: translateY(0);\n  }\n}\n\n@keyframes fadeOut {\n  from { opacity: 1; }\n  to { opacity: 0; }\n}\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/Toast/Toast.tsx",
+      "content": "import React, { forwardRef, useEffect, useState, useCallback, useRef, useSyncExternalStore } from 'react';\nimport ReactDOM from 'react-dom';\nimport { cn } from '@/utils/cn';\nimport { Text } from '@/components/Text';\nimport { Surface } from '@/components/Surface';\nimport type { SurfaceIntent } from '@/components/Surface';\nimport styles from './Toast.module.css';\n\n/* ─── Toast Types ───────────────────────────────────────────────────────────── */\n\nexport type ToastIntent = 'neutral' | 'brand' | 'positive' | 'negative' | 'warning' | 'caution';\nexport type ToastPosition = 'top-center' | 'top-right' | 'bottom-center' | 'bottom-right';\n\nexport interface ToastData {\n  id: string;\n  message: string;\n  intent?: ToastIntent;\n  duration?: number;\n  onDismiss?: () => void;\n}\n\nexport interface ToastOptions {\n  message: string;\n  intent?: ToastIntent;\n  /** Auto-dismiss duration in ms. 0 = no auto-dismiss. Default 4000. */\n  duration?: number;\n  onDismiss?: () => void;\n}\n\n/* ─── Toast Store (external, framework-agnostic) ────────────────────────────── */\n\nlet toasts: ToastData[] = [];\nconst listeners = new Set<() => void>();\n\nfunction emit() {\n  listeners.forEach(fn => fn());\n}\n\nfunction getSnapshot(): ToastData[] {\n  return toasts;\n}\n\nfunction subscribe(listener: () => void) {\n  listeners.add(listener);\n  return () => { listeners.delete(listener); };\n}\n\nlet idCounter = 0;\n\nexport const toast = {\n  show(options: ToastOptions): string {\n    const id = `toast-${++idCounter}`;\n    toasts = [...toasts, { id, ...options }];\n    emit();\n    return id;\n  },\n  info(message: string, options?: Omit<ToastOptions, 'message'>): string {\n    return toast.show({ message, intent: 'neutral', ...options });\n  },\n  success(message: string, options?: Omit<ToastOptions, 'message'>): string {\n    return toast.show({ message, intent: 'positive', ...options });\n  },\n  error(message: string, options?: Omit<ToastOptions, 'message'>): string {\n    return toast.show({ message, intent: 'negative', ...options });\n  },\n  warning(message: string, options?: Omit<ToastOptions, 'message'>): string {\n    return toast.show({ message, intent: 'warning', ...options });\n  },\n  dismiss(id: string) {\n    toasts = toasts.filter(t => t.id !== id);\n    emit();\n  },\n  dismissAll() {\n    toasts = [];\n    emit();\n  },\n};\n\n/* ─── useToasts hook ────────────────────────────────────────────────────────── */\n\nexport function useToasts(): ToastData[] {\n  return useSyncExternalStore(subscribe, getSnapshot, getSnapshot);\n}\n\n/* ─── Single Toast ──────────────────────────────────────────────────────────── */\n\nconst INTENT_MAP: Record<ToastIntent, SurfaceIntent> = {\n  neutral: 'neutral',\n  brand: 'brand',\n  positive: 'positive',\n  negative: 'negative',\n  warning: 'warning',\n  caution: 'caution',\n};\n\ninterface ToastItemProps {\n  data: ToastData;\n}\n\nconst ToastItem: React.FC<ToastItemProps> = ({ data }) => {\n  const [exiting, setExiting] = useState(false);\n  const timerRef = useRef<ReturnType<typeof setTimeout>>();\n\n  const dismiss = useCallback(() => {\n    setExiting(true);\n    setTimeout(() => {\n      toast.dismiss(data.id);\n      data.onDismiss?.();\n    }, 200);\n  }, [data]);\n\n  useEffect(() => {\n    const duration = data.duration ?? 4000;\n    if (duration > 0) {\n      timerRef.current = setTimeout(dismiss, duration);\n    }\n    return () => { if (timerRef.current) clearTimeout(timerRef.current); };\n  }, [data.duration, dismiss]);\n\n  return (\n    <Surface\n      intent={INTENT_MAP[data.intent ?? 'neutral']}\n      contrast=\"bold\"\n      elevation=\"floating\"\n      radius=\"lg\"\n      className={cn(styles.toast, exiting && styles.toastExit)}\n      role=\"status\"\n      aria-live=\"polite\"\n    >\n      <Text variant=\"text-body-medium\" as=\"span\" color=\"inherit\">\n        {data.message}\n      </Text>\n      <button\n        type=\"button\"\n        className={styles.dismiss}\n        onClick={dismiss}\n        aria-label=\"Dismiss\"\n      >\n        &times;\n      </button>\n    </Surface>\n  );\n};\n\n/* ─── ToastContainer ────────────────────────────────────────────────────────── */\n\nexport interface ToastContainerProps {\n  /** Where to render toasts on screen. */\n  position?: ToastPosition;\n}\n\nexport const ToastContainer = forwardRef<HTMLDivElement, ToastContainerProps>(\n  ({ position = 'top-center' }, ref) => {\n    const items = useToasts();\n\n    if (typeof document === 'undefined') return null;\n\n    return ReactDOM.createPortal(\n      <div\n        ref={ref}\n        className={cn(styles.container, styles[positionClass(position)])}\n        aria-label=\"Notifications\"\n      >\n        {items.map(item => (\n          <ToastItem key={item.id} data={item} />\n        ))}\n      </div>,\n      document.body\n    );\n  }\n);\n\nToastContainer.displayName = 'ToastContainer';\n\nfunction positionClass(position: ToastPosition): string {\n  switch (position) {\n    case 'top-center': return 'topCenter';\n    case 'top-right': return 'topRight';\n    case 'bottom-center': return 'bottomCenter';\n    case 'bottom-right': return 'bottomRight';\n  }\n}\n",
+      "type": "registry:ui"
+    }
+  ]
+}

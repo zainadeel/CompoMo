@@ -1,0 +1,93 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "select",
+  "title": "Select",
+  "description": "Dropdown select using Menu internally. Supports placeholder, inactive state, and custom chevron icon.",
+  "type": "registry:ui",
+  "meta": {
+    "library": "@compomo/ui",
+    "distribution": "npm",
+    "storybook": "https://zainadeel.github.io/CompoMo/?path=/story/select",
+    "consumption": {
+      "install": "npm install @compomo/ui @ds-mo/tokens",
+      "cssSetup": "Import tokens CSS at your app entry point: import '@ds-mo/tokens/css';\nThis provides all var(--color-*), var(--dimension-*), var(--effect-*), and var(--typography-*) custom properties.\nFor dark mode, set data-theme=\"dark\" on <html>.",
+      "import": "import { Select } from '@compomo/ui';",
+      "cssImport": "import '@compomo/ui/css';",
+      "typeImport": "import type { SelectProps, SelectOption } from '@compomo/ui';",
+      "internalDependencies": [
+        {
+          "component": "Menu",
+          "note": "Used internally by Select. No action needed — it's bundled in @compomo/ui."
+        },
+        {
+          "component": "Surface",
+          "note": "Used internally by Select. No action needed — it's bundled in @compomo/ui."
+        },
+        {
+          "component": "Text",
+          "note": "Used internally by Select. No action needed — it's bundled in @compomo/ui."
+        }
+      ],
+      "peerDependencies": {
+        "required": [
+          "react >=17",
+          "react-dom >=17",
+          "@ds-mo/tokens >=0.1.0"
+        ],
+        "optional": []
+      }
+    },
+    "props": {
+      "value": {
+        "type": "string | number",
+        "required": true
+      },
+      "onChange": {
+        "type": "(value: string | number) => void",
+        "required": true
+      },
+      "options": {
+        "type": "SelectOption[]",
+        "required": true
+      },
+      "placeholder": {
+        "type": "string",
+        "default": "'Select option'"
+      },
+      "inactive": {
+        "type": "boolean"
+      },
+      "chevronIcon": {
+        "type": "IconComponent"
+      }
+    },
+    "exports": [
+      "Select"
+    ],
+    "types": [
+      "SelectProps",
+      "SelectOption"
+    ]
+  },
+  "dependencies": [
+    "@compomo/ui",
+    "@ds-mo/tokens"
+  ],
+  "registryDependencies": [
+    "menu",
+    "surface",
+    "text"
+  ],
+  "files": [
+    {
+      "path": "src/components/Select/Select.module.css",
+      "content": ".selectWrapper {\n  width: 100%;\n  position: relative;\n}\n\n.selectButton {\n  display: flex;\n  align-items: center;\n  justify-content: space-between;\n  width: 100%;\n  height: var(--dimension-size-400);\n  padding: 0 var(--dimension-space-075);\n  gap: var(--dimension-space-050);\n  cursor: pointer;\n  user-select: none;\n  border: none;\n  outline: none;\n}\n\n.selectButton:disabled {\n  opacity: 0.5;\n  cursor: not-allowed;\n}\n\n.chevron {\n  display: flex;\n  align-items: center;\n  color: var(--color-foreground-secondary);\n  flex-shrink: 0;\n}\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/Select/Select.tsx",
+      "content": "import React, { forwardRef, useState, useRef } from 'react';\nimport { Surface } from '@/components/Surface';\nimport { Text } from '@/components/Text';\nimport { Menu } from '@/components/Menu';\nimport type { MenuItemData } from '@/components/Menu';\nimport type { IconComponent } from '@/types';\nimport styles from './Select.module.css';\n\nexport interface SelectOption {\n  label: string;\n  value: string | number;\n}\n\nexport interface SelectProps {\n  value: string | number;\n  onChange: (value: string | number) => void;\n  options: SelectOption[];\n  placeholder?: string;\n  className?: string;\n  inactive?: boolean;\n  id?: string;\n  chevronIcon?: IconComponent;\n}\n\nexport const Select = forwardRef<HTMLDivElement, SelectProps>(\n  ({ value, onChange, options, placeholder = 'Select option', className, inactive = false, id, chevronIcon: ChevronIcon }, ref) => {\n    const [isMenuOpen, setIsMenuOpen] = useState(false);\n    const buttonRef = useRef<HTMLButtonElement>(null);\n\n    const selectedOption = options.find(opt => opt.value === value);\n    const selectedLabel = selectedOption?.label || placeholder;\n\n    const menuItems: MenuItemData[] = options.map(option => ({\n      label: option.label,\n      onClick: () => {\n        onChange(option.value);\n        setIsMenuOpen(false);\n      },\n      isSelected: option.value === value,\n    }));\n\n    const handleToggle = () => {\n      if (!inactive) setIsMenuOpen(prev => !prev);\n    };\n\n    return (\n      <div ref={ref} className={`${styles.selectWrapper} ${className || ''}`}>\n        <Surface\n          id={id}\n          ref={buttonRef as React.RefObject<HTMLElement>}\n          as=\"button\"\n          type=\"button\"\n          elevation=\"elevated\"\n          radius=\"sm\"\n          interactive\n          selected={isMenuOpen}\n          className={styles.selectButton}\n          onClick={handleToggle}\n          inactive={inactive}\n        >\n          <Text\n            variant=\"text-body-medium\"\n            as=\"span\"\n           \n            color={selectedOption ? 'primary' : 'secondary'}\n          >\n            {selectedLabel}\n          </Text>\n          {ChevronIcon && (\n            <span className={styles.chevron}>\n              <ChevronIcon size={16} />\n            </span>\n          )}\n        </Surface>\n        <Menu\n          isOpen={isMenuOpen}\n          onClose={() => setIsMenuOpen(false)}\n          anchorRef={buttonRef as React.RefObject<HTMLElement | null>}\n          items={menuItems}\n          side=\"bottom\"\n          align=\"start\"\n          sideOffset={4}\n          alignOffset={-4}\n          matchAnchorWidth\n          matchAnchorWidthOffset={8}\n        />\n      </div>\n    );\n  }\n);\n\nSelect.displayName = 'Select';\n",
+      "type": "registry:ui"
+    }
+  ]
+}

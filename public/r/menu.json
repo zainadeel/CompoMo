@@ -1,0 +1,130 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "menu",
+  "title": "Menu",
+  "description": "Positioned dropdown menu with sections, item selection styles, toggle items, and destructive hold-to-confirm items.",
+  "type": "registry:ui",
+  "meta": {
+    "library": "@compomo/ui",
+    "distribution": "npm",
+    "storybook": "https://zainadeel.github.io/CompoMo/?path=/story/menu",
+    "consumption": {
+      "install": "npm install @compomo/ui @ds-mo/tokens",
+      "cssSetup": "Import tokens CSS at your app entry point: import '@ds-mo/tokens/css';\nThis provides all var(--color-*), var(--dimension-*), var(--effect-*), and var(--typography-*) custom properties.\nFor dark mode, set data-theme=\"dark\" on <html>.",
+      "import": "import { Menu, MenuItem, DestructiveMenuItem } from '@compomo/ui';",
+      "cssImport": "import '@compomo/ui/css';",
+      "typeImport": "import type { MenuProps, MenuSection, MenuItemData, MenuSide, MenuAlign, MenuItemProps, MenuItemSelectionStyle, DestructiveMenuItemProps } from '@compomo/ui';",
+      "internalDependencies": [
+        {
+          "component": "Surface",
+          "note": "Used internally by Menu. No action needed — it's bundled in @compomo/ui."
+        },
+        {
+          "component": "Text",
+          "note": "Used internally by Menu. No action needed — it's bundled in @compomo/ui."
+        },
+        {
+          "component": "Toggle",
+          "note": "Used internally by Menu. No action needed — it's bundled in @compomo/ui."
+        }
+      ],
+      "peerDependencies": {
+        "required": [
+          "react >=17",
+          "react-dom >=17",
+          "@ds-mo/tokens >=0.1.0"
+        ],
+        "optional": []
+      }
+    },
+    "props": {
+      "isOpen": {
+        "type": "boolean",
+        "required": true
+      },
+      "onClose": {
+        "type": "() => void",
+        "required": true
+      },
+      "anchorRef": {
+        "type": "React.RefObject<HTMLElement | null>",
+        "required": true
+      },
+      "items": {
+        "type": "MenuItemData[]",
+        "description": "Flat item list (use items or sections, not both)."
+      },
+      "sections": {
+        "type": "MenuSection[]",
+        "description": "Grouped items with optional headers."
+      },
+      "side": {
+        "type": "'top' | 'right' | 'bottom' | 'left'",
+        "default": "'bottom'"
+      },
+      "align": {
+        "type": "'start' | 'center' | 'end'",
+        "default": "'start'"
+      },
+      "matchAnchorWidth": {
+        "type": "boolean"
+      }
+    },
+    "exports": [
+      "Menu",
+      "MenuItem",
+      "DestructiveMenuItem"
+    ],
+    "types": [
+      "MenuProps",
+      "MenuSection",
+      "MenuItemData",
+      "MenuSide",
+      "MenuAlign",
+      "MenuItemProps",
+      "MenuItemSelectionStyle",
+      "DestructiveMenuItemProps"
+    ]
+  },
+  "dependencies": [
+    "@compomo/ui",
+    "@ds-mo/tokens"
+  ],
+  "registryDependencies": [
+    "surface",
+    "text",
+    "toggle"
+  ],
+  "files": [
+    {
+      "path": "src/components/Menu/Menu.tsx",
+      "content": "import React, { useState, useEffect, useLayoutEffect, useRef, useMemo } from 'react';\nimport { createPortal } from 'react-dom';\nimport { Text } from '@/components/Text';\nimport { Surface } from '@/components/Surface';\nimport { MenuItem as MenuItemComponent } from './MenuItem';\nimport { DestructiveMenuItem } from './DestructiveMenuItem';\nimport { getCssSpacePx } from '@/utils/css-tokens';\nimport type { IconComponent } from '@/types';\nimport type { MenuItemSelectionStyle } from './MenuItem';\nimport styles from './Menu.module.css';\n\nconst CLOSE_ANIMATION_MS = 220;\n\nexport type MenuSide = 'top' | 'right' | 'bottom' | 'left';\nexport type MenuAlign = 'start' | 'center' | 'end';\n\nexport interface MenuItemData {\n  label: string;\n  onClick: () => void;\n  isSelected?: boolean;\n  isDestructive?: boolean;\n  isInactive?: boolean;\n  intent?: 'negative';\n  keepOpenOnClick?: boolean;\n  holdDuration?: number;\n  icon?: IconComponent;\n  subtext?: string;\n  showToggle?: boolean;\n  toggleValue?: boolean;\n  selectionStyle?: MenuItemSelectionStyle;\n}\n\nexport interface MenuSection {\n  header?: string;\n  items: MenuItemData[];\n}\n\nexport interface MenuProps {\n  isOpen: boolean;\n  onClose: () => void;\n  anchorRef: React.RefObject<HTMLElement | null>;\n  items?: MenuItemData[];\n  sections?: MenuSection[];\n  side?: MenuSide;\n  align?: MenuAlign;\n  sideOffset?: number;\n  alignOffset?: number;\n  sideOffsetToken?: string;\n  alignOffsetToken?: string;\n  width?: string;\n  minWidth?: string;\n  maxWidth?: string;\n  matchAnchorWidth?: boolean;\n  matchAnchorWidthOffset?: number;\n  usePortal?: boolean;\n}\n\nexport const Menu: React.FC<MenuProps> = ({\n  isOpen,\n  onClose,\n  anchorRef,\n  items,\n  sections,\n  side = 'bottom',\n  align = 'start',\n  sideOffset = 4,\n  alignOffset = 0,\n  sideOffsetToken,\n  alignOffsetToken,\n  width,\n  minWidth,\n  maxWidth,\n  matchAnchorWidth = false,\n  matchAnchorWidthOffset = 0,\n  usePortal = true,\n}) => {\n  const [isClosing, setIsClosing] = useState(false);\n  const [shouldRender, setShouldRender] = useState(isOpen);\n  const [isPositionReady, setIsPositionReady] = useState(false);\n  const [position, setPosition] = useState<{ x: number; y: number }>({ x: 0, y: 0 });\n  const [menuSize, setMenuSize] = useState<{ width: number; height: number }>({ width: 0, height: 0 });\n  const [anchorSize, setAnchorSize] = useState<{ width: number; height: number }>({ width: 0, height: 0 });\n  const positionCalculatedRef = useRef(false);\n  const menuRef = useRef<HTMLDivElement>(null);\n  const lastSectionsRef = useRef<MenuSection[]>([]);\n\n  const menuSections: MenuSection[] = sections || (items ? [{ items }] : []);\n\n  const hasItems = menuSections.some((s) => s.items.length > 0);\n  if (!isClosing && menuSections.length > 0 && hasItems) {\n    lastSectionsRef.current = menuSections;\n  }\n  const sectionsToRender = isClosing ? lastSectionsRef.current : menuSections;\n\n  useEffect(() => {\n    if (isOpen) {\n      setShouldRender(true);\n      setIsClosing(false);\n      setIsPositionReady(false);\n      positionCalculatedRef.current = false;\n    } else if (shouldRender) {\n      setIsClosing(true);\n      const timer = setTimeout(() => {\n        setShouldRender(false);\n        setIsClosing(false);\n        positionCalculatedRef.current = false;\n      }, CLOSE_ANIMATION_MS);\n      return () => clearTimeout(timer);\n    }\n  }, [isOpen, shouldRender]);\n\n  useLayoutEffect(() => {\n    if (!isOpen || !shouldRender || !menuRef.current) return;\n    const updateSize = () => {\n      if (!menuRef.current) return;\n      const rect = menuRef.current.getBoundingClientRect();\n      if (rect.width > 0 && rect.height > 0) setMenuSize({ width: rect.width, height: rect.height });\n    };\n    updateSize();\n    requestAnimationFrame(() => requestAnimationFrame(updateSize));\n    if (typeof ResizeObserver !== 'undefined') {\n      const observer = new ResizeObserver(updateSize);\n      observer.observe(menuRef.current);\n      return () => observer.disconnect();\n    }\n  }, [isOpen, shouldRender, menuSections.length]);\n\n  useLayoutEffect(() => {\n    if (!isOpen || !shouldRender || !anchorRef.current || !menuRef.current) return;\n    const calculatePosition = () => {\n      const anchor = anchorRef.current;\n      const menu = menuRef.current;\n      if (!anchor || !menu) return;\n      const anchorRect = anchor.getBoundingClientRect();\n      const menuRect = menu.getBoundingClientRect();\n      const menuWidth = menuRect.width || menuSize.width || 200;\n      const menuHeight = menuRect.height || menuSize.height || 160;\n      setAnchorSize({ width: anchorRect.width, height: anchorRect.height });\n      const gap = sideOffsetToken != null ? getCssSpacePx(sideOffsetToken, 12) : sideOffset;\n      const alignOff = alignOffsetToken != null ? getCssSpacePx(alignOffsetToken, 4) : alignOffset;\n      let x = 0, y = 0;\n      switch (side) {\n        case 'top':\n          y = anchorRect.top - menuHeight - gap;\n          x = align === 'start' ? anchorRect.left + alignOff : align === 'end' ? anchorRect.right - menuWidth + alignOff : anchorRect.left + anchorRect.width / 2 - menuWidth / 2 + alignOff;\n          break;\n        case 'bottom':\n          y = anchorRect.bottom + gap;\n          x = align === 'start' ? anchorRect.left + alignOff : align === 'end' ? anchorRect.right - menuWidth + alignOff : anchorRect.left + anchorRect.width / 2 - menuWidth / 2 + alignOff;\n          break;\n        case 'left':\n          x = anchorRect.left - menuWidth - gap;\n          y = align === 'start' ? anchorRect.top + alignOff : align === 'end' ? anchorRect.bottom - menuHeight + alignOff : anchorRect.top + anchorRect.height / 2 - menuHeight / 2 + alignOff;\n          break;\n        case 'right':\n          x = anchorRect.right + gap;\n          y = align === 'start' ? anchorRect.top + alignOff : align === 'end' ? anchorRect.bottom - menuHeight + alignOff : anchorRect.top + anchorRect.height / 2 - menuHeight / 2 + alignOff;\n          break;\n      }\n      const vp = 4;\n      setPosition({\n        x: Math.min(Math.max(x, vp), window.innerWidth - menuWidth - vp),\n        y: Math.min(Math.max(y, vp), window.innerHeight - menuHeight - vp),\n      });\n      positionCalculatedRef.current = true;\n      setIsPositionReady(true);\n    };\n    if (!positionCalculatedRef.current) {\n      calculatePosition();\n      requestAnimationFrame(() => { if (!positionCalculatedRef.current) calculatePosition(); });\n    }\n    const handleScrollResize = () => calculatePosition();\n    window.addEventListener('scroll', handleScrollResize, true);\n    window.addEventListener('resize', handleScrollResize);\n    return () => {\n      window.removeEventListener('scroll', handleScrollResize, true);\n      window.removeEventListener('resize', handleScrollResize);\n    };\n  }, [isOpen, shouldRender, anchorRef, side, align, sideOffset, alignOffset, sideOffsetToken, alignOffsetToken, menuSize.width, menuSize.height, menuSections.length, matchAnchorWidthOffset]);\n\n  useEffect(() => {\n    if (!isOpen || !shouldRender) return;\n    const handleClickOutside = (event: MouseEvent) => {\n      const target = event.target as HTMLElement;\n      if (menuRef.current?.contains(target)) return;\n      if (anchorRef.current?.contains(target)) return;\n      onClose();\n    };\n    document.addEventListener('mousedown', handleClickOutside, true);\n    return () => document.removeEventListener('mousedown', handleClickOutside, true);\n  }, [isOpen, shouldRender, onClose, anchorRef]);\n\n  useEffect(() => {\n    if (!isOpen) return;\n    const handleEscape = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose(); };\n    document.addEventListener('keydown', handleEscape);\n    return () => document.removeEventListener('keydown', handleEscape);\n  }, [isOpen, onClose]);\n\n  if (!shouldRender || sectionsToRender.length === 0) return null;\n\n  const renderMenuItem = (item: MenuItemData, index: number) => {\n    if (item.isDestructive) {\n      return (\n        <DestructiveMenuItem\n          key={index}\n          label={item.label}\n          subtext={item.subtext}\n          holdDuration={item.holdDuration ?? 4000}\n          onClick={() => { item.onClick(); if (!item.keepOpenOnClick) onClose(); }}\n        />\n      );\n    }\n    return (\n      <MenuItemComponent\n        key={index}\n        icon={item.icon}\n        label={item.label}\n        subtext={item.subtext}\n        onClick={() => { if (!item.isInactive) { item.onClick(); if (!item.keepOpenOnClick) onClose(); } }}\n        isSelected={item.isSelected}\n        isInactive={item.isInactive}\n        intent={item.intent}\n        showToggle={item.showToggle}\n        toggleValue={item.toggleValue}\n        selectionStyle={item.selectionStyle}\n      />\n    );\n  };\n\n  const menuStyle: React.CSSProperties = {\n    position: 'absolute',\n    left: 0,\n    top: 0,\n    transform: `translate(${Math.round(position.x)}px, ${Math.round(position.y)}px)`,\n    willChange: 'transform',\n    zIndex: 9998,\n    visibility: isPositionReady ? 'visible' : 'hidden',\n    ...(matchAnchorWidth && anchorSize.width > 0 ? { width: `${anchorSize.width + matchAnchorWidthOffset}px` } : width ? { width } : {}),\n    ...(minWidth ? { minWidth } : {}),\n    ...(maxWidth ? { maxWidth } : {}),\n  };\n\n  const menuContent = (\n    <div ref={menuRef} className={`${styles.menuContainer} ${isClosing ? styles.closing : ''}`} style={menuStyle} role=\"menu\" aria-label=\"Menu\">\n      {sectionsToRender.map((section, sectionIndex) => (\n        <Surface\n          key={sectionIndex}\n          as=\"div\"\n          className={styles.menuSection}\n          edge={sectionIndex < sectionsToRender.length - 1 ? 'bottom' : undefined}\n          elevation=\"none\"\n        >\n          {section.header && (\n            <div className={styles.sectionHeader}>\n              <Text variant=\"text-body-small-emphasis\" as=\"span\" className={styles.sectionLabel}>{section.header}</Text>\n            </div>\n          )}\n          {section.items.map((item, itemIndex) => renderMenuItem(item, itemIndex))}\n        </Surface>\n      ))}\n    </div>\n  );\n\n  if (usePortal) return createPortal(menuContent, document.body);\n  return menuContent;\n};\n\nMenu.displayName = 'Menu';\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/Menu/Menu.module.css",
+      "content": ".menuContainer {\n  box-sizing: border-box;\n  background-color: var(--color-background-primary);\n  border-radius: var(--dimension-radius-125);\n  box-shadow: var(--effect-elevation-elevated-floating);\n  display: flex;\n  flex-direction: column;\n  min-width: 200px;\n  max-width: 600px;\n  overflow: hidden;\n  animation: menuFadeIn var(--effect-motion-short-2) forwards;\n  backface-visibility: hidden;\n  -webkit-font-smoothing: subpixel-antialiased;\n}\n\n@keyframes menuFadeIn {\n  from { opacity: 0; }\n  to { opacity: 1; }\n}\n\n.menuContainer.closing {\n  animation: menuFadeOut var(--effect-motion-short-3) forwards;\n}\n\n@keyframes menuFadeOut {\n  from { opacity: 1; }\n  to { opacity: 0; }\n}\n\n.menuSection {\n  padding: var(--dimension-space-050);\n  display: flex;\n  flex-direction: column;\n  gap: var(--dimension-space-050);\n}\n\n.sectionHeader {\n  padding: var(--dimension-space-050) var(--dimension-space-075);\n  display: flex;\n  align-items: center;\n  height: var(--dimension-size-400);\n  user-select: none;\n}\n\n.sectionLabel {\n  color: var(--color-foreground-secondary);\n  text-align: left;\n}\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/Menu/MenuItem.tsx",
+      "content": "import React, { forwardRef } from 'react';\nimport { Text } from '@/components/Text';\nimport { Surface } from '@/components/Surface';\nimport type { IconComponent } from '@/types';\nimport styles from './MenuItem.module.css';\n\nexport type MenuItemSelectionStyle = 'highlight' | 'radio' | 'noOverlay';\n\nexport interface MenuItemProps {\n  label: string;\n  onClick: () => void;\n  isSelected?: boolean;\n  isInactive?: boolean;\n  icon?: IconComponent;\n  labelColor?: 'primary' | 'secondary' | 'tertiary';\n  subtext?: string;\n  showToggle?: boolean;\n  toggleValue?: boolean;\n  intent?: 'negative';\n  selectionStyle?: MenuItemSelectionStyle;\n  showTrailingChevron?: boolean;\n  checkIcon?: IconComponent;\n  chevronIcon?: IconComponent;\n}\n\nexport const MenuItem = forwardRef<HTMLButtonElement, MenuItemProps>(\n  ({\n    label,\n    onClick,\n    isSelected = false,\n    isInactive = false,\n    icon: Icon,\n    labelColor,\n    subtext,\n    showToggle = false,\n    toggleValue = false,\n    intent,\n    selectionStyle = 'highlight',\n    showTrailingChevron = false,\n    checkIcon: CheckIcon,\n    chevronIcon: ChevronIcon,\n  }, ref) => {\n    const useRadioStyle = selectionStyle === 'radio';\n    const noOverlay = selectionStyle === 'noOverlay' || useRadioStyle;\n    const showSelectedOverlay = isSelected && !noOverlay;\n\n    return (\n      <Surface\n        ref={ref as React.Ref<HTMLElement>}\n        as=\"button\"\n        interactive={!isInactive}\n        selected={showSelectedOverlay}\n        radius=\"sm\"\n        className={`${styles.menuItem} ${isSelected ? styles.menuItemSelected : ''} ${isInactive ? styles.menuItemInactive : ''} ${intent === 'negative' ? styles.menuItemNegative : ''} ${labelColor === 'tertiary' ? styles.menuItemLabelTertiary : ''}`}\n        onClick={onClick}\n        type=\"button\"\n        inactive={isInactive}\n      >\n        {Icon && (\n          <div className={styles.iconPrefix}>\n            <Icon size={20} />\n          </div>\n        )}\n        <div className={styles.content}>\n          <Text\n            variant={isSelected ? 'text-body-medium-emphasis' : 'text-body-medium'}\n            color={labelColor}\n            as=\"span\"\n            className={styles.label}\n          >\n            {label}\n          </Text>\n          {subtext && (\n            <Text variant=\"text-body-small\" as=\"span\" className={styles.subtext}>\n              {subtext}\n            </Text>\n          )}\n        </div>\n        {showToggle && (\n          <div className={styles.toggleSuffix}>\n            <div className={`${styles.toggle} ${toggleValue ? styles.toggleOn : ''}`}>\n              <div className={styles.toggleThumb} />\n            </div>\n          </div>\n        )}\n        {useRadioStyle && isSelected && CheckIcon && (\n          <div className={styles.checkSuffix}>\n            <CheckIcon size={20} />\n          </div>\n        )}\n        {showTrailingChevron && ChevronIcon && (\n          <div className={styles.chevronSuffix}>\n            <ChevronIcon size={20} />\n          </div>\n        )}\n      </Surface>\n    );\n  }\n);\n\nMenuItem.displayName = 'MenuItem';\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/Menu/MenuItem.module.css",
+      "content": ".menuItem {\n  display: flex;\n  align-items: center;\n  gap: var(--dimension-space-050);\n  padding: var(--dimension-space-075);\n  border: none;\n  cursor: pointer;\n  user-select: none;\n  text-align: left;\n  width: 100%;\n  min-height: var(--dimension-size-400);\n}\n\n.menuItem:has(.subtext) { align-items: flex-start; }\n\n.iconPrefix {\n  flex-shrink: 0;\n  display: flex;\n  align-items: center;\n  color: var(--color-foreground-secondary);\n}\n\n.menuItemSelected .iconPrefix { color: var(--color-foreground-primary); }\n\n.content {\n  flex: 1;\n  display: flex;\n  flex-direction: column;\n  gap: var(--dimension-space-025);\n  min-width: 0;\n}\n\n.label { color: var(--color-foreground-secondary); }\n.menuItem:has(.subtext) .label { color: var(--color-foreground-primary); }\n.menuItemSelected .label { color: var(--color-foreground-primary) !important; }\n.menuItemLabelTertiary .label, .menuItemLabelTertiary .iconPrefix { color: var(--color-foreground-tertiary); }\n.menuItemNegative .label { color: var(--color-foreground-bold-negative) !important; }\n\n.subtext { color: var(--color-foreground-secondary); line-height: 1.4; }\n\n.menuItemInactive { opacity: 0.5; cursor: default; pointer-events: none; }\n\n.toggleSuffix { flex-shrink: 0; display: flex; align-items: center; }\n\n.toggle {\n  width: calc(var(--dimension-size-400) + var(--dimension-size-050));\n  height: var(--dimension-size-250);\n  background-color: var(--color-background-translucent);\n  border-radius: var(--dimension-radius-125);\n  position: relative;\n  transition: var(--effect-transition-interaction-background-short-2);\n}\n\n.toggleOn { background-color: var(--color-background-medium-brand); }\n\n.toggleThumb {\n  width: var(--dimension-size-200);\n  height: var(--dimension-size-200);\n  background-color: var(--color-foreground-on-bold-background-primary);\n  border-radius: 50%;\n  position: absolute;\n  top: var(--dimension-space-025);\n  left: var(--dimension-space-025);\n  transition: transform var(--effect-motion-short-2);\n}\n\n.toggleOn .toggleThumb { transform: translateX(var(--dimension-offset-200)); }\n\n.checkSuffix {\n  flex-shrink: 0;\n  display: flex;\n  align-items: center;\n  color: var(--color-foreground-primary);\n}\n\n.chevronSuffix {\n  flex-shrink: 0;\n  display: flex;\n  align-items: center;\n  color: var(--color-foreground-secondary);\n}\n\n.menuItemSelected .chevronSuffix { color: var(--color-foreground-primary); }\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/Menu/DestructiveMenuItem.tsx",
+      "content": "import React, { forwardRef, useState, useRef, useEffect } from 'react';\nimport { Text } from '@/components/Text';\nimport styles from './DestructiveMenuItem.module.css';\n\nexport interface DestructiveMenuItemProps {\n  label: string;\n  onClick: () => void;\n  holdDuration?: number;\n  subtext?: string;\n}\n\nexport const DestructiveMenuItem = forwardRef<HTMLButtonElement, DestructiveMenuItemProps>(\n  ({ label, onClick, holdDuration = 4000, subtext }, ref) => {\n    const [progress, setProgress] = useState(0);\n    const pressTimerRef = useRef<number | null>(null);\n    const startTimeRef = useRef<number>(0);\n    const animationFrameRef = useRef<number | null>(null);\n\n    const resetState = () => {\n      setProgress(0);\n      if (pressTimerRef.current) { clearTimeout(pressTimerRef.current); pressTimerRef.current = null; }\n      if (animationFrameRef.current) { cancelAnimationFrame(animationFrameRef.current); animationFrameRef.current = null; }\n    };\n\n    const handleMouseDown = (e: React.MouseEvent) => {\n      e.stopPropagation();\n      e.preventDefault();\n      if (holdDuration === 0) { onClick(); return; }\n      startTimeRef.current = performance.now();\n      const animate = () => {\n        const elapsed = performance.now() - startTimeRef.current;\n        const newProgress = Math.min((elapsed / holdDuration) * 100, 100);\n        setProgress(newProgress);\n        if (newProgress < 100) animationFrameRef.current = requestAnimationFrame(animate);\n      };\n      animationFrameRef.current = requestAnimationFrame(animate);\n      pressTimerRef.current = window.setTimeout(() => { onClick(); resetState(); }, holdDuration);\n    };\n\n    const handleMouseUp = (e: React.MouseEvent) => { e.stopPropagation(); resetState(); };\n    const handleMouseLeave = (e: React.MouseEvent) => { e.stopPropagation(); resetState(); };\n\n    useEffect(() => () => { resetState(); }, []);\n\n    return (\n      <button\n        ref={ref}\n        className={styles.destructiveMenuItem}\n        onMouseDown={handleMouseDown}\n        onMouseUp={handleMouseUp}\n        onMouseLeave={handleMouseLeave}\n        type=\"button\"\n      >\n        <div className={styles.progressFill} style={{ width: `${progress}%` }} />\n        <div className={styles.content}>\n          <Text variant=\"text-body-medium\" as=\"span\" className={styles.label}>{label}</Text>\n          {subtext && <Text variant=\"text-body-small\" as=\"span\" className={styles.subtext}>{subtext}</Text>}\n        </div>\n      </button>\n    );\n  }\n);\n\nDestructiveMenuItem.displayName = 'DestructiveMenuItem';\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/Menu/DestructiveMenuItem.module.css",
+      "content": ".destructiveMenuItem {\n  display: flex;\n  align-items: center;\n  padding: var(--dimension-space-075);\n  background-color: transparent;\n  border: none;\n  border-radius: var(--dimension-radius-075);\n  cursor: pointer;\n  user-select: none;\n  text-align: left;\n  width: 100%;\n  min-height: var(--dimension-size-400);\n  position: relative;\n  transition: var(--effect-transition-interaction-background-instant);\n  overflow: hidden;\n}\n\n.destructiveMenuItem:has(.subtext) { align-items: flex-start; }\n\n.progressFill {\n  position: absolute;\n  top: 0;\n  left: 0;\n  bottom: 0;\n  background-color: var(--color-background-faint-negative);\n  border-radius: var(--dimension-radius-075);\n  transition: width 0ms linear;\n  pointer-events: none;\n  z-index: 0;\n}\n\n.destructiveMenuItem::before {\n  content: '';\n  position: absolute;\n  inset: 0;\n  background-color: transparent;\n  border-radius: var(--dimension-radius-075);\n  transition: var(--effect-transition-interaction-background-instant);\n  pointer-events: none;\n  z-index: 1;\n}\n\n.content {\n  position: relative;\n  z-index: 2;\n  display: flex;\n  flex-direction: column;\n  gap: var(--dimension-space-025);\n  min-width: 0;\n}\n\n.label { color: var(--color-foreground-bold-negative); }\n.subtext { color: var(--color-foreground-secondary); text-wrap: pretty; }\n\n.destructiveMenuItem:hover::before { background-color: var(--color-interaction-hover); }\n.destructiveMenuItem:active::before { background-color: transparent; }\n",
+      "type": "registry:ui"
+    }
+  ]
+}

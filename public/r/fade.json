@@ -1,0 +1,65 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "fade",
+  "title": "Fade",
+  "description": "Decorative gradient overlay for scroll edges.",
+  "type": "registry:ui",
+  "meta": {
+    "library": "@compomo/ui",
+    "distribution": "npm",
+    "storybook": "https://zainadeel.github.io/CompoMo/?path=/story/fade",
+    "consumption": {
+      "install": "npm install @compomo/ui @ds-mo/tokens",
+      "cssSetup": "Import tokens CSS at your app entry point: import '@ds-mo/tokens/css';\nThis provides all var(--color-*), var(--dimension-*), var(--effect-*), and var(--typography-*) custom properties.\nFor dark mode, set data-theme=\"dark\" on <html>.",
+      "import": "import { Fade } from '@compomo/ui';",
+      "cssImport": "import '@compomo/ui/css';",
+      "typeImport": "import type { FadeProps, FadeSide } from '@compomo/ui';",
+      "peerDependencies": {
+        "required": [
+          "react >=17",
+          "react-dom >=17",
+          "@ds-mo/tokens >=0.1.0"
+        ],
+        "optional": []
+      }
+    },
+    "props": {
+      "side": {
+        "type": "'top' | 'bottom' | 'left' | 'right'",
+        "required": true
+      },
+      "height": {
+        "type": "string",
+        "required": true
+      },
+      "background": {
+        "type": "string",
+        "default": "'var(--color-background-secondary)'"
+      }
+    },
+    "exports": [
+      "Fade"
+    ],
+    "types": [
+      "FadeProps",
+      "FadeSide"
+    ]
+  },
+  "dependencies": [
+    "@compomo/ui",
+    "@ds-mo/tokens"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "src/components/Fade/Fade.module.css",
+      "content": ".fade {\n  position: absolute;\n  pointer-events: none;\n  z-index: 10;\n  transform: translateZ(0);\n  backface-visibility: hidden;\n}\n\n@media (prefers-reduced-motion: reduce) {\n  .fade { transition: none; }\n}\n\n.fadeTop {\n  top: 0; left: 0; right: 0;\n  background: linear-gradient(to bottom, var(--background) 0%, var(--background) 50%, transparent 100%);\n}\n\n.fadeBottom {\n  bottom: 0; left: 0; right: 0;\n  background: linear-gradient(to top, var(--background) 0%, transparent 100%);\n}\n\n.fadeLeft {\n  top: 0; bottom: 0; left: 0;\n  background: linear-gradient(to right, var(--background) 0%, transparent 100%);\n}\n\n.fadeRight {\n  top: 0; bottom: 0; right: 0;\n  background: linear-gradient(to left, var(--background) 0%, transparent 100%);\n}\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/Fade/Fade.tsx",
+      "content": "import React, { forwardRef } from 'react';\nimport { cn } from '@/utils/cn';\nimport styles from './Fade.module.css';\n\nexport type FadeSide = 'top' | 'bottom' | 'left' | 'right';\n\nexport interface FadeProps {\n  side: FadeSide;\n  height: string;\n  background?: string;\n  className?: string;\n  style?: React.CSSProperties;\n}\n\nconst sideClassMap: Record<FadeSide, string> = {\n  top: 'fadeTop',\n  bottom: 'fadeBottom',\n  left: 'fadeLeft',\n  right: 'fadeRight',\n};\n\nexport const Fade = forwardRef<HTMLDivElement, FadeProps>(\n  ({ side, height, background = 'var(--color-background-secondary)', className, style = {} }, ref) => (\n    <div\n      ref={ref}\n      className={cn(styles.fade, styles[sideClassMap[side]], className)}\n      style={{ ...style, height, '--background': background } as React.CSSProperties}\n      aria-hidden=\"true\"\n    />\n  )\n);\n\nFade.displayName = 'Fade';\n",
+      "type": "registry:ui"
+    }
+  ]
+}

@@ -1,0 +1,1600 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry.json",
+  "name": "compomo",
+  "homepage": "https://zainadeel.github.io/CompoMo/",
+  "description": "CompoMo (@compomo/ui) — React component library from the ds-mo design system. Distributed as an npm package, not copy-paste. Components require @ds-mo/tokens for CSS custom properties and optionally @ds-mo/icons for icon props.",
+  "meta": {
+    "distribution": "npm",
+    "install": "npm install @compomo/ui @ds-mo/tokens",
+    "cssSetup": "import '@ds-mo/tokens/css';  // Provides design token CSS custom properties\nimport '@compomo/ui/css';     // Provides component styles",
+    "themeSetup": "Set data-theme=\"dark\" on <html> for dark mode. Light is default.",
+    "peerDependencies": {
+      "required": [
+        "react >=17",
+        "react-dom >=17",
+        "@ds-mo/tokens >=0.1.0"
+      ],
+      "optional": [
+        "@ds-mo/icons >=0.1.0"
+      ]
+    }
+  },
+  "items": [
+    {
+      "name": "text",
+      "title": "Text",
+      "description": "Typography primitive supporting all design-system text variants, colors, truncation, and wrapping.",
+      "type": "registry:ui",
+      "meta": {
+        "library": "@compomo/ui",
+        "distribution": "npm",
+        "storybook": "https://zainadeel.github.io/CompoMo/?path=/story/text",
+        "exports": [
+          "Text"
+        ],
+        "props": {
+          "variant": {
+            "type": "TextVariant",
+            "required": false
+          },
+          "children": {
+            "type": "React.ReactNode",
+            "required": true
+          },
+          "color": {
+            "type": "TextColor",
+            "required": false
+          },
+          "as": {
+            "type": "'p' | 'span' | 'div' | 'label' | 'h1'-'h6'",
+            "required": false
+          },
+          "lineTruncation": {
+            "type": "1 | 2 | 3 | 4 | 5 | \"none\"",
+            "required": false
+          },
+          "decoration": {
+            "type": "'none' | 'underline' | 'dotted-underline'",
+            "required": false
+          },
+          "italic": {
+            "type": "boolean",
+            "required": false
+          },
+          "align": {
+            "type": "'left' | 'center' | 'right'",
+            "required": false
+          },
+          "wrap": {
+            "type": "'wrap' | 'nowrap' | 'balance' | 'pretty'",
+            "required": false
+          }
+        }
+      },
+      "dependencies": [
+        "@compomo/ui",
+        "@ds-mo/tokens"
+      ],
+      "registryDependencies": []
+    },
+    {
+      "name": "surface",
+      "title": "Surface",
+      "description": "Foundational container with intent-based or background-based coloring, elevation, edges, radius, and interactive states.",
+      "type": "registry:ui",
+      "meta": {
+        "library": "@compomo/ui",
+        "distribution": "npm",
+        "storybook": "https://zainadeel.github.io/CompoMo/?path=/story/surface",
+        "exports": [
+          "Surface"
+        ],
+        "props": {
+          "intent": {
+            "type": "'brand' | 'positive' | 'negative' | 'warning' | 'caution' | 'ai' | 'neutral' | 'walkthrough' | 'guide'",
+            "required": false
+          },
+          "contrast": {
+            "type": "'faint' | 'medium' | 'bold' | 'strong'",
+            "required": false
+          },
+          "background": {
+            "type": "'primary' | 'secondary' | 'transparent' | 'translucent'",
+            "required": false
+          },
+          "elevation": {
+            "type": "'none' | 'depressed' | 'depressed-md' | 'flat' | 'elevated' | 'floating' | 'overlayTop' | 'overlayRight' | 'overlayBottom' | 'overlayLeft'",
+            "required": false
+          },
+          "edge": {
+            "type": "SurfaceEdge | SurfaceEdge[]",
+            "required": false
+          },
+          "radius": {
+            "type": "'none' | 'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl' | 'full' | string",
+            "required": false
+          },
+          "interactive": {
+            "type": "boolean",
+            "required": false
+          },
+          "selected": {
+            "type": "boolean",
+            "required": false
+          },
+          "inactive": {
+            "type": "boolean",
+            "required": false
+          },
+          "as": {
+            "type": "'div' | 'section' | 'aside' | 'article' | 'header' | 'footer' | 'main' | 'nav' | 'span' | 'button' | 'td' | 'th'",
+            "required": false
+          }
+        }
+      },
+      "dependencies": [
+        "@compomo/ui",
+        "@ds-mo/tokens"
+      ],
+      "registryDependencies": []
+    },
+    {
+      "name": "card",
+      "title": "Card",
+      "description": "Content container with header, body, and footer sections. Supports elevation and radius presets.",
+      "type": "registry:ui",
+      "meta": {
+        "library": "@compomo/ui",
+        "distribution": "npm",
+        "storybook": "https://zainadeel.github.io/CompoMo/?path=/story/card",
+        "exports": [
+          "Card"
+        ],
+        "props": {
+          "children": {
+            "type": "React.ReactNode",
+            "required": true
+          },
+          "header": {
+            "type": "React.ReactNode",
+            "required": false
+          },
+          "footer": {
+            "type": "React.ReactNode",
+            "required": false
+          },
+          "elevation": {
+            "type": "'flat' | 'elevated' | 'floating'",
+            "required": false
+          },
+          "radius": {
+            "type": "'sm' | 'md' | 'lg' | 'xl'",
+            "required": false
+          }
+        }
+      },
+      "dependencies": [
+        "@compomo/ui",
+        "@ds-mo/tokens"
+      ],
+      "registryDependencies": [
+        "surface"
+      ]
+    },
+    {
+      "name": "button",
+      "title": "Button",
+      "description": "Primary action component with variants (primary/secondary), 8 semantic intents, 4 sizes, icon support, loading state, dropdown indicator, badge count, and elevation levels.",
+      "type": "registry:ui",
+      "meta": {
+        "library": "@compomo/ui",
+        "distribution": "npm",
+        "storybook": "https://zainadeel.github.io/CompoMo/?path=/story/button",
+        "exports": [
+          "Button"
+        ],
+        "props": {
+          "label": {
+            "type": "string",
+            "required": false
+          },
+          "icon": {
+            "type": "IconComponent",
+            "required": false
+          },
+          "variant": {
+            "type": "'primary' | 'secondary'",
+            "required": false
+          },
+          "intent": {
+            "type": "'none' | 'neutral' | 'brand' | 'ai' | 'negative' | 'warning' | 'caution' | 'positive'",
+            "required": false
+          },
+          "size": {
+            "type": "'xs' | 'sm' | 'md' | 'lg'",
+            "required": false
+          },
+          "contrast": {
+            "type": "'strong' | 'bold' | 'medium' | 'faint'",
+            "required": false
+          },
+          "elevation": {
+            "type": "'none' | 'flat' | 'elevated' | 'floating'",
+            "required": false
+          },
+          "loading": {
+            "type": "boolean",
+            "required": false
+          },
+          "dropdown": {
+            "type": "boolean",
+            "required": false
+          },
+          "badgeCount": {
+            "type": "number",
+            "required": false
+          },
+          "rounded": {
+            "type": "boolean",
+            "required": false
+          },
+          "fullWidth": {
+            "type": "boolean",
+            "required": false
+          },
+          "inactive": {
+            "type": "boolean",
+            "required": false
+          },
+          "as": {
+            "type": "React.ElementType",
+            "required": false
+          },
+          "onClick": {
+            "type": "(e: React.MouseEvent<HTMLElement>) => void",
+            "required": false
+          }
+        }
+      },
+      "dependencies": [
+        "@compomo/ui",
+        "@ds-mo/tokens",
+        "@ds-mo/icons"
+      ],
+      "registryDependencies": [
+        "text",
+        "loader",
+        "label-wrap"
+      ]
+    },
+    {
+      "name": "toggle-button",
+      "title": "ToggleButton",
+      "description": "Controlled toggle button with pressed state, icon and label support.",
+      "type": "registry:ui",
+      "meta": {
+        "library": "@compomo/ui",
+        "distribution": "npm",
+        "storybook": "https://zainadeel.github.io/CompoMo/?path=/story/toggle-button",
+        "exports": [
+          "ToggleButton"
+        ],
+        "props": {
+          "pressed": {
+            "type": "boolean",
+            "required": true
+          },
+          "onPressedChange": {
+            "type": "(pressed: boolean) => void",
+            "required": true
+          },
+          "label": {
+            "type": "string",
+            "required": false
+          },
+          "icon": {
+            "type": "IconComponent",
+            "required": false
+          },
+          "size": {
+            "type": "'md' | 'sm' | 'xs'",
+            "required": false
+          },
+          "elevation": {
+            "type": "'none' | 'flat' | 'elevated' | 'floating'",
+            "required": false
+          },
+          "rounded": {
+            "type": "boolean",
+            "required": false
+          },
+          "inactive": {
+            "type": "boolean",
+            "required": false
+          }
+        }
+      },
+      "dependencies": [
+        "@compomo/ui",
+        "@ds-mo/tokens",
+        "@ds-mo/icons"
+      ],
+      "registryDependencies": [
+        "text"
+      ]
+    },
+    {
+      "name": "button-group",
+      "title": "ButtonGroup",
+      "description": "Groups Button children with automatic dividers and shared elevation/rounding. Reads props from first child to drive group styling.",
+      "type": "registry:ui",
+      "meta": {
+        "library": "@compomo/ui",
+        "distribution": "npm",
+        "storybook": "https://zainadeel.github.io/CompoMo/?path=/story/button-group",
+        "exports": [
+          "ButtonGroup"
+        ],
+        "props": {
+          "children": {
+            "type": "React.ReactNode",
+            "required": true
+          }
+        }
+      },
+      "dependencies": [
+        "@compomo/ui",
+        "@ds-mo/tokens"
+      ],
+      "registryDependencies": [
+        "button"
+      ]
+    },
+    {
+      "name": "toggle-button-group",
+      "title": "ToggleButtonGroup",
+      "description": "Groups ToggleButton children with dividers and shared chrome.",
+      "type": "registry:ui",
+      "meta": {
+        "library": "@compomo/ui",
+        "distribution": "npm",
+        "storybook": "https://zainadeel.github.io/CompoMo/?path=/story/toggle-button-group",
+        "exports": [
+          "ToggleButtonGroup"
+        ],
+        "props": {
+          "children": {
+            "type": "React.ReactNode",
+            "required": true
+          }
+        }
+      },
+      "dependencies": [
+        "@compomo/ui",
+        "@ds-mo/tokens"
+      ],
+      "registryDependencies": [
+        "toggle-button"
+      ]
+    },
+    {
+      "name": "tag",
+      "title": "Tag",
+      "description": "Semantic label with intent coloring, removable chip, pressable filter-chip mode, and icon support.",
+      "type": "registry:ui",
+      "meta": {
+        "library": "@compomo/ui",
+        "distribution": "npm",
+        "storybook": "https://zainadeel.github.io/CompoMo/?path=/story/tag",
+        "exports": [
+          "Tag"
+        ],
+        "props": {
+          "label": {
+            "type": "string",
+            "required": true
+          },
+          "intent": {
+            "type": "'neutral' | 'brand' | 'ai' | 'negative' | 'warning' | 'caution' | 'positive'",
+            "required": false
+          },
+          "contrast": {
+            "type": "'strong' | 'bold' | 'medium' | 'faint'",
+            "required": false
+          },
+          "size": {
+            "type": "'md' | 'sm' | 'xs'",
+            "required": false
+          },
+          "rounded": {
+            "type": "boolean",
+            "required": false
+          },
+          "icon": {
+            "type": "IconComponent",
+            "required": false
+          },
+          "removable": {
+            "type": "boolean",
+            "required": false
+          },
+          "onRemove": {
+            "type": "() => void",
+            "required": false
+          },
+          "pressed": {
+            "type": "boolean",
+            "required": false
+          },
+          "onPressedChange": {
+            "type": "(pressed: boolean) => void",
+            "required": false
+          },
+          "onClick": {
+            "type": "() => void",
+            "required": false
+          },
+          "inactive": {
+            "type": "boolean",
+            "required": false
+          }
+        }
+      },
+      "dependencies": [
+        "@compomo/ui",
+        "@ds-mo/tokens",
+        "@ds-mo/icons"
+      ],
+      "registryDependencies": [
+        "text"
+      ]
+    },
+    {
+      "name": "badge",
+      "title": "Badge",
+      "description": "Compact count indicator with selection state.",
+      "type": "registry:ui",
+      "meta": {
+        "library": "@compomo/ui",
+        "distribution": "npm",
+        "storybook": "https://zainadeel.github.io/CompoMo/?path=/story/badge",
+        "exports": [
+          "Badge"
+        ],
+        "props": {
+          "count": {
+            "type": "number",
+            "required": true
+          },
+          "isSelected": {
+            "type": "boolean",
+            "required": false
+          }
+        }
+      },
+      "dependencies": [
+        "@compomo/ui",
+        "@ds-mo/tokens"
+      ],
+      "registryDependencies": [
+        "text"
+      ]
+    },
+    {
+      "name": "loader",
+      "title": "Loader",
+      "description": "SVG spinner that scales proportionally. Uses currentColor for theming.",
+      "type": "registry:ui",
+      "meta": {
+        "library": "@compomo/ui",
+        "distribution": "npm",
+        "storybook": "https://zainadeel.github.io/CompoMo/?path=/story/loader",
+        "exports": [
+          "Loader"
+        ],
+        "props": {
+          "size": {
+            "type": "number",
+            "required": false
+          }
+        }
+      },
+      "dependencies": [
+        "@compomo/ui"
+      ],
+      "registryDependencies": []
+    },
+    {
+      "name": "toggle",
+      "title": "Toggle",
+      "description": "Switch control with on/off state and accessible role=\"switch\".",
+      "type": "registry:ui",
+      "meta": {
+        "library": "@compomo/ui",
+        "distribution": "npm",
+        "storybook": "https://zainadeel.github.io/CompoMo/?path=/story/toggle",
+        "exports": [
+          "Toggle"
+        ],
+        "props": {
+          "checked": {
+            "type": "boolean",
+            "required": false
+          },
+          "onChange": {
+            "type": "(checked: boolean) => void",
+            "required": false
+          },
+          "inactive": {
+            "type": "boolean",
+            "required": false
+          },
+          "aria-label": {
+            "type": "string",
+            "required": false
+          }
+        }
+      },
+      "dependencies": [
+        "@compomo/ui",
+        "@ds-mo/tokens"
+      ],
+      "registryDependencies": []
+    },
+    {
+      "name": "checkbox",
+      "title": "Checkbox",
+      "description": "Three-state checkbox (checked, unchecked, indeterminate) with keyboard support and custom icon slots.",
+      "type": "registry:ui",
+      "meta": {
+        "library": "@compomo/ui",
+        "distribution": "npm",
+        "storybook": "https://zainadeel.github.io/CompoMo/?path=/story/checkbox",
+        "exports": [
+          "Checkbox"
+        ],
+        "props": {
+          "label": {
+            "type": "string",
+            "required": true
+          },
+          "checked": {
+            "type": "boolean",
+            "required": false
+          },
+          "indeterminate": {
+            "type": "boolean",
+            "required": false
+          },
+          "onChange": {
+            "type": "(checked: boolean) => void",
+            "required": false
+          },
+          "inactive": {
+            "type": "boolean",
+            "required": false
+          },
+          "checkedIcon": {
+            "type": "IconComponent",
+            "required": false
+          },
+          "uncheckedIcon": {
+            "type": "IconComponent",
+            "required": false
+          },
+          "indeterminateIcon": {
+            "type": "IconComponent",
+            "required": false
+          }
+        }
+      },
+      "dependencies": [
+        "@compomo/ui",
+        "@ds-mo/tokens",
+        "@ds-mo/icons"
+      ],
+      "registryDependencies": [
+        "text"
+      ]
+    },
+    {
+      "name": "input",
+      "title": "Input",
+      "description": "Text input supporting text, email, tel, url, search, and password types. Search type includes auto clear button.",
+      "type": "registry:ui",
+      "meta": {
+        "library": "@compomo/ui",
+        "distribution": "npm",
+        "storybook": "https://zainadeel.github.io/CompoMo/?path=/story/input",
+        "exports": [
+          "Input"
+        ],
+        "props": {
+          "value": {
+            "type": "string",
+            "required": true
+          },
+          "onChange": {
+            "type": "(e: React.ChangeEvent<HTMLInputElement>) => void",
+            "required": true
+          },
+          "type": {
+            "type": "'text' | 'email' | 'tel' | 'url' | 'search' | 'password'",
+            "required": false
+          },
+          "placeholder": {
+            "type": "string",
+            "required": false
+          },
+          "suffix": {
+            "type": "React.ReactNode",
+            "required": false
+          },
+          "inactive": {
+            "type": "boolean",
+            "required": false
+          },
+          "clearIcon": {
+            "type": "IconComponent",
+            "required": false
+          }
+        }
+      },
+      "dependencies": [
+        "@compomo/ui",
+        "@ds-mo/tokens"
+      ],
+      "registryDependencies": []
+    },
+    {
+      "name": "slider",
+      "title": "Slider",
+      "description": "Range input with visual fill track, label, and current value display.",
+      "type": "registry:ui",
+      "meta": {
+        "library": "@compomo/ui",
+        "distribution": "npm",
+        "storybook": "https://zainadeel.github.io/CompoMo/?path=/story/slider",
+        "exports": [
+          "Slider"
+        ],
+        "props": {
+          "value": {
+            "type": "number",
+            "required": true
+          },
+          "onChange": {
+            "type": "(value: number) => void",
+            "required": true
+          },
+          "min": {
+            "type": "number",
+            "required": false
+          },
+          "max": {
+            "type": "number",
+            "required": false
+          },
+          "step": {
+            "type": "number",
+            "required": false
+          },
+          "label": {
+            "type": "string",
+            "required": true
+          },
+          "inactive": {
+            "type": "boolean",
+            "required": false
+          }
+        }
+      },
+      "dependencies": [
+        "@compomo/ui",
+        "@ds-mo/tokens"
+      ],
+      "registryDependencies": [
+        "text"
+      ]
+    },
+    {
+      "name": "field",
+      "title": "Field",
+      "description": "Simple label wrapper that links to child input via htmlFor.",
+      "type": "registry:ui",
+      "meta": {
+        "library": "@compomo/ui",
+        "distribution": "npm",
+        "storybook": "https://zainadeel.github.io/CompoMo/?path=/story/field",
+        "exports": [
+          "Field"
+        ],
+        "props": {
+          "label": {
+            "type": "string",
+            "required": true
+          },
+          "children": {
+            "type": "React.ReactNode",
+            "required": true
+          },
+          "id": {
+            "type": "string",
+            "required": false
+          }
+        }
+      },
+      "dependencies": [
+        "@compomo/ui",
+        "@ds-mo/tokens"
+      ],
+      "registryDependencies": [
+        "text"
+      ]
+    },
+    {
+      "name": "select",
+      "title": "Select",
+      "description": "Dropdown select using Menu internally. Supports placeholder, inactive state, and custom chevron icon.",
+      "type": "registry:ui",
+      "meta": {
+        "library": "@compomo/ui",
+        "distribution": "npm",
+        "storybook": "https://zainadeel.github.io/CompoMo/?path=/story/select",
+        "exports": [
+          "Select"
+        ],
+        "props": {
+          "value": {
+            "type": "string | number",
+            "required": true
+          },
+          "onChange": {
+            "type": "(value: string | number) => void",
+            "required": true
+          },
+          "options": {
+            "type": "SelectOption[]",
+            "required": true
+          },
+          "placeholder": {
+            "type": "string",
+            "required": false
+          },
+          "inactive": {
+            "type": "boolean",
+            "required": false
+          },
+          "chevronIcon": {
+            "type": "IconComponent",
+            "required": false
+          }
+        }
+      },
+      "dependencies": [
+        "@compomo/ui",
+        "@ds-mo/tokens"
+      ],
+      "registryDependencies": [
+        "menu",
+        "surface",
+        "text"
+      ]
+    },
+    {
+      "name": "modal",
+      "title": "Modal",
+      "description": "Dialog overlay with portal rendering, escape-to-close, backdrop click, focus management, and entry/exit animations.",
+      "type": "registry:ui",
+      "meta": {
+        "library": "@compomo/ui",
+        "distribution": "npm",
+        "storybook": "https://zainadeel.github.io/CompoMo/?path=/story/modal",
+        "exports": [
+          "Modal"
+        ],
+        "props": {
+          "isOpen": {
+            "type": "boolean",
+            "required": true
+          },
+          "onClose": {
+            "type": "() => void",
+            "required": true
+          },
+          "title": {
+            "type": "string",
+            "required": true
+          },
+          "children": {
+            "type": "React.ReactNode",
+            "required": true
+          },
+          "subtitle": {
+            "type": "React.ReactNode",
+            "required": false
+          },
+          "footer": {
+            "type": "React.ReactNode",
+            "required": false
+          },
+          "width": {
+            "type": "'sm' | 'md' | 'lg' | string",
+            "required": false
+          }
+        }
+      },
+      "dependencies": [
+        "@compomo/ui",
+        "@ds-mo/tokens"
+      ],
+      "registryDependencies": [
+        "surface",
+        "text"
+      ]
+    },
+    {
+      "name": "menu",
+      "title": "Menu",
+      "description": "Positioned dropdown menu with sections, item selection styles, toggle items, and destructive hold-to-confirm items.",
+      "type": "registry:ui",
+      "meta": {
+        "library": "@compomo/ui",
+        "distribution": "npm",
+        "storybook": "https://zainadeel.github.io/CompoMo/?path=/story/menu",
+        "exports": [
+          "Menu",
+          "MenuItem",
+          "DestructiveMenuItem"
+        ],
+        "props": {
+          "isOpen": {
+            "type": "boolean",
+            "required": true
+          },
+          "onClose": {
+            "type": "() => void",
+            "required": true
+          },
+          "anchorRef": {
+            "type": "React.RefObject<HTMLElement | null>",
+            "required": true
+          },
+          "items": {
+            "type": "MenuItemData[]",
+            "required": false
+          },
+          "sections": {
+            "type": "MenuSection[]",
+            "required": false
+          },
+          "side": {
+            "type": "'top' | 'right' | 'bottom' | 'left'",
+            "required": false
+          },
+          "align": {
+            "type": "'start' | 'center' | 'end'",
+            "required": false
+          },
+          "matchAnchorWidth": {
+            "type": "boolean",
+            "required": false
+          }
+        }
+      },
+      "dependencies": [
+        "@compomo/ui",
+        "@ds-mo/tokens"
+      ],
+      "registryDependencies": [
+        "surface",
+        "text",
+        "toggle"
+      ]
+    },
+    {
+      "name": "tooltip",
+      "title": "Tooltip",
+      "description": "Positioned tooltip with portal rendering, delay, keyboard shortcut display, and viewport clamping.",
+      "type": "registry:ui",
+      "meta": {
+        "library": "@compomo/ui",
+        "distribution": "npm",
+        "storybook": "https://zainadeel.github.io/CompoMo/?path=/story/tooltip",
+        "exports": [
+          "Tooltip"
+        ],
+        "props": {
+          "label": {
+            "type": "string",
+            "required": true
+          },
+          "children": {
+            "type": "React.ReactElement",
+            "required": true
+          },
+          "side": {
+            "type": "'top' | 'right' | 'bottom' | 'left'",
+            "required": false
+          },
+          "align": {
+            "type": "'start' | 'center' | 'end'",
+            "required": false
+          },
+          "delay": {
+            "type": "number",
+            "required": false
+          },
+          "shortcutKey": {
+            "type": "string",
+            "required": false
+          }
+        }
+      },
+      "dependencies": [
+        "@compomo/ui",
+        "@ds-mo/tokens"
+      ],
+      "registryDependencies": [
+        "text"
+      ]
+    },
+    {
+      "name": "banner",
+      "title": "Banner",
+      "description": "Intent-colored message bar. Supports floating toast mode with auto-dismiss and fade-out animation.",
+      "type": "registry:ui",
+      "meta": {
+        "library": "@compomo/ui",
+        "distribution": "npm",
+        "storybook": "https://zainadeel.github.io/CompoMo/?path=/story/banner",
+        "exports": [
+          "Banner"
+        ],
+        "props": {
+          "intent": {
+            "type": "'brand' | 'positive' | 'negative' | 'warning' | 'caution' | 'ai' | 'neutral' | 'walkthrough' | 'guide'",
+            "required": true
+          },
+          "contrast": {
+            "type": "'faint' | 'medium' | 'bold' | 'strong'",
+            "required": true
+          },
+          "message": {
+            "type": "string",
+            "required": true
+          },
+          "floating": {
+            "type": "boolean",
+            "required": false
+          },
+          "onDismiss": {
+            "type": "() => void",
+            "required": false
+          },
+          "header": {
+            "type": "boolean",
+            "required": false
+          }
+        }
+      },
+      "dependencies": [
+        "@compomo/ui",
+        "@ds-mo/tokens"
+      ],
+      "registryDependencies": [
+        "surface",
+        "text"
+      ]
+    },
+    {
+      "name": "table",
+      "title": "Table",
+      "description": "Data table with CSS grid layout, sorting, pagination, loading skeleton, row selection, and custom cell rendering.",
+      "type": "registry:ui",
+      "meta": {
+        "library": "@compomo/ui",
+        "distribution": "npm",
+        "storybook": "https://zainadeel.github.io/CompoMo/?path=/story/table",
+        "exports": [
+          "Table"
+        ],
+        "props": {
+          "columns": {
+            "type": "TableColumn<T>[]",
+            "required": true
+          },
+          "data": {
+            "type": "T[]",
+            "required": true
+          },
+          "sortState": {
+            "type": "SortState",
+            "required": false
+          },
+          "onSort": {
+            "type": "(columnId: string) => void",
+            "required": false
+          },
+          "onRowClick": {
+            "type": "(row: T, rowIndex: number) => void",
+            "required": false
+          },
+          "selectedRows": {
+            "type": "Set<number>",
+            "required": false
+          },
+          "loading": {
+            "type": "boolean",
+            "required": false
+          },
+          "pagination": {
+            "type": "PaginationState",
+            "required": false
+          },
+          "onPaginationChange": {
+            "type": "(pageIndex: number, pageSize: number) => void",
+            "required": false
+          },
+          "emptyMessage": {
+            "type": "string",
+            "required": false
+          }
+        }
+      },
+      "dependencies": [
+        "@compomo/ui",
+        "@ds-mo/tokens"
+      ],
+      "registryDependencies": [
+        "text",
+        "surface",
+        "skeleton"
+      ]
+    },
+    {
+      "name": "tab",
+      "title": "Tab",
+      "description": "Individual tab button with selected state and hover overlay.",
+      "type": "registry:ui",
+      "meta": {
+        "library": "@compomo/ui",
+        "distribution": "npm",
+        "storybook": "https://zainadeel.github.io/CompoMo/?path=/story/tab",
+        "exports": [
+          "Tab"
+        ],
+        "props": {
+          "label": {
+            "type": "string",
+            "required": true
+          },
+          "isSelected": {
+            "type": "boolean",
+            "required": false
+          },
+          "onClick": {
+            "type": "() => void",
+            "required": false
+          }
+        }
+      },
+      "dependencies": [
+        "@compomo/ui",
+        "@ds-mo/tokens"
+      ],
+      "registryDependencies": [
+        "text"
+      ]
+    },
+    {
+      "name": "empty-state",
+      "title": "EmptyState",
+      "description": "Centered placeholder for empty content, no results, or no access states.",
+      "type": "registry:ui",
+      "meta": {
+        "library": "@compomo/ui",
+        "distribution": "npm",
+        "storybook": "https://zainadeel.github.io/CompoMo/?path=/story/empty-state",
+        "exports": [
+          "EmptyState"
+        ],
+        "props": {
+          "type": {
+            "type": "'no-content' | 'no-results' | 'no-results-filter' | 'no-access'",
+            "required": false
+          },
+          "message": {
+            "type": "string",
+            "required": false
+          }
+        }
+      },
+      "dependencies": [
+        "@compomo/ui",
+        "@ds-mo/tokens"
+      ],
+      "registryDependencies": [
+        "text"
+      ]
+    },
+    {
+      "name": "fade",
+      "title": "Fade",
+      "description": "Decorative gradient overlay for scroll edges.",
+      "type": "registry:ui",
+      "meta": {
+        "library": "@compomo/ui",
+        "distribution": "npm",
+        "storybook": "https://zainadeel.github.io/CompoMo/?path=/story/fade",
+        "exports": [
+          "Fade"
+        ],
+        "props": {
+          "side": {
+            "type": "'top' | 'bottom' | 'left' | 'right'",
+            "required": true
+          },
+          "height": {
+            "type": "string",
+            "required": true
+          },
+          "background": {
+            "type": "string",
+            "required": false
+          }
+        }
+      },
+      "dependencies": [
+        "@compomo/ui",
+        "@ds-mo/tokens"
+      ],
+      "registryDependencies": []
+    },
+    {
+      "name": "scrollbar",
+      "title": "Scrollbar",
+      "description": "Custom scrollbar with draggable thumb, proportional sizing, and hover reveal.",
+      "type": "registry:ui",
+      "meta": {
+        "library": "@compomo/ui",
+        "distribution": "npm",
+        "storybook": "https://zainadeel.github.io/CompoMo/?path=/story/scrollbar",
+        "exports": [
+          "Scrollbar"
+        ],
+        "props": {
+          "children": {
+            "type": "React.ReactNode",
+            "required": true
+          },
+          "variant": {
+            "type": "'default' | 'thick'",
+            "required": false
+          },
+          "showTrackOnHover": {
+            "type": "boolean",
+            "required": false
+          },
+          "onScroll": {
+            "type": "(e: React.UIEvent<HTMLDivElement>) => void",
+            "required": false
+          }
+        }
+      },
+      "dependencies": [
+        "@compomo/ui",
+        "@ds-mo/tokens"
+      ],
+      "registryDependencies": []
+    },
+    {
+      "name": "error-boundary",
+      "title": "ErrorBoundary",
+      "description": "React error boundary with fallback UI and console logging.",
+      "type": "registry:ui",
+      "meta": {
+        "library": "@compomo/ui",
+        "distribution": "npm",
+        "storybook": "https://zainadeel.github.io/CompoMo/?path=/story/error-boundary",
+        "exports": [
+          "ErrorBoundary"
+        ],
+        "props": {
+          "children": {
+            "type": "React.ReactNode",
+            "required": true
+          },
+          "fallback": {
+            "type": "React.ReactNode",
+            "required": false
+          }
+        }
+      },
+      "dependencies": [
+        "@compomo/ui"
+      ],
+      "registryDependencies": [
+        "empty-state"
+      ]
+    },
+    {
+      "name": "sidebar",
+      "title": "Sidebar",
+      "description": "Resizable navigation sidebar with drag handle, snap-to-collapse, mobile mode, and nested sections/items.",
+      "type": "registry:ui",
+      "meta": {
+        "library": "@compomo/ui",
+        "distribution": "npm",
+        "storybook": "https://zainadeel.github.io/CompoMo/?path=/story/sidebar",
+        "exports": [
+          "Sidebar",
+          "SidebarSection",
+          "SidebarItem"
+        ],
+        "props": {
+          "children": {
+            "type": "React.ReactNode",
+            "required": true
+          },
+          "isCollapsed": {
+            "type": "boolean",
+            "required": false
+          },
+          "onToggle": {
+            "type": "() => void",
+            "required": false
+          },
+          "width": {
+            "type": "'mini' | 'default' | number",
+            "required": false
+          },
+          "resizable": {
+            "type": "boolean",
+            "required": false
+          },
+          "footer": {
+            "type": "React.ReactNode",
+            "required": false
+          },
+          "isMobile": {
+            "type": "boolean",
+            "required": false
+          }
+        }
+      },
+      "dependencies": [
+        "@compomo/ui",
+        "@ds-mo/tokens"
+      ],
+      "registryDependencies": [
+        "text",
+        "surface"
+      ]
+    },
+    {
+      "name": "header",
+      "title": "Header",
+      "description": "App header bar with background variants.",
+      "type": "registry:ui",
+      "meta": {
+        "library": "@compomo/ui",
+        "distribution": "npm",
+        "storybook": "https://zainadeel.github.io/CompoMo/?path=/story/header",
+        "exports": [
+          "Header"
+        ],
+        "props": {
+          "children": {
+            "type": "React.ReactNode",
+            "required": false
+          },
+          "background": {
+            "type": "HeaderBackground",
+            "required": false
+          }
+        }
+      },
+      "dependencies": [
+        "@compomo/ui",
+        "@ds-mo/tokens"
+      ],
+      "registryDependencies": [
+        "surface"
+      ]
+    },
+    {
+      "name": "radio",
+      "title": "RadioGroup",
+      "description": "Radio selection group with vertical/horizontal layout, per-option inactive, and keyboard navigation.",
+      "type": "registry:ui",
+      "meta": {
+        "library": "@compomo/ui",
+        "distribution": "npm",
+        "storybook": "https://zainadeel.github.io/CompoMo/?path=/story/radio",
+        "exports": [
+          "RadioGroup",
+          "RadioItem"
+        ],
+        "props": {
+          "value": {
+            "type": "string",
+            "required": true
+          },
+          "onChange": {
+            "type": "(value: string) => void",
+            "required": true
+          },
+          "options": {
+            "type": "RadioOption[]",
+            "required": true
+          },
+          "direction": {
+            "type": "'vertical' | 'horizontal'",
+            "required": false
+          },
+          "inactive": {
+            "type": "boolean",
+            "required": false
+          },
+          "aria-label": {
+            "type": "string",
+            "required": false
+          }
+        }
+      },
+      "dependencies": [
+        "@compomo/ui",
+        "@ds-mo/tokens"
+      ],
+      "registryDependencies": [
+        "text"
+      ]
+    },
+    {
+      "name": "tab-group",
+      "title": "TabGroup",
+      "description": "Tab orchestrator that wraps Tab components with an animated sliding indicator and active state management.",
+      "type": "registry:ui",
+      "meta": {
+        "library": "@compomo/ui",
+        "distribution": "npm",
+        "storybook": "https://zainadeel.github.io/CompoMo/?path=/story/tab-group",
+        "exports": [
+          "TabGroup"
+        ],
+        "props": {
+          "tabs": {
+            "type": "TabGroupTab[]",
+            "required": true
+          },
+          "activeIndex": {
+            "type": "number",
+            "required": false
+          },
+          "onTabChange": {
+            "type": "(index: number) => void",
+            "required": false
+          }
+        }
+      },
+      "dependencies": [
+        "@compomo/ui",
+        "@ds-mo/tokens"
+      ],
+      "registryDependencies": [
+        "tab"
+      ]
+    },
+    {
+      "name": "accordion",
+      "title": "Accordion",
+      "description": "Collapsible section list with single or multiple expand mode, animated height transitions, and controlled/uncontrolled state.",
+      "type": "registry:ui",
+      "meta": {
+        "library": "@compomo/ui",
+        "distribution": "npm",
+        "storybook": "https://zainadeel.github.io/CompoMo/?path=/story/accordion",
+        "exports": [
+          "Accordion",
+          "AccordionItem"
+        ],
+        "props": {
+          "items": {
+            "type": "AccordionItemData[]",
+            "required": true
+          },
+          "multiple": {
+            "type": "boolean",
+            "required": false
+          },
+          "expandedIds": {
+            "type": "string[]",
+            "required": false
+          },
+          "onExpandedChange": {
+            "type": "(ids: string[]) => void",
+            "required": false
+          }
+        }
+      },
+      "dependencies": [
+        "@compomo/ui",
+        "@ds-mo/tokens"
+      ],
+      "registryDependencies": [
+        "text"
+      ]
+    },
+    {
+      "name": "breadcrumb",
+      "title": "Breadcrumb",
+      "description": "Hierarchical navigation with link or button items, custom separator, and aria-current on the last item.",
+      "type": "registry:ui",
+      "meta": {
+        "library": "@compomo/ui",
+        "distribution": "npm",
+        "storybook": "https://zainadeel.github.io/CompoMo/?path=/story/breadcrumb",
+        "exports": [
+          "Breadcrumb"
+        ],
+        "props": {
+          "items": {
+            "type": "BreadcrumbItem[]",
+            "required": true
+          },
+          "separator": {
+            "type": "React.ReactNode",
+            "required": false
+          }
+        }
+      },
+      "dependencies": [
+        "@compomo/ui",
+        "@ds-mo/tokens"
+      ],
+      "registryDependencies": [
+        "text"
+      ]
+    },
+    {
+      "name": "pagination",
+      "title": "Pagination",
+      "description": "Standalone page navigation with ellipsis for large ranges, sibling count control, and keyboard-accessible buttons.",
+      "type": "registry:ui",
+      "meta": {
+        "library": "@compomo/ui",
+        "distribution": "npm",
+        "storybook": "https://zainadeel.github.io/CompoMo/?path=/story/pagination",
+        "exports": [
+          "Pagination"
+        ],
+        "props": {
+          "page": {
+            "type": "number",
+            "required": true
+          },
+          "totalPages": {
+            "type": "number",
+            "required": true
+          },
+          "onPageChange": {
+            "type": "(page: number) => void",
+            "required": true
+          },
+          "siblingCount": {
+            "type": "number",
+            "required": false
+          },
+          "inactive": {
+            "type": "boolean",
+            "required": false
+          }
+        }
+      },
+      "dependencies": [
+        "@compomo/ui",
+        "@ds-mo/tokens"
+      ],
+      "registryDependencies": [
+        "text"
+      ]
+    },
+    {
+      "name": "divider",
+      "title": "Divider",
+      "description": "Horizontal or vertical separator line using design tokens.",
+      "type": "registry:ui",
+      "meta": {
+        "library": "@compomo/ui",
+        "distribution": "npm",
+        "storybook": "https://zainadeel.github.io/CompoMo/?path=/story/divider",
+        "exports": [
+          "Divider"
+        ],
+        "props": {
+          "orientation": {
+            "type": "'horizontal' | 'vertical'",
+            "required": false
+          }
+        }
+      },
+      "dependencies": [
+        "@compomo/ui",
+        "@ds-mo/tokens"
+      ],
+      "registryDependencies": []
+    },
+    {
+      "name": "skeleton",
+      "title": "Skeleton",
+      "description": "Loading placeholder with text, circular, and rectangular variants. Supports multi-line text and shimmer animation.",
+      "type": "registry:ui",
+      "meta": {
+        "library": "@compomo/ui",
+        "distribution": "npm",
+        "storybook": "https://zainadeel.github.io/CompoMo/?path=/story/skeleton",
+        "exports": [
+          "Skeleton"
+        ],
+        "props": {
+          "variant": {
+            "type": "'text' | 'circular' | 'rectangular'",
+            "required": false
+          },
+          "width": {
+            "type": "string | number",
+            "required": false
+          },
+          "height": {
+            "type": "string | number",
+            "required": false
+          },
+          "lines": {
+            "type": "number",
+            "required": false
+          },
+          "animate": {
+            "type": "boolean",
+            "required": false
+          }
+        }
+      },
+      "dependencies": [
+        "@compomo/ui",
+        "@ds-mo/tokens"
+      ],
+      "registryDependencies": []
+    },
+    {
+      "name": "toast",
+      "title": "Toast",
+      "description": "Imperative toast notification system. Use toast.success()/error()/warning()/info() to show toasts. Place <ToastContainer /> once at the app root.",
+      "type": "registry:ui",
+      "meta": {
+        "library": "@compomo/ui",
+        "distribution": "npm",
+        "storybook": "https://zainadeel.github.io/CompoMo/?path=/story/toast",
+        "exports": [
+          "ToastContainer",
+          "toast",
+          "useToasts"
+        ],
+        "props": {
+          "position": {
+            "type": "'top-center' | 'top-right' | 'bottom-center' | 'bottom-right'",
+            "required": false
+          }
+        }
+      },
+      "dependencies": [
+        "@compomo/ui",
+        "@ds-mo/tokens"
+      ],
+      "registryDependencies": [
+        "surface",
+        "text"
+      ]
+    }
+  ]
+}

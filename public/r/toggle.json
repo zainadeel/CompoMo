@@ -1,0 +1,65 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "toggle",
+  "title": "Toggle",
+  "description": "Switch control with on/off state and accessible role=\"switch\".",
+  "type": "registry:ui",
+  "meta": {
+    "library": "@compomo/ui",
+    "distribution": "npm",
+    "storybook": "https://zainadeel.github.io/CompoMo/?path=/story/toggle",
+    "consumption": {
+      "install": "npm install @compomo/ui @ds-mo/tokens",
+      "cssSetup": "Import tokens CSS at your app entry point: import '@ds-mo/tokens/css';\nThis provides all var(--color-*), var(--dimension-*), var(--effect-*), and var(--typography-*) custom properties.\nFor dark mode, set data-theme=\"dark\" on <html>.",
+      "import": "import { Toggle } from '@compomo/ui';",
+      "cssImport": "import '@compomo/ui/css';",
+      "typeImport": "import type { ToggleProps } from '@compomo/ui';",
+      "peerDependencies": {
+        "required": [
+          "react >=17",
+          "react-dom >=17",
+          "@ds-mo/tokens >=0.1.0"
+        ],
+        "optional": []
+      }
+    },
+    "props": {
+      "checked": {
+        "type": "boolean",
+        "default": "false"
+      },
+      "onChange": {
+        "type": "(checked: boolean) => void"
+      },
+      "inactive": {
+        "type": "boolean"
+      },
+      "aria-label": {
+        "type": "string"
+      }
+    },
+    "exports": [
+      "Toggle"
+    ],
+    "types": [
+      "ToggleProps"
+    ]
+  },
+  "dependencies": [
+    "@compomo/ui",
+    "@ds-mo/tokens"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "src/components/Toggle/Toggle.module.css",
+      "content": ".toggle {\n  position: relative;\n  display: inline-flex;\n  align-items: center;\n  justify-content: flex-start;\n  width: var(--dimension-size-400);\n  height: var(--dimension-size-250);\n  padding: 0 var(--dimension-space-025);\n  border: none;\n  border-radius: var(--dimension-radius-half);\n  cursor: pointer;\n  user-select: none;\n  outline: none;\n  flex-shrink: 0;\n  background-color: var(--color-background-medium-neutral);\n  box-shadow: var(--effect-highlight-depressed-sm);\n  transition: background-color var(--effect-motion-short-2);\n}\n\n.toggle::before {\n  content: '';\n  position: absolute;\n  inset: 0;\n  border-radius: inherit;\n  box-shadow: var(--effect-shadow-depressed-sm);\n  pointer-events: none;\n}\n\n.toggle:focus-visible {\n  outline: var(--dimension-stroke-width-025) solid var(--color-interaction-focus);\n  outline-offset: var(--dimension-space-025);\n}\n\n.checked {\n  background-color: var(--color-foreground-bold-brand) !important;\n}\n\n.thumb {\n  position: relative;\n  flex-shrink: 0;\n  width: var(--dimension-size-200);\n  height: var(--dimension-size-200);\n  background-color: var(--color-background-primary);\n  border-radius: var(--dimension-radius-half);\n  box-shadow: var(--effect-elevation-elevated-sm);\n  transition: transform var(--effect-motion-short-2);\n  transform: translateX(0);\n  z-index: 1;\n}\n\n.thumb::after {\n  content: '';\n  position: absolute;\n  inset: 0;\n  background-color: transparent;\n  border-radius: inherit;\n  transition: var(--effect-transition-interaction-background-instant);\n  pointer-events: none;\n}\n\n.toggle:hover:not(.inactive) .thumb::after {\n  background-color: var(--color-interaction-hover);\n}\n\n.toggle:active:not(.inactive) .thumb::after {\n  background-color: var(--color-interaction-pressed);\n}\n\n.checked .thumb {\n  transform: translateX(var(--dimension-offset-150));\n}\n\n.toggle:active:not(.inactive) .thumb {\n  transform: translateX(0) scale(var(--dimension-scale-subtle)) !important;\n  transition: transform var(--effect-motion-instant);\n}\n\n.checked.toggle:active:not(.inactive) .thumb {\n  transform: translateX(var(--dimension-offset-150)) scale(var(--dimension-scale-subtle)) !important;\n  transition: transform var(--effect-motion-instant);\n}\n\n.inactive {\n  cursor: not-allowed;\n  opacity: 0.5;\n}\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/Toggle/Toggle.tsx",
+      "content": "import React, { forwardRef, useState } from 'react';\nimport { cn } from '@/utils/cn';\nimport styles from './Toggle.module.css';\n\nexport interface ToggleProps {\n  checked?: boolean;\n  onChange?: (checked: boolean) => void;\n  inactive?: boolean;\n  className?: string;\n  'aria-label'?: string;\n}\n\nexport const Toggle = forwardRef<HTMLButtonElement, ToggleProps>(\n  ({ checked = false, onChange, inactive = false, className, 'aria-label': ariaLabel }, ref) => {\n    const [isPressed, setIsPressed] = useState(false);\n\n    const handleMouseDown = (e: React.MouseEvent) => {\n      if (inactive) return;\n      e.preventDefault();\n      setIsPressed(true);\n    };\n\n    const handleMouseUp = () => {\n      if (inactive || !isPressed) return;\n      setIsPressed(false);\n      onChange?.(!checked);\n    };\n\n    const handleMouseLeave = () => {\n      if (isPressed) setIsPressed(false);\n    };\n\n    return (\n      <button\n        ref={ref}\n        type=\"button\"\n        role=\"switch\"\n        aria-checked={checked}\n        aria-label={ariaLabel}\n        disabled={inactive}\n        className={cn(styles.toggle, checked && styles.checked, inactive && styles.inactive, className)}\n        onMouseDown={handleMouseDown}\n        onMouseUp={handleMouseUp}\n        onMouseLeave={handleMouseLeave}\n      >\n        <span className={styles.thumb} />\n      </button>\n    );\n  }\n);\n\nToggle.displayName = 'Toggle';\n",
+      "type": "registry:ui"
+    }
+  ]
+}

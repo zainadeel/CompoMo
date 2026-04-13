@@ -1,0 +1,90 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "banner",
+  "title": "Banner",
+  "description": "Intent-colored message bar. Supports floating toast mode with auto-dismiss and fade-out animation.",
+  "type": "registry:ui",
+  "meta": {
+    "library": "@compomo/ui",
+    "distribution": "npm",
+    "storybook": "https://zainadeel.github.io/CompoMo/?path=/story/banner",
+    "consumption": {
+      "install": "npm install @compomo/ui @ds-mo/tokens",
+      "cssSetup": "Import tokens CSS at your app entry point: import '@ds-mo/tokens/css';\nThis provides all var(--color-*), var(--dimension-*), var(--effect-*), and var(--typography-*) custom properties.\nFor dark mode, set data-theme=\"dark\" on <html>.",
+      "import": "import { Banner } from '@compomo/ui';",
+      "cssImport": "import '@compomo/ui/css';",
+      "typeImport": "import type { BannerProps, BannerIntent, BannerContrast } from '@compomo/ui';",
+      "internalDependencies": [
+        {
+          "component": "Surface",
+          "note": "Used internally by Banner. No action needed — it's bundled in @compomo/ui."
+        },
+        {
+          "component": "Text",
+          "note": "Used internally by Banner. No action needed — it's bundled in @compomo/ui."
+        }
+      ],
+      "peerDependencies": {
+        "required": [
+          "react >=17",
+          "react-dom >=17",
+          "@ds-mo/tokens >=0.1.0"
+        ],
+        "optional": []
+      }
+    },
+    "props": {
+      "intent": {
+        "type": "'brand' | 'positive' | 'negative' | 'warning' | 'caution' | 'ai' | 'neutral' | 'walkthrough' | 'guide'",
+        "required": true
+      },
+      "contrast": {
+        "type": "'faint' | 'medium' | 'bold' | 'strong'",
+        "required": true
+      },
+      "message": {
+        "type": "string",
+        "required": true
+      },
+      "floating": {
+        "type": "boolean",
+        "description": "Renders as portal toast with auto-dismiss."
+      },
+      "onDismiss": {
+        "type": "() => void"
+      },
+      "header": {
+        "type": "boolean",
+        "description": "Shows decorative header."
+      }
+    },
+    "exports": [
+      "Banner"
+    ],
+    "types": [
+      "BannerProps",
+      "BannerIntent",
+      "BannerContrast"
+    ]
+  },
+  "dependencies": [
+    "@compomo/ui",
+    "@ds-mo/tokens"
+  ],
+  "registryDependencies": [
+    "surface",
+    "text"
+  ],
+  "files": [
+    {
+      "path": "src/components/Banner/Banner.module.css",
+      "content": ".bannerWrapper {}\n\n.banner {\n  position: relative;\n  display: flex;\n  flex-direction: column;\n  overflow: hidden;\n}\n\n.bannerHeaderSurface {\n  width: 100%;\n  height: var(--dimension-space-100);\n  flex-shrink: 0;\n  overflow: hidden;\n  border-bottom: var(--dimension-stroke-width-015) solid var(--color-border-primary);\n}\n\n.bannerHeader {\n  width: 100%;\n  height: 100%;\n  background: repeating-linear-gradient(\n    -45deg,\n    var(--banner-content),\n    var(--banner-content) var(--dimension-size-100),\n    transparent var(--dimension-size-100),\n    transparent var(--dimension-size-200)\n  );\n}\n\n.bannerBody {\n  padding: var(--dimension-space-075);\n  min-height: var(--dimension-size-400);\n}\n\n.message {\n  color: var(--banner-content);\n  line-height: var(--typography-lineheight-md);\n  display: block;\n}\n\n.floatingPosition {\n  position: fixed;\n  top: var(--dimension-space-200);\n  left: 50%;\n  transform: translateX(-50%);\n  pointer-events: none;\n}\n\n.floatingToast {\n  backface-visibility: hidden;\n  -webkit-font-smoothing: subpixel-antialiased;\n  animation: toastFadeIn var(--effect-motion-short-2) forwards;\n}\n\n.floatingToast.closing {\n  animation: toastFadeOut var(--effect-motion-short-3) forwards;\n}\n\n@keyframes toastFadeIn {\n  from { opacity: 0; transform: translateY(-8px); }\n  to { opacity: 1; transform: translateY(0); }\n}\n\n@keyframes toastFadeOut {\n  from { opacity: 1; transform: translateY(0); }\n  to { opacity: 0; transform: translateY(-4px); }\n}\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/Banner/Banner.tsx",
+      "content": "import React, { useState, useEffect, useCallback, useRef } from 'react';\nimport { createPortal } from 'react-dom';\nimport { Surface } from '@/components/Surface';\nimport { Text } from '@/components/Text';\nimport { getCssTimeMs } from '@/utils/css-tokens';\nimport styles from './Banner.module.css';\n\nconst TOAST_DURATION_FALLBACK_MS = 4000;\nconst FADE_OUT_DURATION_MS = 200;\n\nexport type BannerIntent =\n  | 'brand' | 'positive' | 'negative' | 'warning' | 'caution'\n  | 'ai' | 'neutral' | 'walkthrough' | 'guide';\n\nexport type BannerContrast = 'faint' | 'medium' | 'bold' | 'strong';\n\nexport interface BannerProps {\n  intent: BannerIntent;\n  contrast: BannerContrast;\n  message: string;\n  header?: boolean;\n  className?: string;\n  floating?: boolean;\n  onDismiss?: () => void;\n}\n\nconst getContentColorVar = (intent: BannerIntent, contrast: BannerContrast): string => {\n  if (contrast === 'bold') return 'var(--color-foreground-on-bold-background-primary)';\n  const contentContrast = contrast === 'faint' ? 'bold' : contrast === 'medium' ? 'strong' : 'medium';\n  return `var(--color-foreground-${contentContrast}-${intent})`;\n};\n\nexport const Banner: React.FC<BannerProps> = ({\n  intent,\n  contrast,\n  message,\n  header = false,\n  className = '',\n  floating = false,\n  onDismiss,\n}) => {\n  const toastDurationMs = getCssTimeMs('--effect-animation-delay-long-2', TOAST_DURATION_FALLBACK_MS);\n  const messageColor = getContentColorVar(intent, contrast);\n  const [isClosing, setIsClosing] = useState(false);\n  const dismissTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);\n  const closeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);\n\n  const scheduleDismiss = useCallback(() => {\n    if (dismissTimerRef.current) clearTimeout(dismissTimerRef.current);\n    if (closeTimerRef.current) clearTimeout(closeTimerRef.current);\n    dismissTimerRef.current = setTimeout(() => {\n      dismissTimerRef.current = null;\n      setIsClosing(true);\n      closeTimerRef.current = setTimeout(() => {\n        closeTimerRef.current = null;\n        onDismiss?.();\n      }, FADE_OUT_DURATION_MS);\n    }, toastDurationMs);\n  }, [onDismiss, toastDurationMs]);\n\n  useEffect(() => {\n    if (floating && message) scheduleDismiss();\n    return () => {\n      if (dismissTimerRef.current) clearTimeout(dismissTimerRef.current);\n      if (closeTimerRef.current) clearTimeout(closeTimerRef.current);\n    };\n  }, [floating, message, scheduleDismiss]);\n\n  const content = (\n    <div\n      className={`${styles.bannerWrapper} ${className}`.trim()}\n      style={{ '--banner-content': messageColor } as React.CSSProperties}\n    >\n      <Surface\n        elevation={floating ? 'floating' : 'elevated'}\n        intent={intent}\n        contrast={contrast}\n        radius=\"sm\"\n        className={styles.banner}\n      >\n        {header && (\n          <div className={styles.bannerHeaderSurface}>\n            <div className={styles.bannerHeader} aria-hidden />\n          </div>\n        )}\n        <div className={styles.bannerBody}>\n          <Text variant=\"text-body-medium\" as=\"span\" className={styles.message}>\n            {message}\n          </Text>\n        </div>\n      </Surface>\n    </div>\n  );\n\n  if (floating) {\n    return createPortal(\n      <div className={styles.floatingPosition} style={{ zIndex: 9998 }}>\n        <div className={`${styles.floatingToast} ${isClosing ? styles.closing : ''}`}>\n          {content}\n        </div>\n      </div>,\n      document.body\n    );\n  }\n\n  return content;\n};\n\nBanner.displayName = 'Banner';\n",
+      "type": "registry:ui"
+    }
+  ]
+}

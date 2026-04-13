@@ -1,0 +1,86 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "tooltip",
+  "title": "Tooltip",
+  "description": "Positioned tooltip with portal rendering, delay, keyboard shortcut display, and viewport clamping.",
+  "type": "registry:ui",
+  "meta": {
+    "library": "@compomo/ui",
+    "distribution": "npm",
+    "storybook": "https://zainadeel.github.io/CompoMo/?path=/story/tooltip",
+    "consumption": {
+      "install": "npm install @compomo/ui @ds-mo/tokens",
+      "cssSetup": "Import tokens CSS at your app entry point: import '@ds-mo/tokens/css';\nThis provides all var(--color-*), var(--dimension-*), var(--effect-*), and var(--typography-*) custom properties.\nFor dark mode, set data-theme=\"dark\" on <html>.",
+      "import": "import { Tooltip } from '@compomo/ui';",
+      "cssImport": "import '@compomo/ui/css';",
+      "typeImport": "import type { TooltipProps, TooltipSide, TooltipAlign } from '@compomo/ui';",
+      "internalDependencies": [
+        {
+          "component": "Text",
+          "note": "Used internally by Tooltip. No action needed — it's bundled in @compomo/ui."
+        }
+      ],
+      "peerDependencies": {
+        "required": [
+          "react >=17",
+          "react-dom >=17",
+          "@ds-mo/tokens >=0.1.0"
+        ],
+        "optional": []
+      }
+    },
+    "props": {
+      "label": {
+        "type": "string",
+        "required": true
+      },
+      "children": {
+        "type": "React.ReactElement",
+        "required": true
+      },
+      "side": {
+        "type": "'top' | 'right' | 'bottom' | 'left'",
+        "default": "'top'"
+      },
+      "align": {
+        "type": "'start' | 'center' | 'end'",
+        "default": "'center'"
+      },
+      "delay": {
+        "type": "number",
+        "description": "Hover delay in ms."
+      },
+      "shortcutKey": {
+        "type": "string",
+        "description": "Displays keyboard shortcut hint."
+      }
+    },
+    "exports": [
+      "Tooltip"
+    ],
+    "types": [
+      "TooltipProps",
+      "TooltipSide",
+      "TooltipAlign"
+    ]
+  },
+  "dependencies": [
+    "@compomo/ui",
+    "@ds-mo/tokens"
+  ],
+  "registryDependencies": [
+    "text"
+  ],
+  "files": [
+    {
+      "path": "src/components/Tooltip/Tooltip.module.css",
+      "content": ".tooltip {\n  box-sizing: border-box;\n  background-color: var(--color-background-primary);\n  border-radius: var(--dimension-radius-075);\n  box-shadow: var(--effect-elevation-elevated-floating);\n  padding: var(--dimension-space-050);\n  line-height: var(--typography-lineheight-sm);\n  pointer-events: none;\n  backface-visibility: hidden;\n  -webkit-font-smoothing: subpixel-antialiased;\n  animation: tooltipFadeIn var(--effect-motion-short-2) forwards;\n}\n\n.tooltipInner {\n  display: flex;\n  flex-direction: row;\n  align-items: center;\n  gap: var(--dimension-space-050);\n}\n\n.keyHint {\n  width: var(--dimension-size-200);\n  height: var(--dimension-size-200);\n  flex-shrink: 0;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  border: var(--dimension-stroke-width-015) solid var(--color-foreground-tertiary);\n  border-bottom-width: var(--dimension-stroke-width-025);\n  border-radius: var(--dimension-radius-025);\n}\n\n.tooltip.closing {\n  animation: tooltipFadeOut var(--effect-motion-short-3) forwards;\n}\n\n@keyframes tooltipFadeIn {\n  from { opacity: 0; }\n  to { opacity: 1; }\n}\n\n@keyframes tooltipFadeOut {\n  from { opacity: 1; }\n  to { opacity: 0; }\n}\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/Tooltip/Tooltip.tsx",
+      "content": "import React, { useState, useRef, useEffect, useLayoutEffect, useCallback } from 'react';\nimport { createPortal } from 'react-dom';\nimport { getCssTimeMs } from '@/utils/css-tokens';\nimport { Text } from '@/components/Text';\nimport styles from './Tooltip.module.css';\n\nconst HOVER_DELAY_FALLBACK_MS = 1000;\nconst INSTANT_REOPEN_MS = 300;\nconst FADE_OUT_DURATION_MS = 200;\n\nlet lastTooltipDismissedAt = 0;\n\nexport type TooltipSide = 'top' | 'right' | 'bottom' | 'left';\nexport type TooltipAlign = 'start' | 'center' | 'end';\n\nexport interface TooltipProps {\n  label: string;\n  children: React.ReactElement;\n  delay?: number;\n  side?: TooltipSide;\n  align?: TooltipAlign;\n  sideOffset?: number;\n  alignOffset?: number;\n  shortcutKey?: string;\n  shortcutKeyPosition?: 'start' | 'end';\n  usePortal?: boolean;\n}\n\nexport const Tooltip: React.FC<TooltipProps> = ({\n  label,\n  children,\n  delay,\n  side = 'top',\n  align = 'center',\n  sideOffset = 4,\n  alignOffset = 0,\n  shortcutKey,\n  shortcutKeyPosition = 'end',\n  usePortal = true,\n}) => {\n  const hoverDelayMs = getCssTimeMs('--effect-animation-delay-medium-3', HOVER_DELAY_FALLBACK_MS);\n  const resolvedDelay = delay ?? hoverDelayMs;\n  const anchorRef = useRef<HTMLElement | null>(null);\n  const tooltipRef = useRef<HTMLDivElement>(null);\n\n  const setAnchorRef = useCallback(\n    (el: HTMLElement | null) => {\n      (anchorRef as React.MutableRefObject<HTMLElement | null>).current = el;\n      const childEl = React.Children.only(children) as React.ReactElement<{ ref?: React.Ref<unknown> }>;\n      const childRef = 'ref' in childEl ? childEl.ref : undefined;\n      if (typeof childRef === 'function') childRef(el);\n      else if (childRef && typeof childRef === 'object') (childRef as React.MutableRefObject<unknown>).current = el;\n    },\n    [children]\n  );\n\n  const [open, setOpen] = useState(false);\n  const [isClosing, setIsClosing] = useState(false);\n  const [shouldRender, setShouldRender] = useState(false);\n  const [position, setPosition] = useState<{ x: number; y: number }>({ x: 0, y: 0 });\n  const [tooltipSize, setTooltipSize] = useState<{ width: number; height: number }>({ width: 0, height: 0 });\n  const delayTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);\n  const closeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);\n  const viewportPadding = 4;\n\n  const clearDelayTimer = () => {\n    if (delayTimerRef.current) { clearTimeout(delayTimerRef.current); delayTimerRef.current = null; }\n  };\n\n  const handleOpen = () => {\n    clearDelayTimer();\n    const showImmediately = Date.now() - lastTooltipDismissedAt < INSTANT_REOPEN_MS;\n    if (showImmediately) {\n      setOpen(true); setShouldRender(true); setIsClosing(false); return;\n    }\n    delayTimerRef.current = setTimeout(() => {\n      delayTimerRef.current = null;\n      setOpen(true); setShouldRender(true); setIsClosing(false);\n    }, resolvedDelay);\n  };\n\n  const handleClose = () => {\n    clearDelayTimer();\n    if (closeTimerRef.current) { clearTimeout(closeTimerRef.current); closeTimerRef.current = null; }\n    if (!open && !shouldRender) return;\n    lastTooltipDismissedAt = Date.now();\n    setIsClosing(true);\n    closeTimerRef.current = setTimeout(() => {\n      closeTimerRef.current = null;\n      setShouldRender(false); setOpen(false); setIsClosing(false);\n    }, FADE_OUT_DURATION_MS);\n  };\n\n  useEffect(() => () => { clearDelayTimer(); if (closeTimerRef.current) clearTimeout(closeTimerRef.current); }, []);\n\n  useLayoutEffect(() => {\n    if (!shouldRender || !tooltipRef.current) return;\n    const updateSize = () => {\n      if (!tooltipRef.current) return;\n      const rect = tooltipRef.current.getBoundingClientRect();\n      const w = rect.width || tooltipRef.current.offsetWidth;\n      const h = rect.height || tooltipRef.current.offsetHeight;\n      if (w > 0 && h > 0) setTooltipSize({ width: w, height: h });\n    };\n    updateSize();\n    requestAnimationFrame(updateSize);\n    if (typeof ResizeObserver !== 'undefined') {\n      const observer = new ResizeObserver(updateSize);\n      observer.observe(tooltipRef.current);\n      return () => observer.disconnect();\n    }\n  }, [shouldRender, label, shortcutKey, shortcutKeyPosition]);\n\n  useLayoutEffect(() => {\n    if (!shouldRender || !anchorRef.current || !tooltipRef.current) return;\n    const calculatePosition = () => {\n      if (!anchorRef.current || !tooltipRef.current) return;\n      const a = anchorRef.current.getBoundingClientRect();\n      const tw = tooltipRef.current.getBoundingClientRect().width || tooltipSize.width || 80;\n      const th = tooltipRef.current.getBoundingClientRect().height || tooltipSize.height || 24;\n      let x = 0, y = 0;\n      switch (side) {\n        case 'top':\n          y = a.top - th - sideOffset;\n          x = align === 'start' ? a.left + alignOffset : align === 'end' ? a.right - tw + alignOffset : a.left + a.width / 2 - tw / 2 + alignOffset;\n          break;\n        case 'bottom':\n          y = a.bottom + sideOffset;\n          x = align === 'start' ? a.left + alignOffset : align === 'end' ? a.right - tw + alignOffset : a.left + a.width / 2 - tw / 2 + alignOffset;\n          break;\n        case 'left':\n          x = a.left - tw - sideOffset;\n          y = align === 'start' ? a.top + alignOffset : align === 'end' ? a.bottom - th + alignOffset : a.top + a.height / 2 - th / 2 + alignOffset;\n          break;\n        case 'right':\n          x = a.right + sideOffset;\n          y = align === 'start' ? a.top + alignOffset : align === 'end' ? a.bottom - th + alignOffset : a.top + a.height / 2 - th / 2 + alignOffset;\n          break;\n      }\n      setPosition({\n        x: Math.min(Math.max(x, viewportPadding), window.innerWidth - tw - viewportPadding),\n        y: Math.min(Math.max(y, viewportPadding), window.innerHeight - th - viewportPadding),\n      });\n    };\n    calculatePosition();\n    requestAnimationFrame(() => requestAnimationFrame(calculatePosition));\n  }, [shouldRender, side, align, sideOffset, alignOffset, tooltipSize.width, tooltipSize.height, label]);\n\n  useEffect(() => {\n    if (!shouldRender) return;\n    const onScrollResize = () => {\n      if (!anchorRef.current || !tooltipRef.current) return;\n      const a = anchorRef.current.getBoundingClientRect();\n      const tw = tooltipSize.width || 80;\n      const th = tooltipSize.height || 24;\n      let x = 0, y = 0;\n      switch (side) {\n        case 'top': y = a.top - th - sideOffset; x = align === 'start' ? a.left + alignOffset : align === 'end' ? a.right - tw + alignOffset : a.left + a.width / 2 - tw / 2 + alignOffset; break;\n        case 'bottom': y = a.bottom + sideOffset; x = align === 'start' ? a.left + alignOffset : align === 'end' ? a.right - tw + alignOffset : a.left + a.width / 2 - tw / 2 + alignOffset; break;\n        case 'left': x = a.left - tw - sideOffset; y = align === 'start' ? a.top + alignOffset : align === 'end' ? a.bottom - th + alignOffset : a.top + a.height / 2 - th / 2 + alignOffset; break;\n        case 'right': x = a.right + sideOffset; y = align === 'start' ? a.top + alignOffset : align === 'end' ? a.bottom - th + alignOffset : a.top + a.height / 2 - th / 2 + alignOffset; break;\n      }\n      setPosition({\n        x: Math.min(Math.max(x, viewportPadding), window.innerWidth - tw - viewportPadding),\n        y: Math.min(Math.max(y, viewportPadding), window.innerHeight - th - viewportPadding),\n      });\n    };\n    window.addEventListener('scroll', onScrollResize, true);\n    window.addEventListener('resize', onScrollResize);\n    return () => { window.removeEventListener('scroll', onScrollResize, true); window.removeEventListener('resize', onScrollResize); };\n  }, [shouldRender, side, align, sideOffset, alignOffset, tooltipSize.width, tooltipSize.height]);\n\n  const keyHint = shortcutKey ? (\n    <div className={styles.keyHint} aria-hidden>\n      <Text variant=\"text-caption-emphasis\" as=\"span\" color=\"primary\">{shortcutKey}</Text>\n    </div>\n  ) : null;\n\n  const tooltipContent = shouldRender ? (\n    <div\n      ref={tooltipRef}\n      className={`${styles.tooltip} ${isClosing ? styles.closing : ''}`}\n      style={{\n        position: 'fixed',\n        left: 0,\n        top: 0,\n        transform: `translate(${Math.round(position.x)}px, ${Math.round(position.y)}px)`,\n        willChange: 'transform',\n        zIndex: 10000,\n      }}\n      role=\"tooltip\"\n    >\n      <div className={styles.tooltipInner}>\n        {shortcutKey && shortcutKeyPosition === 'start' && keyHint}\n        <Text variant=\"text-body-small\" as=\"span\" color=\"primary\">{label}</Text>\n        {shortcutKey && shortcutKeyPosition === 'end' && keyHint}\n      </div>\n    </div>\n  ) : null;\n\n  const trigger = React.Children.only(children);\n  const triggerWithRefAndHandlers = React.isValidElement(trigger)\n    ? React.cloneElement(trigger as React.ReactElement<any>, {\n        ref: setAnchorRef,\n        onMouseEnter: (e: React.MouseEvent) => {\n          handleOpen();\n          (trigger as any).props.onMouseEnter?.(e);\n        },\n        onMouseLeave: (e: React.MouseEvent) => {\n          handleClose();\n          (trigger as any).props.onMouseLeave?.(e);\n        },\n      })\n    : children;\n\n  return (\n    <>\n      {triggerWithRefAndHandlers}\n      {usePortal ? createPortal(tooltipContent, document.body) : tooltipContent}\n    </>\n  );\n};\n\nTooltip.displayName = 'Tooltip';\n",
+      "type": "registry:ui"
+    }
+  ]
+}

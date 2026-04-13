@@ -1,0 +1,69 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "empty-state",
+  "title": "EmptyState",
+  "description": "Centered placeholder for empty content, no results, or no access states.",
+  "type": "registry:ui",
+  "meta": {
+    "library": "@compomo/ui",
+    "distribution": "npm",
+    "storybook": "https://zainadeel.github.io/CompoMo/?path=/story/empty-state",
+    "consumption": {
+      "install": "npm install @compomo/ui @ds-mo/tokens",
+      "cssSetup": "Import tokens CSS at your app entry point: import '@ds-mo/tokens/css';\nThis provides all var(--color-*), var(--dimension-*), var(--effect-*), and var(--typography-*) custom properties.\nFor dark mode, set data-theme=\"dark\" on <html>.",
+      "import": "import { EmptyState } from '@compomo/ui';",
+      "cssImport": "import '@compomo/ui/css';",
+      "typeImport": "import type { EmptyStateProps, EmptyStateType } from '@compomo/ui';",
+      "internalDependencies": [
+        {
+          "component": "Text",
+          "note": "Used internally by EmptyState. No action needed — it's bundled in @compomo/ui."
+        }
+      ],
+      "peerDependencies": {
+        "required": [
+          "react >=17",
+          "react-dom >=17",
+          "@ds-mo/tokens >=0.1.0"
+        ],
+        "optional": []
+      }
+    },
+    "props": {
+      "type": {
+        "type": "'no-content' | 'no-results' | 'no-results-filter' | 'no-access'",
+        "default": "'no-content'"
+      },
+      "message": {
+        "type": "string",
+        "description": "Overrides default message."
+      }
+    },
+    "exports": [
+      "EmptyState"
+    ],
+    "types": [
+      "EmptyStateProps",
+      "EmptyStateType"
+    ]
+  },
+  "dependencies": [
+    "@compomo/ui",
+    "@ds-mo/tokens"
+  ],
+  "registryDependencies": [
+    "text"
+  ],
+  "files": [
+    {
+      "path": "src/components/EmptyState/EmptyState.module.css",
+      "content": ".emptyState {\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  height: 100%;\n  min-height: 400px;\n  width: 100%;\n}\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/EmptyState/EmptyState.tsx",
+      "content": "import React, { forwardRef } from 'react';\nimport { cn } from '@/utils/cn';\nimport { Text } from '@/components/Text';\nimport styles from './EmptyState.module.css';\n\nexport type EmptyStateType = 'no-content' | 'no-results' | 'no-results-filter' | 'no-access';\n\nconst defaultMessages: Record<EmptyStateType, string> = {\n  'no-content': 'No page contents to display.',\n  'no-results': 'No results found.',\n  'no-results-filter': 'No results found. Please update search criteria.',\n  'no-access': \"You don't have access to this page.\",\n};\n\nexport interface EmptyStateProps {\n  type?: EmptyStateType;\n  message?: string;\n  className?: string;\n}\n\nexport const EmptyState = forwardRef<HTMLDivElement, EmptyStateProps>(\n  ({ type = 'no-content', message, className }, ref) => (\n    <div ref={ref} className={cn(styles.emptyState, className)}>\n      <Text variant=\"text-body-medium\" as=\"p\" color=\"secondary\">\n        {message || defaultMessages[type]}\n      </Text>\n    </div>\n  )\n);\n\nEmptyState.displayName = 'EmptyState';\n",
+      "type": "registry:ui"
+    }
+  ]
+}

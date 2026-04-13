@@ -1,0 +1,137 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "button",
+  "title": "Button",
+  "description": "Primary action component with variants (primary/secondary), 8 semantic intents, 4 sizes, icon support, loading state, dropdown indicator, badge count, and elevation levels.",
+  "type": "registry:ui",
+  "meta": {
+    "library": "@compomo/ui",
+    "distribution": "npm",
+    "storybook": "https://zainadeel.github.io/CompoMo/?path=/story/button",
+    "consumption": {
+      "install": "npm install @compomo/ui @ds-mo/tokens @ds-mo/icons",
+      "cssSetup": "Import tokens CSS at your app entry point: import '@ds-mo/tokens/css';\nThis provides all var(--color-*), var(--dimension-*), var(--effect-*), and var(--typography-*) custom properties.\nFor dark mode, set data-theme=\"dark\" on <html>.",
+      "import": "import { Button } from '@compomo/ui';",
+      "cssImport": "import '@compomo/ui/css';",
+      "typeImport": "import type { ButtonProps, ButtonVariant, ButtonElevation, ButtonIntent, ButtonSize, ButtonContrast } from '@compomo/ui';",
+      "iconImport": "import { IconName } from '@ds-mo/icons';  // Tree-shakeable, import only what you need",
+      "internalDependencies": [
+        {
+          "component": "Text",
+          "note": "Used internally by Button. No action needed — it's bundled in @compomo/ui."
+        },
+        {
+          "component": "Loader",
+          "note": "Used internally by Button. No action needed — it's bundled in @compomo/ui."
+        },
+        {
+          "component": "LabelWrap",
+          "note": "Used internally by Button. No action needed — it's bundled in @compomo/ui."
+        }
+      ],
+      "peerDependencies": {
+        "required": [
+          "react >=17",
+          "react-dom >=17",
+          "@ds-mo/tokens >=0.1.0"
+        ],
+        "optional": [
+          "@ds-mo/icons >=0.1.0 (for icon props)"
+        ]
+      }
+    },
+    "props": {
+      "label": {
+        "type": "string",
+        "description": "Button text. Omit for icon-only button."
+      },
+      "icon": {
+        "type": "IconComponent",
+        "description": "Leading icon from @ds-mo/icons."
+      },
+      "variant": {
+        "type": "'primary' | 'secondary'",
+        "default": "'primary'"
+      },
+      "intent": {
+        "type": "'none' | 'neutral' | 'brand' | 'ai' | 'negative' | 'warning' | 'caution' | 'positive'",
+        "default": "'brand'"
+      },
+      "size": {
+        "type": "'xs' | 'sm' | 'md' | 'lg'",
+        "default": "'md'"
+      },
+      "contrast": {
+        "type": "'strong' | 'bold' | 'medium' | 'faint'",
+        "default": "'bold'"
+      },
+      "elevation": {
+        "type": "'none' | 'flat' | 'elevated' | 'floating'",
+        "description": "Defaults to 'none' for primary, 'flat' for secondary."
+      },
+      "loading": {
+        "type": "boolean",
+        "description": "Shows spinner, prevents interaction."
+      },
+      "dropdown": {
+        "type": "boolean",
+        "description": "Shows trailing ChevronDown icon."
+      },
+      "badgeCount": {
+        "type": "number",
+        "description": "Displays badge. Shows '+' if > 9."
+      },
+      "rounded": {
+        "type": "boolean",
+        "description": "Pill shape with extra padding."
+      },
+      "fullWidth": {
+        "type": "boolean"
+      },
+      "inactive": {
+        "type": "boolean"
+      },
+      "as": {
+        "type": "React.ElementType",
+        "default": "'button'",
+        "description": "Polymorphic element."
+      },
+      "onClick": {
+        "type": "(e: React.MouseEvent<HTMLElement>) => void"
+      }
+    },
+    "exports": [
+      "Button"
+    ],
+    "types": [
+      "ButtonProps",
+      "ButtonVariant",
+      "ButtonElevation",
+      "ButtonIntent",
+      "ButtonSize",
+      "ButtonContrast"
+    ]
+  },
+  "dependencies": [
+    "@compomo/ui",
+    "@ds-mo/tokens",
+    "@ds-mo/icons"
+  ],
+  "registryDependencies": [
+    "text",
+    "loader",
+    "label-wrap"
+  ],
+  "files": [
+    {
+      "path": "src/components/Button/Button.module.css",
+      "content": "/* ==========================================================================\n   Button — unified primary/secondary\n   ========================================================================== */\n\n.button {\n  display: inline-flex;\n  align-items: center;\n  justify-content: center;\n  border: none;\n  border-radius: var(--dimension-radius-050);\n  cursor: pointer;\n  position: relative;\n  transition: transform var(--effect-motion-short-2);\n  height: var(--dimension-size-400);\n  font-family: inherit;\n  color: var(--color-foreground-primary);\n  background: transparent;\n  box-sizing: border-box;\n  text-decoration: none;\n  user-select: none;\n}\n\n/* Hover/press overlay */\n.button::after {\n  content: '';\n  position: absolute;\n  inset: 0;\n  background-color: transparent;\n  border-radius: inherit;\n  transition: var(--effect-transition-interaction-background-instant);\n  pointer-events: none;\n  z-index: 0;\n}\n\n.button > * {\n  position: relative;\n  z-index: 1;\n}\n\n.button:focus-visible {\n  outline: var(--dimension-stroke-width-025) solid var(--color-interaction-focus);\n  outline-offset: var(--dimension-space-025);\n}\n\n.button:active {\n  transform: scale(var(--dimension-scale-subtle));\n}\n\n/* ==========================================================================\n   Variant: Primary\n   Bold background, on-bold content. Elevation controls shadow.\n   ========================================================================== */\n\n.primary {\n  color: var(--color-foreground-on-bold-background-primary);\n}\n\n.primary:hover::after { background-color: var(--color-interaction-on-bold-background-hover); }\n.primary:active::after { background-color: var(--color-interaction-on-bold-background-pressed); }\n\n/* Primary intent: none — surface colors */\n.primary.intentNone {\n  background-color: var(--color-background-primary);\n  color: var(--color-foreground-primary);\n}\n.primary.intentNone:hover::after { background-color: var(--color-interaction-hover); }\n.primary.intentNone:active::after { background-color: var(--color-interaction-pressed); }\n\n/* Primary bold contrast */\n.primary.intentBrand    { background-color: var(--color-background-bold-brand);    color: var(--color-foreground-faint-brand); }\n.primary.intentNeutral  { background-color: var(--color-background-bold-neutral);  color: var(--color-foreground-faint-neutral); }\n.primary.intentPositive { background-color: var(--color-background-bold-positive); color: var(--color-foreground-faint-positive); }\n.primary.intentNegative { background-color: var(--color-background-bold-negative); color: var(--color-foreground-faint-negative); }\n.primary.intentWarning  { background-color: var(--color-background-bold-warning);  color: var(--color-foreground-faint-warning); }\n.primary.intentCaution  { background-color: var(--color-background-bold-caution);  color: var(--color-foreground-faint-caution); }\n.primary.intentAi       { background-color: var(--color-background-bold-ai);       color: var(--color-foreground-faint-ai); }\n\n/* Primary medium contrast */\n.primary.contrastMedium.intentBrand    { background-color: var(--color-background-medium-brand);    color: var(--color-foreground-strong-brand); }\n.primary.contrastMedium.intentNeutral  { background-color: var(--color-background-medium-neutral);  color: var(--color-foreground-strong-neutral); }\n.primary.contrastMedium.intentPositive { background-color: var(--color-background-medium-positive); color: var(--color-foreground-strong-positive); }\n.primary.contrastMedium.intentNegative { background-color: var(--color-background-medium-negative); color: var(--color-foreground-strong-negative); }\n.primary.contrastMedium.intentWarning  { background-color: var(--color-background-medium-warning);  color: var(--color-foreground-strong-warning); }\n.primary.contrastMedium.intentCaution  { background-color: var(--color-background-medium-caution);  color: var(--color-foreground-strong-caution); }\n.primary.contrastMedium.intentAi       { background-color: var(--color-background-medium-ai);       color: var(--color-foreground-strong-ai); }\n.primary.contrastMedium:hover::after  { background-color: var(--color-interaction-on-medium-background-hover); }\n.primary.contrastMedium:active::after { background-color: var(--color-interaction-on-medium-background-pressed); }\n\n/* Primary strong contrast */\n.primary.contrastStrong.intentBrand    { background-color: var(--color-background-strong-brand);    color: var(--color-foreground-medium-brand); }\n.primary.contrastStrong.intentNeutral  { background-color: var(--color-background-strong-neutral);  color: var(--color-foreground-medium-neutral); }\n.primary.contrastStrong.intentPositive { background-color: var(--color-background-strong-positive); color: var(--color-foreground-medium-positive); }\n.primary.contrastStrong.intentNegative { background-color: var(--color-background-strong-negative); color: var(--color-foreground-medium-negative); }\n.primary.contrastStrong.intentWarning  { background-color: var(--color-background-strong-warning);  color: var(--color-foreground-medium-warning); }\n.primary.contrastStrong.intentCaution  { background-color: var(--color-background-strong-caution);  color: var(--color-foreground-medium-caution); }\n.primary.contrastStrong.intentAi       { background-color: var(--color-background-strong-ai);       color: var(--color-foreground-medium-ai); }\n.primary.contrastStrong:hover::after  { background-color: var(--color-interaction-on-strong-background-hover); }\n.primary.contrastStrong:active::after { background-color: var(--color-interaction-on-strong-background-pressed); }\n\n/* Primary faint contrast */\n.primary.contrastFaint.intentBrand    { background-color: var(--color-background-faint-brand);    color: var(--color-foreground-bold-brand); }\n.primary.contrastFaint.intentNeutral  { background-color: var(--color-background-faint-neutral);  color: var(--color-foreground-bold-neutral); }\n.primary.contrastFaint.intentPositive { background-color: var(--color-background-faint-positive); color: var(--color-foreground-bold-positive); }\n.primary.contrastFaint.intentNegative { background-color: var(--color-background-faint-negative); color: var(--color-foreground-bold-negative); }\n.primary.contrastFaint.intentWarning  { background-color: var(--color-background-faint-warning);  color: var(--color-foreground-bold-warning); }\n.primary.contrastFaint.intentCaution  { background-color: var(--color-background-faint-caution);  color: var(--color-foreground-bold-caution); }\n.primary.contrastFaint.intentAi       { background-color: var(--color-background-faint-ai);       color: var(--color-foreground-bold-ai); }\n.primary.contrastFaint:hover::after  { background-color: var(--color-interaction-hover); }\n.primary.contrastFaint:active::after { background-color: var(--color-interaction-pressed); }\n\n/* ==========================================================================\n   Variant: Secondary\n   Base is ghost (transparent, no border, no shadow).\n   Elevation classes add the chrome — flat=border, elevated=bg+shadow, floating=bg+floating.\n   ========================================================================== */\n\n.secondary {\n  background-color: transparent;\n  color: var(--color-foreground-secondary);\n}\n\n.secondary:hover::after { background-color: var(--color-interaction-hover); }\n.secondary:active::after { background-color: var(--color-interaction-pressed); }\n\n/* Secondary intent — bold fg color */\n.secondary.intentBrand    { color: var(--color-foreground-bold-brand); }\n.secondary.intentNeutral  { color: var(--color-foreground-bold-neutral); }\n.secondary.intentPositive { color: var(--color-foreground-bold-positive); }\n.secondary.intentNegative { color: var(--color-foreground-bold-negative); }\n.secondary.intentWarning  { color: var(--color-foreground-bold-warning); }\n.secondary.intentCaution  { color: var(--color-foreground-bold-caution); }\n.secondary.intentAi       { color: var(--color-foreground-bold-ai); }\n\n/* ==========================================================================\n   Elevation\n   ========================================================================== */\n\n/* ── Secondary chrome ───────────────────────────────────────────────── */\n\n/* elevationNone = ghost base — no extra CSS needed */\n\n.secondary.elevationFlat {\n  box-shadow: inset 0 0 0 1px var(--color-border-tertiary);\n}\n\n.secondary.elevationElevated {\n  background-color: var(--color-background-primary);\n  box-shadow: var(--effect-elevation-elevated-sm);\n}\n\n.secondary.elevationFloating {\n  background-color: var(--color-background-primary);\n  box-shadow: var(--effect-elevation-elevated-floating);\n}\n\n/* ── Primary shadow + border control ───────────────────────────────── */\n\n/* elevated */\n.primary.elevationElevated { box-shadow: var(--effect-elevation-elevated-sm); }\n\n/* none = no shadow, no border (flat colored button — default for primary) */\n.primary.elevationNone { box-shadow: none; }\n\n/* flat = inset ring against the page background (not the button fill) */\n.primary.elevationFlat { box-shadow: inset 0 0 0 1px var(--color-border-tertiary); }\n\n/* intentNone: also clear the background */\n.primary.intentNone.elevationFlat { background-color: transparent; }\n.primary.intentNone.elevationNone { background-color: transparent; box-shadow: none; }\n\n/* floating = FAB-strength shadow for both variants */\n.primary.elevationFloating   { box-shadow: var(--effect-elevation-elevated-floating) !important; }\n.secondary.elevationFloating { box-shadow: var(--effect-elevation-elevated-floating) !important; }\n\n/* ==========================================================================\n   Layout: icon-only, label-only, icon+label, dropdown\n   ========================================================================== */\n\n.iconOnly { padding: 0; width: var(--dimension-size-400); min-width: var(--dimension-size-400); }\n.labelOnly { padding: 0 var(--dimension-space-100); }\n.iconAndLabel { padding: 0 var(--dimension-space-100) 0 var(--dimension-space-075); gap: var(--dimension-space-025); }\n.dropdown { gap: var(--dimension-space-050); }\n\n/* ==========================================================================\n   Sizes\n   ========================================================================== */\n\n.sizeSM { height: var(--dimension-size-300); }\n.sizeSM.iconOnly { width: var(--dimension-size-300); min-width: var(--dimension-size-300); }\n.sizeSM.labelOnly   { padding: 0 var(--dimension-space-075); }\n.sizeSM.iconAndLabel { padding: 0 var(--dimension-space-075) 0 var(--dimension-space-050); gap: 1px; }\n\n.sizeXS { height: var(--dimension-size-200); }\n.sizeXS.iconOnly { width: var(--dimension-size-200); min-width: var(--dimension-size-200); }\n.sizeXS.labelOnly, .sizeXS.iconAndLabel { padding: 0 var(--dimension-space-025); gap: 0; }\n\n.sizeLG { height: var(--dimension-size-500); }\n.sizeLG.iconOnly { width: var(--dimension-size-500); min-width: var(--dimension-size-500); }\n.sizeLG.labelOnly   { padding: 0 var(--dimension-space-150); }\n.sizeLG.iconAndLabel { padding: 0 var(--dimension-space-150) 0 var(--dimension-space-100); gap: var(--dimension-space-075); }\n\n/* ==========================================================================\n   Rounded (pill shape)\n   ========================================================================== */\n\n.rounded { border-radius: var(--dimension-radius-half); }\n.rounded.labelOnly   { padding-left: calc(var(--dimension-space-100) + var(--dimension-space-050)); padding-right: calc(var(--dimension-space-100) + var(--dimension-space-050)); }\n.rounded.iconAndLabel { padding-left: calc(var(--dimension-space-075) + var(--dimension-space-050)); padding-right: calc(var(--dimension-space-100) + var(--dimension-space-050)); }\n.rounded.sizeSM.labelOnly   { padding-left: calc(var(--dimension-space-075) + var(--dimension-space-050)); padding-right: calc(var(--dimension-space-075) + var(--dimension-space-050)); }\n.rounded.sizeSM.iconAndLabel { padding-left: calc(var(--dimension-space-050) + var(--dimension-space-050)); padding-right: calc(var(--dimension-space-075) + var(--dimension-space-050)); }\n.rounded.sizeLG.labelOnly   { padding-left: calc(var(--dimension-space-150) + var(--dimension-space-050)); padding-right: calc(var(--dimension-space-150) + var(--dimension-space-050)); }\n.rounded.sizeLG.iconAndLabel { padding-left: calc(var(--dimension-space-100) + var(--dimension-space-050)); padding-right: calc(var(--dimension-space-150) + var(--dimension-space-050)); }\n.rounded.iconOnly { width: var(--dimension-size-400); min-width: var(--dimension-size-400); padding: 0; }\n.rounded.sizeLG.iconOnly { width: var(--dimension-size-500); min-width: var(--dimension-size-500); }\n.rounded.sizeSM.iconOnly { width: var(--dimension-size-300); min-width: var(--dimension-size-300); }\n.rounded.sizeXS.iconOnly { width: var(--dimension-size-200); min-width: var(--dimension-size-200); }\n\n/* ==========================================================================\n   Disabled\n   ========================================================================== */\n\n.inactive { opacity: 0.5; cursor: not-allowed; pointer-events: none; }\n.inactive::after { display: none; }\n\n/* ==========================================================================\n   Badge\n   ========================================================================== */\n\n.badge {\n  position: absolute;\n  top: var(--dimension-space-025);\n  right: var(--dimension-space-025);\n  font-size: var(--typography-fontsize-xs);\n  font-weight: var(--typography-weight-semibold);\n  line-height: var(--typography-lineheight-xs);\n  color: var(--color-foreground-secondary);\n  pointer-events: none;\n  z-index: 10;\n}\n\n/* ==========================================================================\n   Full width\n   ========================================================================== */\n\n.fullWidth {\n  display: flex;\n  width: 100%;\n}\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/Button/Button.tsx",
+      "content": "import React, { forwardRef } from 'react';\nimport { cn } from '@/utils/cn';\nimport { Text } from '@/components/Text';\nimport { LabelWrap } from '@/components/LabelWrap';\nimport { Loader } from '@/components/Loader';\nimport { ChevronDown } from '@ds-mo/icons';\nimport type { IconComponent } from '@/types/icons';\nimport styles from './Button.module.css';\n\nexport type ButtonVariant  = 'primary' | 'secondary';\nexport type ButtonElevation = 'none' | 'flat' | 'elevated' | 'floating';\nexport type ButtonIntent   = 'none' | 'neutral' | 'brand' | 'ai' | 'negative' | 'warning' | 'caution' | 'positive';\nexport type ButtonSize     = 'xs' | 'sm' | 'md' | 'lg';\nexport type ButtonContrast = 'strong' | 'bold' | 'medium' | 'faint';\n\nexport interface ButtonProps {\n  /** Polymorphic element type. Defaults to 'button'. */\n  as?: React.ElementType;\n  /** Visual variant. Defaults to 'primary'. */\n  variant?: ButtonVariant;\n  /** Label text. */\n  label?: string;\n  /** Leading icon component from @ds-mo/icons. */\n  icon?: IconComponent;\n  /** Semantic intent. Defaults to 'brand'. */\n  intent?: ButtonIntent;\n  /** Size. Defaults to 'md'. */\n  size?: ButtonSize;\n  /** Pill shape with extra padding. */\n  rounded?: boolean;\n  /** Fill container width. Label truncates if space is tight. */\n  fullWidth?: boolean;\n  /** Fixed width. Omit for content width. */\n  width?: React.CSSProperties['width'];\n  /** Contrast level (primary variant only). Defaults to 'bold'. */\n  contrast?: ButtonContrast;\n  /** Show trailing ChevronDown dropdown indicator. */\n  dropdown?: boolean;\n  /** Badge count. */\n  badgeCount?: number;\n  /**\n   * Chrome level for secondary; shadow level for primary.\n   *   none     — ghost (transparent, no border, no shadow)\n   *   flat     — border only, transparent bg  [default for secondary]\n   *   elevated — bg-primary + shadow          [default for primary]\n   *   floating — bg-primary + FAB-strength shadow\n   */\n  elevation?: ButtonElevation;\n  /** Show loading spinner in place of icon. Prevents interaction. */\n  loading?: boolean;\n\n  onClick?: (e: React.MouseEvent<HTMLElement>) => void;\n  onMouseEnter?: React.MouseEventHandler<HTMLElement>;\n  onMouseLeave?: React.MouseEventHandler<HTMLElement>;\n  className?: string;\n  inactive?: boolean;\n  type?: 'button' | 'submit' | 'reset';\n  id?: string;\n  'aria-label'?: string;\n  href?: string;\n  target?: string;\n  rel?: string;\n}\n\nconst ICON_SIZE_MAP: Record<ButtonSize, number> = { xs: 12, sm: 16, md: 20, lg: 24 };\n\nconst TEXT_STYLE_MAP: Record<ButtonSize, string> = {\n  xs: 'text-caption-emphasis',\n  sm: 'text-body-small-emphasis',\n  md: 'text-body-medium-emphasis',\n  lg: 'text-body-large-emphasis',\n};\n\n\nexport const Button = forwardRef<HTMLElement, ButtonProps>(\n  (\n    {\n      as,\n      variant = 'primary',\n      label,\n      icon: Icon,\n      intent = 'brand',\n      size = 'md',\n      rounded = false,\n      fullWidth = false,\n      width,\n      contrast = 'bold',\n      dropdown = false,\n      badgeCount,\n      elevation,\n      loading = false,\n      onClick,\n      onMouseEnter,\n      onMouseLeave,\n      className,\n      inactive = false,\n      type = 'button',\n      id,\n      'aria-label': ariaLabel,\n      href,\n      target,\n      rel,\n    },\n    ref\n  ) => {\n    const Component = (as ?? 'button') as React.ElementType;\n    const isButton = !as || as === 'button';\n    const isInteractive = !inactive && !loading;\n\n    const hasIcon = !!Icon;\n    const hasLabel = !!label;\n    const showLeading = hasIcon || loading; // spinner fills the icon slot\n    const isIconOnly = showLeading && !hasLabel;\n    const isLabelOnly = hasLabel && !showLeading;\n    const isIconAndLabel = showLeading && hasLabel;\n    const iconSize = ICON_SIZE_MAP[size];\n    const textStyle = TEXT_STYLE_MAP[size];\n\n    // Derive default elevation per variant: primary→none, secondary→flat\n    const effectiveElevation: ButtonElevation = elevation ?? (variant === 'primary' ? 'none' : 'flat');\n    const elevKey = effectiveElevation.charAt(0).toUpperCase() + effectiveElevation.slice(1);\n\n    const classes = cn(\n      styles.button,\n      styles[variant],\n      styles[`intent${intent.charAt(0).toUpperCase() + intent.slice(1)}`],\n      size !== 'md' && styles[`size${size.toUpperCase()}`],\n      rounded && styles.rounded,\n      (inactive || loading) && styles.inactive,\n      isIconOnly && styles.iconOnly,\n      isLabelOnly && styles.labelOnly,\n      isIconAndLabel && styles.iconAndLabel,\n      dropdown && styles.dropdown,\n      variant === 'primary' && intent !== 'none' && contrast !== 'bold' && styles[`contrast${contrast.charAt(0).toUpperCase() + contrast.slice(1)}`],\n      styles[`elevation${elevKey}`],\n      fullWidth && styles.fullWidth,\n      className,\n    );\n\n    const resolvedAriaLabel = ariaLabel || label || 'button';\n\n    const extraProps: Record<string, unknown> = {};\n    if (isButton) {\n      extraProps.type = type;\n      extraProps.disabled = inactive || loading;\n    }\n    if (href) extraProps.href = href;\n    if (target) extraProps.target = target;\n    if (rel) extraProps.rel = rel;\n\n    return (\n      <Component\n        ref={ref}\n        id={id}\n        className={classes}\n        style={width ? { width } : undefined}\n        onClick={isInteractive ? onClick : undefined}\n        onMouseEnter={isInteractive ? onMouseEnter : undefined}\n        onMouseLeave={isInteractive ? onMouseLeave : undefined}\n        aria-label={resolvedAriaLabel}\n        aria-busy={loading || undefined}\n        {...extraProps}\n      >\n        {loading ? (\n          <Loader size={iconSize} />\n        ) : (\n          Icon && <Icon size={iconSize} />\n        )}\n        {label && (\n          <LabelWrap truncate={fullWidth}>\n            <Text variant={textStyle as never} as=\"span\" color=\"inherit\">\n              {label}\n            </Text>\n          </LabelWrap>\n        )}\n        {dropdown && <ChevronDown size={iconSize} />}\n        {badgeCount != null && badgeCount > 0 && (\n          <span className={styles.badge}>{badgeCount > 9 ? '+' : badgeCount}</span>\n        )}\n      </Component>\n    );\n  }\n);\n\nButton.displayName = 'Button';\n",
+      "type": "registry:ui"
+    }
+  ]
+}

@@ -35,16 +35,18 @@
   ],
   "scripts": {
     "build": "vite build",
-    "dev": "storybook dev -p 6006",
-    "storybook:build": "storybook build",
+    "dev": "npm run registry:build && storybook dev -p 6006",
+    "storybook:build": "npm run registry:build && storybook build",
     "clean": "rm -rf dist",
     "typecheck": "tsc --noEmit",
-    "lint": "eslint src/"
+    "lint": "eslint src/",
+    "registry:build": "node scripts/build-registry.mjs",
+    "mcp": "node scripts/mcp-server.mjs"
   },
   "peerDependencies": {
+    "@ds-mo/tokens": ">=0.1.0",
     "react": ">=17.0.0",
-    "react-dom": ">=17.0.0",
-    "@ds-mo/tokens": ">=0.1.0"
+    "react-dom": ">=17.0.0"
   },
   "peerDependenciesMeta": {
     "@ds-mo/icons": {
@@ -52,6 +54,10 @@
     }
   },
   "devDependencies": {
+    "@ds-mo/icons": "^0.1.0",
+    "@ds-mo/tokens": "^0.1.0",
+    "@modelcontextprotocol/sdk": "^1.29.0",
+    "@storybook/addon-docs": "^10.3.5",
     "@storybook/react": "^10.3.5",
     "@storybook/react-vite": "^10.3.5",
     "@types/react": "^18.3.0",
@@ -63,9 +69,7 @@
     "typescript": "^5.7.0",
     "vite": "^6.0.0",
     "vite-plugin-dts": "^4.3.0",
-    "@ds-mo/tokens": "^0.1.0",
-    "@ds-mo/icons": "^0.1.0",
-    "@storybook/addon-docs": "^10.3.5"
+    "zod": "^4.3.6"
   },
   "engines": {
     "node": ">=18.0.0"

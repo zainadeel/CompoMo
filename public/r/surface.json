@@ -1,0 +1,97 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "surface",
+  "title": "Surface",
+  "description": "Foundational container with intent-based or background-based coloring, elevation, edges, radius, and interactive states.",
+  "type": "registry:ui",
+  "meta": {
+    "library": "@compomo/ui",
+    "distribution": "npm",
+    "storybook": "https://zainadeel.github.io/CompoMo/?path=/story/surface",
+    "consumption": {
+      "install": "npm install @compomo/ui @ds-mo/tokens",
+      "cssSetup": "Import tokens CSS at your app entry point: import '@ds-mo/tokens/css';\nThis provides all var(--color-*), var(--dimension-*), var(--effect-*), and var(--typography-*) custom properties.\nFor dark mode, set data-theme=\"dark\" on <html>.",
+      "import": "import { Surface } from '@compomo/ui';",
+      "cssImport": "import '@compomo/ui/css';",
+      "typeImport": "import type { SurfaceProps, SurfaceIntent, SurfaceBackground, SurfaceContrast, SurfaceElevation, SurfaceEdge, SurfaceRadius, SurfaceRadiusPreset, SurfaceElement } from '@compomo/ui';",
+      "peerDependencies": {
+        "required": [
+          "react >=17",
+          "react-dom >=17",
+          "@ds-mo/tokens >=0.1.0"
+        ],
+        "optional": []
+      }
+    },
+    "props": {
+      "intent": {
+        "type": "'brand' | 'positive' | 'negative' | 'warning' | 'caution' | 'ai' | 'neutral' | 'walkthrough' | 'guide'",
+        "description": "Semantic intent coloring (mutually exclusive with background)."
+      },
+      "contrast": {
+        "type": "'faint' | 'medium' | 'bold' | 'strong'",
+        "default": "'faint'"
+      },
+      "background": {
+        "type": "'primary' | 'secondary' | 'transparent' | 'translucent'",
+        "description": "Background mode (mutually exclusive with intent)."
+      },
+      "elevation": {
+        "type": "'none' | 'depressed' | 'depressed-md' | 'flat' | 'elevated' | 'floating' | 'overlayTop' | 'overlayRight' | 'overlayBottom' | 'overlayLeft'",
+        "default": "'none'"
+      },
+      "edge": {
+        "type": "SurfaceEdge | SurfaceEdge[]",
+        "description": "Border edges. Only applies when elevation is none."
+      },
+      "radius": {
+        "type": "'none' | 'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl' | 'full' | string"
+      },
+      "interactive": {
+        "type": "boolean",
+        "description": "Enables hover/press overlay."
+      },
+      "selected": {
+        "type": "boolean"
+      },
+      "inactive": {
+        "type": "boolean"
+      },
+      "as": {
+        "type": "'div' | 'section' | 'aside' | 'article' | 'header' | 'footer' | 'main' | 'nav' | 'span' | 'button' | 'td' | 'th'",
+        "default": "'div'"
+      }
+    },
+    "exports": [
+      "Surface"
+    ],
+    "types": [
+      "SurfaceProps",
+      "SurfaceIntent",
+      "SurfaceBackground",
+      "SurfaceContrast",
+      "SurfaceElevation",
+      "SurfaceEdge",
+      "SurfaceRadius",
+      "SurfaceRadiusPreset",
+      "SurfaceElement"
+    ]
+  },
+  "dependencies": [
+    "@compomo/ui",
+    "@ds-mo/tokens"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "src/components/Surface/Surface.module.css",
+      "content": "/**\n * Surface — lean container primitive.\n * Backgrounds, elevation, edges, radius, and interactive states.\n */\n\n.surface {\n  box-sizing: border-box;\n  position: relative;\n  /* Reset native button/anchor chrome when rendered as those elements */\n  border: none;\n  padding: 0;\n  margin: 0;\n  font: inherit;\n  color: inherit;\n  background: none;\n  text-decoration: none;\n  text-align: left;\n  cursor: default;\n  appearance: none;\n  -webkit-appearance: none;\n}\n\n/* ==========================================================================\n   Backgrounds\n   ========================================================================== */\n\n.bgPrimary {\n  background-color: var(--color-background-primary);\n}\n\n.bgSecondary {\n  background-color: var(--color-background-secondary);\n}\n\n.bgTransparent {\n  background-color: transparent;\n}\n\n.bgTranslucent {\n  background-color: var(--color-background-translucent);\n  backdrop-filter: blur(var(--effect-blur-md));\n  -webkit-backdrop-filter: blur(var(--effect-blur-md));\n}\n\n/* ==========================================================================\n   Semantic Intent Backgrounds — intent{Intent}{Contrast}\n   ========================================================================== */\n\n/* Brand */\n.intentBrandFaint { background-color: var(--color-background-faint-brand); }\n.intentBrandMedium { background-color: var(--color-background-medium-brand); }\n.intentBrandBold { background-color: var(--color-background-bold-brand); }\n.intentBrandStrong { background-color: var(--color-background-strong-brand); }\n\n/* Positive */\n.intentPositiveFaint { background-color: var(--color-background-faint-positive); }\n.intentPositiveMedium { background-color: var(--color-background-medium-positive); }\n.intentPositiveBold { background-color: var(--color-background-bold-positive); }\n.intentPositiveStrong { background-color: var(--color-background-strong-positive); }\n\n/* Negative */\n.intentNegativeFaint { background-color: var(--color-background-faint-negative); }\n.intentNegativeMedium { background-color: var(--color-background-medium-negative); }\n.intentNegativeBold { background-color: var(--color-background-bold-negative); }\n.intentNegativeStrong { background-color: var(--color-background-strong-negative); }\n\n/* Warning */\n.intentWarningFaint { background-color: var(--color-background-faint-warning); }\n.intentWarningMedium { background-color: var(--color-background-medium-warning); }\n.intentWarningBold { background-color: var(--color-background-bold-warning); }\n.intentWarningStrong { background-color: var(--color-background-strong-warning); }\n\n/* Caution */\n.intentCautionFaint { background-color: var(--color-background-faint-caution); }\n.intentCautionMedium { background-color: var(--color-background-medium-caution); }\n.intentCautionBold { background-color: var(--color-background-bold-caution); }\n.intentCautionStrong { background-color: var(--color-background-strong-caution); }\n\n/* AI */\n.intentAiFaint { background-color: var(--color-background-faint-ai); }\n.intentAiMedium { background-color: var(--color-background-medium-ai); }\n.intentAiBold { background-color: var(--color-background-bold-ai); }\n.intentAiStrong { background-color: var(--color-background-strong-ai); }\n\n/* Neutral */\n.intentNeutralFaint { background-color: var(--color-background-faint-neutral); }\n.intentNeutralMedium { background-color: var(--color-background-medium-neutral); }\n.intentNeutralBold { background-color: var(--color-background-bold-neutral); }\n.intentNeutralStrong { background-color: var(--color-background-strong-neutral); }\n\n/* Walkthrough */\n.intentWalkthroughFaint { background-color: var(--color-background-faint-walkthrough); }\n.intentWalkthroughMedium { background-color: var(--color-background-medium-walkthrough); }\n.intentWalkthroughBold { background-color: var(--color-background-bold-walkthrough); }\n.intentWalkthroughStrong { background-color: var(--color-background-strong-walkthrough); }\n\n/* Guide */\n.intentGuideFaint { background-color: var(--color-background-faint-guide); }\n.intentGuideMedium { background-color: var(--color-background-medium-guide); }\n.intentGuideBold { background-color: var(--color-background-bold-guide); }\n.intentGuideStrong { background-color: var(--color-background-strong-guide); }\n\n/* ==========================================================================\n   Elevation — progressive: none → flat → elevated → floating\n   ========================================================================== */\n\n.elevationNone {}\n\n.elevationDepressed {\n  box-shadow: var(--effect-elevation-depressed-sm);\n}\n\n.elevationDepressedMd {\n  box-shadow: var(--effect-elevation-depressed-md);\n}\n\n.elevationFlat {\n  box-shadow: var(--effect-elevation-elevated-sm);\n}\n\n.elevationElevated {\n  box-shadow: var(--effect-elevation-elevated-md);\n}\n\n.elevationFloating {\n  box-shadow: var(--effect-elevation-elevated-floating);\n}\n\n.elevationOverlayTop {\n  box-shadow: var(--effect-elevation-elevated-panel-top);\n}\n\n.elevationOverlayRight {\n  box-shadow: var(--effect-elevation-elevated-panel-right);\n}\n\n.elevationOverlayBottom {\n  box-shadow: var(--effect-elevation-elevated-panel-bottom);\n}\n\n.elevationOverlayLeft {\n  box-shadow: var(--effect-elevation-elevated-panel-left);\n}\n\n/* ==========================================================================\n   Edge Borders (only when elevation='none')\n   ========================================================================== */\n\n.edgeTop { border-top: var(--dimension-stroke-width-015) solid var(--color-border-tertiary); }\n.edgeRight { border-right: var(--dimension-stroke-width-015) solid var(--color-border-tertiary); }\n.edgeBottom { border-bottom: var(--dimension-stroke-width-015) solid var(--color-border-tertiary); }\n.edgeLeft { border-left: var(--dimension-stroke-width-015) solid var(--color-border-tertiary); }\n\n/* ==========================================================================\n   Corner Radius\n   ========================================================================== */\n\n.radiusNone { border-radius: var(--dimension-radius-000); }\n.radiusXs { border-radius: var(--dimension-radius-050); }\n.radiusSm { border-radius: var(--dimension-radius-075); }\n.radiusMd { border-radius: var(--dimension-radius-100); }\n.radiusLg { border-radius: var(--dimension-radius-125); }\n.radiusXl { border-radius: var(--dimension-radius-175); }\n.radius2xl { border-radius: var(--dimension-radius-200); }\n.radiusFull { border-radius: var(--dimension-radius-half); }\n\n/* ==========================================================================\n   Interactive States\n   Stack: bg → selected ::before → hover/press ::after\n   ========================================================================== */\n\n.interactive {\n  cursor: pointer;\n  transition: transform var(--effect-motion-short-2);\n}\n\n.interactive::after {\n  content: '';\n  position: absolute;\n  inset: 0;\n  background-color: transparent;\n  border-radius: inherit;\n  transition: var(--effect-transition-interaction-background-instant);\n  pointer-events: none;\n  z-index: 0;\n}\n\n.interactive > * {\n  position: relative;\n  z-index: 1;\n}\n\n.interactive:hover::after {\n  background-color: var(--color-interaction-hover);\n}\n\n.interactive:active {\n  transform: scale(var(--dimension-scale-subtle));\n}\n\n.interactive:active::after {\n  background-color: var(--color-interaction-pressed);\n  transition: var(--effect-transition-interaction-background-instant);\n}\n\n.interactive:focus-visible {\n  outline: var(--dimension-stroke-width-025) solid var(--color-interaction-focus);\n  outline-offset: var(--dimension-space-025);\n}\n\n/* ==========================================================================\n   Selected State (layer 2)\n   ========================================================================== */\n\n.selected::before {\n  content: '';\n  position: absolute;\n  inset: 0;\n  border-radius: inherit;\n  pointer-events: none;\n  z-index: 0;\n  background-color: var(--color-interaction-hover);\n}\n\n.selected > * {\n  position: relative;\n  z-index: 1;\n}\n\n/* ==========================================================================\n   Inactive State\n   ========================================================================== */\n\n.inactive {\n  opacity: 0.5;\n  cursor: not-allowed;\n  pointer-events: none;\n}\n\n.inactive::after {\n  display: none;\n}\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/Surface/Surface.tsx",
+      "content": "import React, { forwardRef } from 'react';\nimport styles from './Surface.module.css';\n\n/**\n * Semantic intent for colored surfaces.\n * Each intent has four contrast levels (faint, medium, bold, strong).\n */\nexport type SurfaceIntent =\n  | 'brand'\n  | 'positive'\n  | 'negative'\n  | 'warning'\n  | 'caution'\n  | 'ai'\n  | 'neutral'\n  | 'walkthrough'\n  | 'guide';\n\n/** Background type for non-intent surfaces. */\nexport type SurfaceBackground = 'primary' | 'secondary' | 'transparent' | 'translucent';\n\n/** Contrast level for semantic intents. */\nexport type SurfaceContrast = 'faint' | 'medium' | 'bold' | 'strong';\n\n/** Elevation for depth/shadow effects. Progressive: none → flat → elevated → floating. */\nexport type SurfaceElevation =\n  | 'none'\n  | 'depressed'\n  | 'depressed-md'\n  | 'flat'\n  | 'elevated'\n  | 'floating'\n  | 'overlayTop'\n  | 'overlayRight'\n  | 'overlayBottom'\n  | 'overlayLeft';\n\n/** Edge divider border direction. */\nexport type SurfaceEdge = 'top' | 'right' | 'bottom' | 'left';\n\n/** Corner radius presets. */\nexport type SurfaceRadiusPreset = 'none' | 'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl' | 'full';\n\n/** Corner radius — preset, CSS variable, or custom string (e.g. '12px 12px 0 0'). */\nexport type SurfaceRadius = SurfaceRadiusPreset | (string & {});\n\n/** HTML elements Surface can render as. */\nexport type SurfaceElement =\n  | 'div'\n  | 'section'\n  | 'aside'\n  | 'article'\n  | 'header'\n  | 'footer'\n  | 'main'\n  | 'nav'\n  | 'span'\n  | 'button'\n  | 'td'\n  | 'th';\n\n/** Props shared by both surface modes. */\ninterface SurfaceBaseProps extends React.HTMLAttributes<HTMLElement> {\n  children?: React.ReactNode;\n  /** Elevation for depth/shadow effects. Defaults to 'none'. */\n  elevation?: SurfaceElevation;\n  /** Edge divider border(s). Only applies when elevation is 'none'. */\n  edge?: SurfaceEdge | SurfaceEdge[];\n  /** Corner radius — preset or CSS variable. */\n  radius?: SurfaceRadius;\n  /** Enable hover/pressed interaction overlay. */\n  interactive?: boolean;\n  /** Apply selected background state. */\n  selected?: boolean;\n  /** Dim and disable pointer events. */\n  inactive?: boolean;\n  /** HTML element to render. Defaults to 'div'. */\n  as?: SurfaceElement;\n  /** Button type — only used when as='button'. */\n  type?: 'button' | 'submit' | 'reset';\n}\n\n/** Non-intent surface — uses a basic background color. */\ninterface SurfaceDefaultProps extends SurfaceBaseProps {\n  /** Background color. Defaults to 'transparent'. */\n  background?: SurfaceBackground;\n  intent?: never;\n  contrast?: never;\n}\n\n/** Intent surface — uses a semantic color with contrast level. */\ninterface SurfaceIntentProps extends SurfaceBaseProps {\n  /** Semantic intent color. */\n  intent: SurfaceIntent;\n  /** Contrast level for the intent background. Defaults to 'faint'. */\n  contrast?: SurfaceContrast;\n  background?: never;\n}\n\nexport type SurfaceProps = SurfaceDefaultProps | SurfaceIntentProps;\n\nconst backgroundClassMap: Record<SurfaceBackground, string> = {\n  primary: styles.bgPrimary,\n  secondary: styles.bgSecondary,\n  transparent: styles.bgTransparent,\n  translucent: styles.bgTranslucent,\n};\n\nconst elevationClassMap: Record<SurfaceElevation, string> = {\n  none: styles.elevationNone,\n  depressed: styles.elevationDepressed,\n  'depressed-md': styles.elevationDepressedMd,\n  flat: styles.elevationFlat,\n  elevated: styles.elevationElevated,\n  floating: styles.elevationFloating,\n  overlayTop: styles.elevationOverlayTop,\n  overlayRight: styles.elevationOverlayRight,\n  overlayBottom: styles.elevationOverlayBottom,\n  overlayLeft: styles.elevationOverlayLeft,\n};\n\nconst edgeClassMap: Record<SurfaceEdge, string> = {\n  top: styles.edgeTop,\n  right: styles.edgeRight,\n  bottom: styles.edgeBottom,\n  left: styles.edgeLeft,\n};\n\nconst radiusClassMap: Record<SurfaceRadiusPreset, string> = {\n  none: styles.radiusNone,\n  xs: styles.radiusXs,\n  sm: styles.radiusSm,\n  md: styles.radiusMd,\n  lg: styles.radiusLg,\n  xl: styles.radiusXl,\n  '2xl': styles.radius2xl,\n  full: styles.radiusFull,\n};\n\nconst getIntentContrastClass = (intent: SurfaceIntent, contrast: SurfaceContrast): string => {\n  const intentKey = intent.charAt(0).toUpperCase() + intent.slice(1);\n  const contrastKey = contrast.charAt(0).toUpperCase() + contrast.slice(1);\n  return styles[`intent${intentKey}${contrastKey}`] || '';\n};\n\nconst isPresetRadius = (radius: SurfaceRadius): radius is SurfaceRadiusPreset =>\n  radius in radiusClassMap;\n\nexport const Surface = forwardRef<HTMLElement, SurfaceProps>(\n  (\n    {\n      children,\n      background = 'transparent',\n      intent,\n      contrast = 'faint',\n      elevation = 'none',\n      edge,\n      radius,\n      interactive = false,\n      selected = false,\n      inactive = false,\n      as: Component = 'div',\n      className = '',\n      style,\n      type,\n      ...rest\n    },\n    ref\n  ) => {\n    const classes = [\n      styles.surface,\n      // Background or intent+contrast\n      intent\n        ? getIntentContrastClass(intent, contrast)\n        : backgroundClassMap[background],\n      // Elevation\n      elevationClassMap[elevation],\n      // Edge(s) — only when elevation is 'none'\n      ...(edge && elevation === 'none'\n        ? Array.isArray(edge)\n          ? edge.map(e => edgeClassMap[e])\n          : [edgeClassMap[edge]]\n        : []),\n      // Radius (preset only — custom handled via inline style)\n      radius && isPresetRadius(radius) ? radiusClassMap[radius] : '',\n      // States\n      interactive ? styles.interactive : '',\n      selected ? styles.selected : '',\n      inactive ? styles.inactive : '',\n      className,\n    ]\n      .filter(Boolean)\n      .join(' ');\n\n    const computedStyle: React.CSSProperties = {\n      ...style,\n      ...(radius && !isPresetRadius(radius) ? { borderRadius: radius } : {}),\n    };\n\n    const hasStyle =\n      (radius && !isPresetRadius(radius)) || (style && Object.keys(style).length > 0);\n\n    const elementProps = {\n      ref,\n      className: classes,\n      style: hasStyle ? computedStyle : undefined,\n      disabled: Component === 'button' ? inactive : undefined,\n      type: Component === 'button' ? type || 'button' : undefined,\n      ...rest,\n    };\n\n    return (\n      // eslint-disable-next-line @typescript-eslint/no-explicit-any\n      <Component {...(elementProps as any)}>{children}</Component>\n    );\n  }\n);\n\nSurface.displayName = 'Surface';\n",
+      "type": "registry:ui"
+    }
+  ]
+}

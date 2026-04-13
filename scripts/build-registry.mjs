@@ -1,0 +1,823 @@
+#!/usr/bin/env node
+
+/**
+ * build-registry.mjs
+ *
+ * Generates an AI-readable component registry from CompoMo.
+ * Output goes to public/r/ so it's served alongside Storybook on GitHub Pages.
+ *
+ * Unlike a shadcn registry (copy-paste model), this registry is designed for
+ * an npm-distributed design system. Each component JSON explains:
+ *
+ *   - What the component does (description, props, features)
+ *   - How to consume it (npm install, imports, CSS setup)
+ *   - What it depends on (other CompoMo components, tokens, icons)
+ *   - Full source code as reference for AI context
+ *
+ * This makes the library discoverable via MCP and usable with v0, without
+ * pretending the components are self-contained copyable units.
+ *
+ * Endpoints:
+ *   /r/registry.json      — master catalog (no source, just metadata)
+ *   /r/{name}.json         — full component detail with source + usage guide
+ */
+
+import fs from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const ROOT = path.resolve(__dirname, '..');
+const SRC = path.join(ROOT, 'src', 'components');
+const OUT = path.join(ROOT, 'public', 'r');
+
+const PKG = '@compomo/ui';
+const STORYBOOK_URL = 'https://zainadeel.github.io/CompoMo/';
+
+// ─── Component catalog ─────────────────────────────────────────────────────────
+
+const COMPONENTS = [
+  // Primitives
+  ['Text', {
+    title: 'Text',
+    description: 'Typography primitive supporting all design-system text variants, colors, truncation, and wrapping.',
+    exports: ['Text'],
+    types: ['TextProps', 'TextVariant', 'TextStyle', 'TextColor', 'TextColorToken', 'TextDecoration', 'TextAlign', 'LineTruncation', 'TextWrap', 'TextElement'],
+    props: {
+      variant: { type: 'TextVariant', default: "'text-body-medium'", description: 'Typography variant from design tokens.' },
+      children: { type: 'React.ReactNode', required: true },
+      color: { type: 'TextColor', description: 'Token-based text color.' },
+      as: { type: "'p' | 'span' | 'div' | 'label' | 'h1'-'h6'", default: "'p'" },
+      lineTruncation: { type: '1 | 2 | 3 | 4 | 5 | "none"', default: "'none'" },
+      decoration: { type: "'none' | 'underline' | 'dotted-underline'" },
+      italic: { type: 'boolean' },
+      align: { type: "'left' | 'center' | 'right'" },
+      wrap: { type: "'wrap' | 'nowrap' | 'balance' | 'pretty'" },
+    },
+    usesTokens: true,
+    usesIcons: false,
+    internalDeps: [],
+  }],
+  ['Surface', {
+    title: 'Surface',
+    description: 'Foundational container with intent-based or background-based coloring, elevation, edges, radius, and interactive states.',
+    exports: ['Surface'],
+    types: ['SurfaceProps', 'SurfaceIntent', 'SurfaceBackground', 'SurfaceContrast', 'SurfaceElevation', 'SurfaceEdge', 'SurfaceRadius', 'SurfaceRadiusPreset', 'SurfaceElement'],
+    props: {
+      intent: { type: "'brand' | 'positive' | 'negative' | 'warning' | 'caution' | 'ai' | 'neutral' | 'walkthrough' | 'guide'", description: 'Semantic intent coloring (mutually exclusive with background).' },
+      contrast: { type: "'faint' | 'medium' | 'bold' | 'strong'", default: "'faint'" },
+      background: { type: "'primary' | 'secondary' | 'transparent' | 'translucent'", description: 'Background mode (mutually exclusive with intent).' },
+      elevation: { type: "'none' | 'depressed' | 'depressed-md' | 'flat' | 'elevated' | 'floating' | 'overlayTop' | 'overlayRight' | 'overlayBottom' | 'overlayLeft'", default: "'none'" },
+      edge: { type: "SurfaceEdge | SurfaceEdge[]", description: 'Border edges. Only applies when elevation is none.' },
+      radius: { type: "'none' | 'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl' | 'full' | string" },
+      interactive: { type: 'boolean', description: 'Enables hover/press overlay.' },
+      selected: { type: 'boolean' },
+      inactive: { type: 'boolean' },
+      as: { type: "'div' | 'section' | 'aside' | 'article' | 'header' | 'footer' | 'main' | 'nav' | 'span' | 'button' | 'td' | 'th'", default: "'div'" },
+    },
+    usesTokens: true,
+    usesIcons: false,
+    internalDeps: [],
+  }],
+  ['Card', {
+    title: 'Card',
+    description: 'Content container with header, body, and footer sections. Supports elevation and radius presets.',
+    exports: ['Card'],
+    types: ['CardProps', 'CardElevation', 'CardRadius'],
+    props: {
+      children: { type: 'React.ReactNode', required: true },
+      header: { type: 'React.ReactNode', description: 'Rendered with a bottom divider.' },
+      footer: { type: 'React.ReactNode', description: 'Rendered with a top divider.' },
+      elevation: { type: "'flat' | 'elevated' | 'floating'", default: "'elevated'" },
+      radius: { type: "'sm' | 'md' | 'lg' | 'xl'", default: "'lg'" },
+    },
+    usesTokens: true,
+    usesIcons: false,
+    internalDeps: ['Surface'],
+  }],
+
+  // Core Interactive
+  ['Button', {
+    title: 'Button',
+    description: 'Primary action component with variants (primary/secondary), 8 semantic intents, 4 sizes, icon support, loading state, dropdown indicator, badge count, and elevation levels.',
+    exports: ['Button'],
+    types: ['ButtonProps', 'ButtonVariant', 'ButtonElevation', 'ButtonIntent', 'ButtonSize', 'ButtonContrast'],
+    props: {
+      label: { type: 'string', description: 'Button text. Omit for icon-only button.' },
+      icon: { type: 'IconComponent', description: 'Leading icon from @ds-mo/icons.' },
+      variant: { type: "'primary' | 'secondary'", default: "'primary'" },
+      intent: { type: "'none' | 'neutral' | 'brand' | 'ai' | 'negative' | 'warning' | 'caution' | 'positive'", default: "'brand'" },
+      size: { type: "'xs' | 'sm' | 'md' | 'lg'", default: "'md'" },
+      contrast: { type: "'strong' | 'bold' | 'medium' | 'faint'", default: "'bold'" },
+      elevation: { type: "'none' | 'flat' | 'elevated' | 'floating'", description: "Defaults to 'none' for primary, 'flat' for secondary." },
+      loading: { type: 'boolean', description: 'Shows spinner, prevents interaction.' },
+      dropdown: { type: 'boolean', description: 'Shows trailing ChevronDown icon.' },
+      badgeCount: { type: 'number', description: "Displays badge. Shows '+' if > 9." },
+      rounded: { type: 'boolean', description: 'Pill shape with extra padding.' },
+      fullWidth: { type: 'boolean' },
+      inactive: { type: 'boolean' },
+      as: { type: 'React.ElementType', default: "'button'", description: 'Polymorphic element.' },
+      onClick: { type: '(e: React.MouseEvent<HTMLElement>) => void' },
+    },
+    usesTokens: true,
+    usesIcons: true,
+    internalDeps: ['Text', 'Loader', 'LabelWrap'],
+  }],
+  ['ToggleButton', {
+    title: 'ToggleButton',
+    description: 'Controlled toggle button with pressed state, icon and label support.',
+    exports: ['ToggleButton'],
+    types: ['ToggleButtonProps', 'ToggleButtonElevation', 'ToggleButtonSize'],
+    props: {
+      pressed: { type: 'boolean', required: true },
+      onPressedChange: { type: '(pressed: boolean) => void', required: true },
+      label: { type: 'string' },
+      icon: { type: 'IconComponent' },
+      size: { type: "'md' | 'sm' | 'xs'", default: "'md'" },
+      elevation: { type: "'none' | 'flat' | 'elevated' | 'floating'", default: "'elevated'" },
+      rounded: { type: 'boolean' },
+      inactive: { type: 'boolean' },
+    },
+    usesTokens: true,
+    usesIcons: true,
+    internalDeps: ['Text'],
+  }],
+  ['ButtonGroup', {
+    title: 'ButtonGroup',
+    description: 'Groups Button children with automatic dividers and shared elevation/rounding. Reads props from first child to drive group styling.',
+    exports: ['ButtonGroup'],
+    types: ['ButtonGroupProps'],
+    props: {
+      children: { type: 'React.ReactNode', required: true, description: 'Button components as children.' },
+    },
+    usesTokens: true,
+    usesIcons: false,
+    internalDeps: ['Button'],
+  }],
+  ['ToggleButtonGroup', {
+    title: 'ToggleButtonGroup',
+    description: 'Groups ToggleButton children with dividers and shared chrome.',
+    exports: ['ToggleButtonGroup'],
+    types: ['ToggleButtonGroupProps'],
+    props: {
+      children: { type: 'React.ReactNode', required: true, description: 'ToggleButton components as children.' },
+    },
+    usesTokens: true,
+    usesIcons: false,
+    internalDeps: ['ToggleButton'],
+  }],
+  ['Tag', {
+    title: 'Tag',
+    description: 'Semantic label with intent coloring, removable chip, pressable filter-chip mode, and icon support.',
+    exports: ['Tag'],
+    types: ['TagProps', 'TagIntent', 'TagContrast', 'TagElevation', 'TagSize'],
+    props: {
+      label: { type: 'string', required: true },
+      intent: { type: "'neutral' | 'brand' | 'ai' | 'negative' | 'warning' | 'caution' | 'positive'", default: "'neutral'" },
+      contrast: { type: "'strong' | 'bold' | 'medium' | 'faint'", default: "'faint'" },
+      size: { type: "'md' | 'sm' | 'xs'", default: "'md'" },
+      rounded: { type: 'boolean' },
+      icon: { type: 'IconComponent' },
+      removable: { type: 'boolean' },
+      onRemove: { type: '() => void' },
+      pressed: { type: 'boolean', description: 'For filter-chip behavior.' },
+      onPressedChange: { type: '(pressed: boolean) => void' },
+      onClick: { type: '() => void', description: 'Makes tag clickable.' },
+      inactive: { type: 'boolean' },
+    },
+    usesTokens: true,
+    usesIcons: true,
+    internalDeps: ['Text'],
+  }],
+  ['Badge', {
+    title: 'Badge',
+    description: 'Compact count indicator with selection state.',
+    exports: ['Badge'],
+    types: ['BadgeProps'],
+    props: {
+      count: { type: 'number', required: true, description: "Returns null if 0. Shows '+' if > 9." },
+      isSelected: { type: 'boolean', default: 'false' },
+    },
+    usesTokens: true,
+    usesIcons: false,
+    internalDeps: ['Text'],
+  }],
+  ['Loader', {
+    title: 'Loader',
+    description: 'SVG spinner that scales proportionally. Uses currentColor for theming.',
+    exports: ['Loader'],
+    types: ['LoaderProps'],
+    props: {
+      size: { type: 'number', default: '20' },
+    },
+    usesTokens: false,
+    usesIcons: false,
+    internalDeps: [],
+  }],
+  ['Toggle', {
+    title: 'Toggle',
+    description: 'Switch control with on/off state and accessible role="switch".',
+    exports: ['Toggle'],
+    types: ['ToggleProps'],
+    props: {
+      checked: { type: 'boolean', default: 'false' },
+      onChange: { type: '(checked: boolean) => void' },
+      inactive: { type: 'boolean' },
+      'aria-label': { type: 'string' },
+    },
+    usesTokens: true,
+    usesIcons: false,
+    internalDeps: [],
+  }],
+  ['Checkbox', {
+    title: 'Checkbox',
+    description: 'Three-state checkbox (checked, unchecked, indeterminate) with keyboard support and custom icon slots.',
+    exports: ['Checkbox'],
+    types: ['CheckboxProps'],
+    props: {
+      label: { type: 'string', required: true },
+      checked: { type: 'boolean', default: 'false' },
+      indeterminate: { type: 'boolean', default: 'false' },
+      onChange: { type: '(checked: boolean) => void' },
+      inactive: { type: 'boolean' },
+      checkedIcon: { type: 'IconComponent' },
+      uncheckedIcon: { type: 'IconComponent' },
+      indeterminateIcon: { type: 'IconComponent' },
+    },
+    usesTokens: true,
+    usesIcons: true,
+    internalDeps: ['Text'],
+  }],
+  ['Input', {
+    title: 'Input',
+    description: 'Text input supporting text, email, tel, url, search, and password types. Search type includes auto clear button.',
+    exports: ['Input'],
+    types: ['InputProps'],
+    props: {
+      value: { type: 'string', required: true },
+      onChange: { type: '(e: React.ChangeEvent<HTMLInputElement>) => void', required: true },
+      type: { type: "'text' | 'email' | 'tel' | 'url' | 'search' | 'password'", default: "'text'" },
+      placeholder: { type: 'string' },
+      suffix: { type: 'React.ReactNode' },
+      inactive: { type: 'boolean' },
+      clearIcon: { type: 'IconComponent', description: 'Custom clear icon for search type.' },
+    },
+    usesTokens: true,
+    usesIcons: false,
+    internalDeps: [],
+  }],
+  ['Slider', {
+    title: 'Slider',
+    description: 'Range input with visual fill track, label, and current value display.',
+    exports: ['Slider'],
+    types: ['SliderProps'],
+    props: {
+      value: { type: 'number', required: true },
+      onChange: { type: '(value: number) => void', required: true },
+      min: { type: 'number', default: '0' },
+      max: { type: 'number', default: '100' },
+      step: { type: 'number', default: '1' },
+      label: { type: 'string', required: true },
+      inactive: { type: 'boolean' },
+    },
+    usesTokens: true,
+    usesIcons: false,
+    internalDeps: ['Text'],
+  }],
+  ['Field', {
+    title: 'Field',
+    description: 'Simple label wrapper that links to child input via htmlFor.',
+    exports: ['Field'],
+    types: ['FieldProps'],
+    props: {
+      label: { type: 'string', required: true },
+      children: { type: 'React.ReactNode', required: true },
+      id: { type: 'string' },
+    },
+    usesTokens: true,
+    usesIcons: false,
+    internalDeps: ['Text'],
+  }],
+  ['Select', {
+    title: 'Select',
+    description: 'Dropdown select using Menu internally. Supports placeholder, inactive state, and custom chevron icon.',
+    exports: ['Select'],
+    types: ['SelectProps', 'SelectOption'],
+    props: {
+      value: { type: 'string | number', required: true },
+      onChange: { type: '(value: string | number) => void', required: true },
+      options: { type: 'SelectOption[]', required: true },
+      placeholder: { type: 'string', default: "'Select option'" },
+      inactive: { type: 'boolean' },
+      chevronIcon: { type: 'IconComponent' },
+    },
+    usesTokens: true,
+    usesIcons: false,
+    internalDeps: ['Menu', 'Surface', 'Text'],
+  }],
+
+  // Floating / Portal
+  ['Modal', {
+    title: 'Modal',
+    description: 'Dialog overlay with portal rendering, escape-to-close, backdrop click, focus management, and entry/exit animations.',
+    exports: ['Modal'],
+    types: ['ModalProps', 'ModalWidth'],
+    props: {
+      isOpen: { type: 'boolean', required: true },
+      onClose: { type: '() => void', required: true },
+      title: { type: 'string', required: true },
+      children: { type: 'React.ReactNode', required: true },
+      subtitle: { type: 'React.ReactNode' },
+      footer: { type: 'React.ReactNode' },
+      width: { type: "'sm' | 'md' | 'lg' | string", default: "'md'", description: 'sm=400px, md=560px, lg=720px, or custom CSS value.' },
+    },
+    usesTokens: true,
+    usesIcons: false,
+    internalDeps: ['Surface', 'Text'],
+  }],
+  ['Menu', {
+    title: 'Menu',
+    description: 'Positioned dropdown menu with sections, item selection styles, toggle items, and destructive hold-to-confirm items.',
+    exports: ['Menu', 'MenuItem', 'DestructiveMenuItem'],
+    types: ['MenuProps', 'MenuSection', 'MenuItemData', 'MenuSide', 'MenuAlign', 'MenuItemProps', 'MenuItemSelectionStyle', 'DestructiveMenuItemProps'],
+    files: ['Menu.tsx', 'Menu.module.css', 'MenuItem.tsx', 'MenuItem.module.css', 'DestructiveMenuItem.tsx', 'DestructiveMenuItem.module.css'],
+    props: {
+      isOpen: { type: 'boolean', required: true },
+      onClose: { type: '() => void', required: true },
+      anchorRef: { type: 'React.RefObject<HTMLElement | null>', required: true },
+      items: { type: 'MenuItemData[]', description: 'Flat item list (use items or sections, not both).' },
+      sections: { type: 'MenuSection[]', description: 'Grouped items with optional headers.' },
+      side: { type: "'top' | 'right' | 'bottom' | 'left'", default: "'bottom'" },
+      align: { type: "'start' | 'center' | 'end'", default: "'start'" },
+      matchAnchorWidth: { type: 'boolean' },
+    },
+    usesTokens: true,
+    usesIcons: false,
+    internalDeps: ['Surface', 'Text', 'Toggle'],
+  }],
+  ['Tooltip', {
+    title: 'Tooltip',
+    description: 'Positioned tooltip with portal rendering, delay, keyboard shortcut display, and viewport clamping.',
+    exports: ['Tooltip'],
+    types: ['TooltipProps', 'TooltipSide', 'TooltipAlign'],
+    props: {
+      label: { type: 'string', required: true },
+      children: { type: 'React.ReactElement', required: true },
+      side: { type: "'top' | 'right' | 'bottom' | 'left'", default: "'top'" },
+      align: { type: "'start' | 'center' | 'end'", default: "'center'" },
+      delay: { type: 'number', description: 'Hover delay in ms.' },
+      shortcutKey: { type: 'string', description: 'Displays keyboard shortcut hint.' },
+    },
+    usesTokens: true,
+    usesIcons: false,
+    internalDeps: ['Text'],
+  }],
+  ['Banner', {
+    title: 'Banner',
+    description: 'Intent-colored message bar. Supports floating toast mode with auto-dismiss and fade-out animation.',
+    exports: ['Banner'],
+    types: ['BannerProps', 'BannerIntent', 'BannerContrast'],
+    props: {
+      intent: { type: "'brand' | 'positive' | 'negative' | 'warning' | 'caution' | 'ai' | 'neutral' | 'walkthrough' | 'guide'", required: true },
+      contrast: { type: "'faint' | 'medium' | 'bold' | 'strong'", required: true },
+      message: { type: 'string', required: true },
+      floating: { type: 'boolean', description: 'Renders as portal toast with auto-dismiss.' },
+      onDismiss: { type: '() => void' },
+      header: { type: 'boolean', description: 'Shows decorative header.' },
+    },
+    usesTokens: true,
+    usesIcons: false,
+    internalDeps: ['Surface', 'Text'],
+  }],
+
+  // Complex & Utility
+  ['Table', {
+    title: 'Table',
+    description: 'Data table with CSS grid layout, sorting, pagination, loading skeleton, row selection, and custom cell rendering.',
+    exports: ['Table'],
+    types: ['TableProps', 'TableColumn', 'SortState', 'SortDirection', 'CellType', 'FilterValue', 'FilterState', 'PaginationState'],
+    props: {
+      columns: { type: 'TableColumn<T>[]', required: true },
+      data: { type: 'T[]', required: true },
+      sortState: { type: 'SortState' },
+      onSort: { type: '(columnId: string) => void' },
+      onRowClick: { type: '(row: T, rowIndex: number) => void' },
+      selectedRows: { type: 'Set<number>' },
+      loading: { type: 'boolean' },
+      pagination: { type: 'PaginationState' },
+      onPaginationChange: { type: '(pageIndex: number, pageSize: number) => void' },
+      emptyMessage: { type: 'string', default: "'No results found.'" },
+    },
+    usesTokens: true,
+    usesIcons: false,
+    internalDeps: ['Text', 'Surface', 'Skeleton'],
+  }],
+  ['Tab', {
+    title: 'Tab',
+    description: 'Individual tab button with selected state and hover overlay.',
+    exports: ['Tab'],
+    types: ['TabProps'],
+    props: {
+      label: { type: 'string', required: true },
+      isSelected: { type: 'boolean', default: 'false' },
+      onClick: { type: '() => void' },
+    },
+    usesTokens: true,
+    usesIcons: false,
+    internalDeps: ['Text'],
+  }],
+  ['EmptyState', {
+    title: 'EmptyState',
+    description: 'Centered placeholder for empty content, no results, or no access states.',
+    exports: ['EmptyState'],
+    types: ['EmptyStateProps', 'EmptyStateType'],
+    props: {
+      type: { type: "'no-content' | 'no-results' | 'no-results-filter' | 'no-access'", default: "'no-content'" },
+      message: { type: 'string', description: 'Overrides default message.' },
+    },
+    usesTokens: true,
+    usesIcons: false,
+    internalDeps: ['Text'],
+  }],
+  ['Fade', {
+    title: 'Fade',
+    description: 'Decorative gradient overlay for scroll edges.',
+    exports: ['Fade'],
+    types: ['FadeProps', 'FadeSide'],
+    props: {
+      side: { type: "'top' | 'bottom' | 'left' | 'right'", required: true },
+      height: { type: 'string', required: true },
+      background: { type: 'string', default: "'var(--color-background-secondary)'" },
+    },
+    usesTokens: true,
+    usesIcons: false,
+    internalDeps: [],
+  }],
+  ['Scrollbar', {
+    title: 'Scrollbar',
+    description: 'Custom scrollbar with draggable thumb, proportional sizing, and hover reveal.',
+    exports: ['Scrollbar'],
+    types: ['ScrollbarProps', 'ScrollbarVariant'],
+    props: {
+      children: { type: 'React.ReactNode', required: true },
+      variant: { type: "'default' | 'thick'", default: "'default'" },
+      showTrackOnHover: { type: 'boolean', default: 'true' },
+      onScroll: { type: '(e: React.UIEvent<HTMLDivElement>) => void' },
+    },
+    usesTokens: true,
+    usesIcons: false,
+    internalDeps: [],
+  }],
+  ['ErrorBoundary', {
+    title: 'ErrorBoundary',
+    description: 'React error boundary with fallback UI and console logging.',
+    exports: ['ErrorBoundary'],
+    types: ['ErrorBoundaryProps'],
+    props: {
+      children: { type: 'React.ReactNode', required: true },
+      fallback: { type: 'React.ReactNode', description: 'Custom error UI.' },
+    },
+    usesTokens: false,
+    usesIcons: false,
+    internalDeps: ['EmptyState'],
+  }],
+
+  // Layout
+  ['Sidebar', {
+    title: 'Sidebar',
+    description: 'Resizable navigation sidebar with drag handle, snap-to-collapse, mobile mode, and nested sections/items.',
+    exports: ['Sidebar', 'SidebarSection', 'SidebarItem'],
+    types: ['SidebarProps', 'SidebarWidth', 'SidebarSectionProps', 'SidebarItemProps'],
+    files: ['Sidebar.tsx', 'Sidebar.module.css', 'SidebarItem.tsx', 'SidebarSection.tsx'],
+    props: {
+      children: { type: 'React.ReactNode', required: true },
+      isCollapsed: { type: 'boolean', default: 'false' },
+      onToggle: { type: '() => void' },
+      width: { type: "'mini' | 'default' | number", default: "'default'" },
+      resizable: { type: 'boolean', default: 'true' },
+      footer: { type: 'React.ReactNode' },
+      isMobile: { type: 'boolean' },
+    },
+    usesTokens: true,
+    usesIcons: false,
+    internalDeps: ['Text', 'Surface'],
+  }],
+  ['Header', {
+    title: 'Header',
+    description: 'App header bar with background variants.',
+    exports: ['Header'],
+    types: ['HeaderProps', 'HeaderBackground'],
+    props: {
+      children: { type: 'React.ReactNode' },
+      background: { type: 'HeaderBackground' },
+    },
+    usesTokens: true,
+    usesIcons: false,
+    internalDeps: ['Surface'],
+  }],
+
+  // Phoenix Gap
+  ['Radio', {
+    title: 'RadioGroup',
+    description: 'Radio selection group with vertical/horizontal layout, per-option inactive, and keyboard navigation.',
+    exports: ['RadioGroup', 'RadioItem'],
+    types: ['RadioGroupProps', 'RadioItemProps', 'RadioOption'],
+    props: {
+      value: { type: 'string', required: true },
+      onChange: { type: '(value: string) => void', required: true },
+      options: { type: 'RadioOption[]', required: true },
+      direction: { type: "'vertical' | 'horizontal'", default: "'vertical'" },
+      inactive: { type: 'boolean' },
+      'aria-label': { type: 'string' },
+    },
+    usesTokens: true,
+    usesIcons: false,
+    internalDeps: ['Text'],
+  }],
+  ['TabGroup', {
+    title: 'TabGroup',
+    description: 'Tab orchestrator that wraps Tab components with an animated sliding indicator and active state management.',
+    exports: ['TabGroup'],
+    types: ['TabGroupProps', 'TabGroupTab'],
+    props: {
+      tabs: { type: 'TabGroupTab[]', required: true },
+      activeIndex: { type: 'number', default: '0' },
+      onTabChange: { type: '(index: number) => void' },
+    },
+    usesTokens: true,
+    usesIcons: false,
+    internalDeps: ['Tab'],
+  }],
+  ['Accordion', {
+    title: 'Accordion',
+    description: 'Collapsible section list with single or multiple expand mode, animated height transitions, and controlled/uncontrolled state.',
+    exports: ['Accordion', 'AccordionItem'],
+    types: ['AccordionProps', 'AccordionItemProps', 'AccordionItemData'],
+    props: {
+      items: { type: 'AccordionItemData[]', required: true },
+      multiple: { type: 'boolean', default: 'false', description: 'Allow multiple items open at once.' },
+      expandedIds: { type: 'string[]', description: 'Controlled expanded state.' },
+      onExpandedChange: { type: '(ids: string[]) => void' },
+    },
+    usesTokens: true,
+    usesIcons: false,
+    internalDeps: ['Text'],
+  }],
+  ['Breadcrumb', {
+    title: 'Breadcrumb',
+    description: 'Hierarchical navigation with link or button items, custom separator, and aria-current on the last item.',
+    exports: ['Breadcrumb'],
+    types: ['BreadcrumbProps', 'BreadcrumbItem'],
+    props: {
+      items: { type: 'BreadcrumbItem[]', required: true, description: 'Last item is treated as current page.' },
+      separator: { type: 'React.ReactNode', default: "'/'" },
+    },
+    usesTokens: true,
+    usesIcons: false,
+    internalDeps: ['Text'],
+  }],
+  ['Pagination', {
+    title: 'Pagination',
+    description: 'Standalone page navigation with ellipsis for large ranges, sibling count control, and keyboard-accessible buttons.',
+    exports: ['Pagination'],
+    types: ['PaginationProps'],
+    props: {
+      page: { type: 'number', required: true, description: '1-based current page.' },
+      totalPages: { type: 'number', required: true },
+      onPageChange: { type: '(page: number) => void', required: true },
+      siblingCount: { type: 'number', default: '1' },
+      inactive: { type: 'boolean' },
+    },
+    usesTokens: true,
+    usesIcons: false,
+    internalDeps: ['Text'],
+  }],
+  ['Divider', {
+    title: 'Divider',
+    description: 'Horizontal or vertical separator line using design tokens.',
+    exports: ['Divider'],
+    types: ['DividerProps', 'DividerOrientation'],
+    props: {
+      orientation: { type: "'horizontal' | 'vertical'", default: "'horizontal'" },
+    },
+    usesTokens: true,
+    usesIcons: false,
+    internalDeps: [],
+  }],
+  ['Skeleton', {
+    title: 'Skeleton',
+    description: 'Loading placeholder with text, circular, and rectangular variants. Supports multi-line text and shimmer animation.',
+    exports: ['Skeleton'],
+    types: ['SkeletonProps', 'SkeletonVariant'],
+    props: {
+      variant: { type: "'text' | 'circular' | 'rectangular'", default: "'text'" },
+      width: { type: 'string | number' },
+      height: { type: 'string | number' },
+      lines: { type: 'number', default: '1', description: "Text variant only. Last line renders at 60% width." },
+      animate: { type: 'boolean', default: 'true' },
+    },
+    usesTokens: true,
+    usesIcons: false,
+    internalDeps: [],
+  }],
+  ['Toast', {
+    title: 'Toast',
+    description: 'Imperative toast notification system. Use toast.success()/error()/warning()/info() to show toasts. Place <ToastContainer /> once at the app root.',
+    exports: ['ToastContainer', 'toast', 'useToasts'],
+    types: ['ToastContainerProps', 'ToastData', 'ToastOptions', 'ToastIntent', 'ToastPosition'],
+    props: {
+      position: { type: "'top-center' | 'top-right' | 'bottom-center' | 'bottom-right'", default: "'top-center'", description: 'ToastContainer position prop.' },
+    },
+    usesTokens: true,
+    usesIcons: false,
+    internalDeps: ['Surface', 'Text'],
+    usageNotes: 'Place <ToastContainer /> once at app root. Then call toast.success("Done!") anywhere.',
+  }],
+];
+
+// ─── Helpers ────────────────────────────────────────────────────────────────────
+
+function toKebab(str) {
+  return str
+    .replace(/([a-z])([A-Z])/g, '$1-$2')
+    .replace(/([A-Z])([A-Z][a-z])/g, '$1-$2')
+    .toLowerCase();
+}
+
+function readComponentFiles(dirName, explicitFiles) {
+  const dir = path.join(SRC, dirName);
+  if (!fs.existsSync(dir)) {
+    console.warn(`  ⚠ Directory not found: ${dir}`);
+    return [];
+  }
+
+  const filenames = explicitFiles ?? fs.readdirSync(dir).filter(f =>
+    (f.endsWith('.tsx') || f.endsWith('.ts') || f.endsWith('.css')) &&
+    !f.endsWith('.stories.tsx') &&
+    f !== 'index.ts'
+  );
+
+  return filenames.map(filename => {
+    const filePath = path.join(dir, filename);
+    const content = fs.readFileSync(filePath, 'utf-8');
+    return {
+      path: `src/components/${dirName}/${filename}`,
+      content,
+      type: 'registry:ui',
+    };
+  });
+}
+
+/** Build the consumption guide for a component. */
+function buildConsumptionGuide(config) {
+  const guide = {};
+
+  // 1. Install
+  const packages = [PKG];
+  if (config.usesTokens) packages.push('@ds-mo/tokens');
+  if (config.usesIcons) packages.push('@ds-mo/icons');
+  guide.install = `npm install ${packages.join(' ')}`;
+
+  // 2. CSS setup
+  if (config.usesTokens) {
+    guide.cssSetup = "Import tokens CSS at your app entry point: import '@ds-mo/tokens/css';\nThis provides all var(--color-*), var(--dimension-*), var(--effect-*), and var(--typography-*) custom properties.\nFor dark mode, set data-theme=\"dark\" on <html>.";
+  }
+
+  // 3. Component import
+  const namedExports = config.exports.join(', ');
+  guide.import = `import { ${namedExports} } from '${PKG}';`;
+
+  // 4. CSS import
+  guide.cssImport = `import '${PKG}/css';`;
+
+  // 5. Type imports
+  if (config.types?.length) {
+    guide.typeImport = `import type { ${config.types.join(', ')} } from '${PKG}';`;
+  }
+
+  // 6. Icon imports (if applicable)
+  if (config.usesIcons) {
+    guide.iconImport = "import { IconName } from '@ds-mo/icons';  // Tree-shakeable, import only what you need";
+  }
+
+  // 7. Internal dependencies — what other CompoMo components this uses
+  if (config.internalDeps?.length) {
+    guide.internalDependencies = config.internalDeps.map(dep => ({
+      component: dep,
+      note: `Used internally by ${config.title}. No action needed — it's bundled in ${PKG}.`,
+    }));
+  }
+
+  // 8. Peer dependency summary
+  guide.peerDependencies = {
+    required: ['react >=17', 'react-dom >=17', '@ds-mo/tokens >=0.1.0'],
+    optional: config.usesIcons ? ['@ds-mo/icons >=0.1.0 (for icon props)'] : [],
+  };
+
+  // 9. Usage notes
+  if (config.usageNotes) {
+    guide.notes = config.usageNotes;
+  }
+
+  return guide;
+}
+
+// ─── Generate ───────────────────────────────────────────────────────────────────
+
+fs.mkdirSync(OUT, { recursive: true });
+
+const registryItems = [];
+
+for (const [dirName, config] of COMPONENTS) {
+  const name = toKebab(dirName);
+  const files = readComponentFiles(dirName, config.files);
+
+  if (files.length === 0) {
+    console.warn(`  ⚠ Skipping ${name}: no files found`);
+    continue;
+  }
+
+  const consumption = buildConsumptionGuide(config);
+
+  const item = {
+    $schema: 'https://ui.shadcn.com/schema/registry-item.json',
+    name,
+    title: config.title,
+    description: config.description,
+    type: 'registry:ui',
+
+    // ─── Consumption guide (how to use via npm) ──────────────
+    meta: {
+      library: PKG,
+      distribution: 'npm',
+      storybook: `${STORYBOOK_URL}?path=/story/${name}`,
+      consumption,
+      props: config.props ?? {},
+      exports: config.exports,
+      types: config.types ?? [],
+    },
+
+    // ─── Standard registry fields ────────────────────────────
+    dependencies: [
+      PKG,
+      ...(config.usesTokens ? ['@ds-mo/tokens'] : []),
+      ...(config.usesIcons ? ['@ds-mo/icons'] : []),
+    ],
+    registryDependencies: (config.internalDeps ?? []).map(d => toKebab(d)),
+
+    // ─── Source reference (for AI context, not for copying) ──
+    files,
+  };
+
+  // Write individual component JSON
+  const outPath = path.join(OUT, `${name}.json`);
+  fs.writeFileSync(outPath, JSON.stringify(item, null, 2));
+  console.log(`  ✓ ${name}.json (${files.length} files, ${Object.keys(config.props ?? {}).length} props)`);
+
+  // Collect for master manifest (no source inlined — lightweight)
+  registryItems.push({
+    name,
+    title: config.title,
+    description: config.description,
+    type: 'registry:ui',
+    meta: {
+      library: PKG,
+      distribution: 'npm',
+      storybook: `${STORYBOOK_URL}?path=/story/${name}`,
+      exports: config.exports,
+      props: Object.fromEntries(
+        Object.entries(config.props ?? {}).map(([k, v]) => [k, { type: v.type, required: v.required ?? false }])
+      ),
+    },
+    dependencies: [
+      PKG,
+      ...(config.usesTokens ? ['@ds-mo/tokens'] : []),
+      ...(config.usesIcons ? ['@ds-mo/icons'] : []),
+    ],
+    registryDependencies: (config.internalDeps ?? []).map(d => toKebab(d)),
+  });
+}
+
+// ─── Master manifest ────────────────────────────────────────────────────────────
+
+const registry = {
+  $schema: 'https://ui.shadcn.com/schema/registry.json',
+  name: 'compomo',
+  homepage: STORYBOOK_URL,
+  description: `CompoMo (@compomo/ui) — React component library from the ds-mo design system. Distributed as an npm package, not copy-paste. Components require @ds-mo/tokens for CSS custom properties and optionally @ds-mo/icons for icon props.`,
+  meta: {
+    distribution: 'npm',
+    install: `npm install ${PKG} @ds-mo/tokens`,
+    cssSetup: "import '@ds-mo/tokens/css';  // Provides design token CSS custom properties\nimport '@compomo/ui/css';     // Provides component styles",
+    themeSetup: "Set data-theme=\"dark\" on <html> for dark mode. Light is default.",
+    peerDependencies: {
+      required: ['react >=17', 'react-dom >=17', '@ds-mo/tokens >=0.1.0'],
+      optional: ['@ds-mo/icons >=0.1.0'],
+    },
+  },
+  items: registryItems,
+};
+
+fs.writeFileSync(path.join(OUT, 'registry.json'), JSON.stringify(registry, null, 2));
+console.log(`\n  ✓ registry.json (${registryItems.length} components)`);
+console.log(`\n  Registry built to ${OUT}`);

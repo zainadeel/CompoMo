@@ -1,0 +1,87 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "slider",
+  "title": "Slider",
+  "description": "Range input with visual fill track, label, and current value display.",
+  "type": "registry:ui",
+  "meta": {
+    "library": "@compomo/ui",
+    "distribution": "npm",
+    "storybook": "https://zainadeel.github.io/CompoMo/?path=/story/slider",
+    "consumption": {
+      "install": "npm install @compomo/ui @ds-mo/tokens",
+      "cssSetup": "Import tokens CSS at your app entry point: import '@ds-mo/tokens/css';\nThis provides all var(--color-*), var(--dimension-*), var(--effect-*), and var(--typography-*) custom properties.\nFor dark mode, set data-theme=\"dark\" on <html>.",
+      "import": "import { Slider } from '@compomo/ui';",
+      "cssImport": "import '@compomo/ui/css';",
+      "typeImport": "import type { SliderProps } from '@compomo/ui';",
+      "internalDependencies": [
+        {
+          "component": "Text",
+          "note": "Used internally by Slider. No action needed — it's bundled in @compomo/ui."
+        }
+      ],
+      "peerDependencies": {
+        "required": [
+          "react >=17",
+          "react-dom >=17",
+          "@ds-mo/tokens >=0.1.0"
+        ],
+        "optional": []
+      }
+    },
+    "props": {
+      "value": {
+        "type": "number",
+        "required": true
+      },
+      "onChange": {
+        "type": "(value: number) => void",
+        "required": true
+      },
+      "min": {
+        "type": "number",
+        "default": "0"
+      },
+      "max": {
+        "type": "number",
+        "default": "100"
+      },
+      "step": {
+        "type": "number",
+        "default": "1"
+      },
+      "label": {
+        "type": "string",
+        "required": true
+      },
+      "inactive": {
+        "type": "boolean"
+      }
+    },
+    "exports": [
+      "Slider"
+    ],
+    "types": [
+      "SliderProps"
+    ]
+  },
+  "dependencies": [
+    "@compomo/ui",
+    "@ds-mo/tokens"
+  ],
+  "registryDependencies": [
+    "text"
+  ],
+  "files": [
+    {
+      "path": "src/components/Slider/Slider.module.css",
+      "content": ".field { display: flex; flex-direction: column; gap: var(--dimension-space-050); width: 100%; }\n.labelRow { display: flex; align-items: baseline; justify-content: space-between; gap: var(--dimension-space-050); }\n\n.track {\n  position: relative; width: 100%; height: var(--dimension-size-400);\n  padding: 0 var(--dimension-space-025); border-radius: var(--dimension-radius-075); cursor: pointer; user-select: none;\n}\n\n.trackInner {\n  position: absolute; inset: 0; border-radius: inherit;\n  background-color: var(--color-background-primary);\n  box-shadow: var(--effect-elevation-depressed-sm); pointer-events: none; z-index: 1;\n}\n\n.fillTrack { position: absolute; top: var(--dimension-space-025); right: 0; bottom: var(--dimension-space-025); left: 0; z-index: 1; }\n\n.fill {\n  position: absolute; left: var(--dimension-space-025); top: 0; bottom: 0;\n  width: max(0px, calc((var(--slider-pct, 0) / 100) * (100% - var(--dimension-size-150)) - var(--dimension-space-025)));\n  background-color: var(--color-background-bold-brand);\n  box-shadow: var(--effect-elevation-elevated-sm);\n  border-radius: var(--dimension-radius-050);\n  transition: opacity var(--effect-motion-short-2);\n}\n\n.trackAtMin .fill { opacity: 0; }\n\n.thumb {\n  position: absolute; top: 0; bottom: 0;\n  left: calc((var(--slider-pct, 0) / 100) * (100% - var(--dimension-size-150)));\n  width: var(--dimension-size-150); padding: var(--dimension-space-025);\n  box-sizing: border-box; pointer-events: none; z-index: 2;\n}\n\n.thumb::before {\n  content: ''; position: absolute; inset: var(--dimension-space-025);\n  background-color: var(--color-background-primary);\n  box-shadow: var(--effect-elevation-elevated-sm);\n  border-radius: var(--dimension-radius-050);\n}\n\n.thumb::after {\n  content: ''; position: absolute; inset: var(--dimension-space-025);\n  background-color: transparent; border-radius: var(--dimension-radius-050);\n  transition: var(--effect-transition-interaction-background-instant);\n}\n\n.track:hover:not(.trackInactive) .thumb::after { background-color: var(--color-interaction-hover); }\n.track:active:not(.trackInactive) .thumb::after { background-color: var(--color-interaction-pressed); }\n\n.trackInactive { cursor: not-allowed; opacity: 0.5; }\n\n.input {\n  position: absolute; inset: 0; width: 100%; height: 100%;\n  margin: 0; padding: 0; opacity: 0; cursor: pointer;\n  -webkit-appearance: none; appearance: none; outline: none; z-index: 3;\n}\n\n.input:disabled { cursor: not-allowed; }\n.input:hover { cursor: grab; }\n.input:active { cursor: grabbing; }\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/Slider/Slider.tsx",
+      "content": "import React, { forwardRef, useCallback, useEffect, useId, useRef, useState } from 'react';\nimport { cn } from '@/utils/cn';\nimport { Text } from '@/components/Text';\nimport styles from './Slider.module.css';\n\nexport interface SliderProps {\n  value: number;\n  onChange: (value: number) => void;\n  min?: number;\n  max?: number;\n  step?: number;\n  label: string;\n  id?: string;\n  inactive?: boolean;\n  className?: string;\n}\n\nexport const Slider = forwardRef<HTMLDivElement, SliderProps>(\n  ({ value, onChange, min = 0, max = 100, step = 1, label, id: idProp, inactive = false, className }, ref) => {\n    const generatedId = useId();\n    const id = idProp ?? generatedId;\n    const containerRef = useRef<HTMLDivElement>(null);\n    const [pct, setPct] = useState(() => {\n      const range = max - min;\n      return range === 0 ? 0 : Math.round(((value - min) / range) * 100);\n    });\n\n    const sync = useCallback(() => {\n      const range = max - min;\n      setPct(range === 0 ? 0 : Math.round(((value - min) / range) * 100));\n    }, [value, min, max]);\n\n    useEffect(() => { sync(); }, [sync]);\n\n    const handleInput = (e: React.ChangeEvent<HTMLInputElement>) => {\n      onChange(Number(e.target.value));\n    };\n\n    return (\n      <div ref={ref} className={cn(styles.field, className)}>\n        <div className={styles.labelRow}>\n          <Text variant=\"text-body-small-emphasis\" as=\"label\" htmlFor={id}>{label}</Text>\n          <Text variant=\"text-body-small-emphasis\" as=\"span\">{value}</Text>\n        </div>\n        <div\n          ref={containerRef}\n          className={cn(styles.track, inactive && styles.trackInactive, pct === 0 && styles.trackAtMin)}\n          style={{ '--slider-pct': pct } as React.CSSProperties}\n        >\n          <div className={styles.trackInner}>\n            <div className={styles.fillTrack}><div className={styles.fill} /></div>\n            <div className={styles.thumb} />\n          </div>\n          <input\n            type=\"range\"\n            id={id}\n            min={min}\n            max={max}\n            step={step}\n            value={value}\n            onChange={handleInput}\n            disabled={inactive}\n            className={styles.input}\n            aria-valuemin={min}\n            aria-valuemax={max}\n            aria-valuenow={value}\n          />\n        </div>\n      </div>\n    );\n  }\n);\n\nSlider.displayName = 'Slider';\n",
+      "type": "registry:ui"
+    }
+  ]
+}

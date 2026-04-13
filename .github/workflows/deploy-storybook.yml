@@ -38,6 +38,12 @@ jobs:
           # needs this so all asset paths resolve correctly.
           STORYBOOK_BASE_URL: /CompoMo/
 
+      - name: Build component registry
+        run: npm run registry:build
+
+      - name: Copy registry into Storybook output
+        run: cp -r public/r storybook-static/r
+
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:

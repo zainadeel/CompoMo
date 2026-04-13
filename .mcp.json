@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "compomo": {
+      "command": "node",
+      "args": ["./scripts/mcp-server.mjs"]
+    }
+  }
+}

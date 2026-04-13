@@ -1,0 +1,72 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "tab-group",
+  "title": "TabGroup",
+  "description": "Tab orchestrator that wraps Tab components with an animated sliding indicator and active state management.",
+  "type": "registry:ui",
+  "meta": {
+    "library": "@compomo/ui",
+    "distribution": "npm",
+    "storybook": "https://zainadeel.github.io/CompoMo/?path=/story/tab-group",
+    "consumption": {
+      "install": "npm install @compomo/ui @ds-mo/tokens",
+      "cssSetup": "Import tokens CSS at your app entry point: import '@ds-mo/tokens/css';\nThis provides all var(--color-*), var(--dimension-*), var(--effect-*), and var(--typography-*) custom properties.\nFor dark mode, set data-theme=\"dark\" on <html>.",
+      "import": "import { TabGroup } from '@compomo/ui';",
+      "cssImport": "import '@compomo/ui/css';",
+      "typeImport": "import type { TabGroupProps, TabGroupTab } from '@compomo/ui';",
+      "internalDependencies": [
+        {
+          "component": "Tab",
+          "note": "Used internally by TabGroup. No action needed — it's bundled in @compomo/ui."
+        }
+      ],
+      "peerDependencies": {
+        "required": [
+          "react >=17",
+          "react-dom >=17",
+          "@ds-mo/tokens >=0.1.0"
+        ],
+        "optional": []
+      }
+    },
+    "props": {
+      "tabs": {
+        "type": "TabGroupTab[]",
+        "required": true
+      },
+      "activeIndex": {
+        "type": "number",
+        "default": "0"
+      },
+      "onTabChange": {
+        "type": "(index: number) => void"
+      }
+    },
+    "exports": [
+      "TabGroup"
+    ],
+    "types": [
+      "TabGroupProps",
+      "TabGroupTab"
+    ]
+  },
+  "dependencies": [
+    "@compomo/ui",
+    "@ds-mo/tokens"
+  ],
+  "registryDependencies": [
+    "tab"
+  ],
+  "files": [
+    {
+      "path": "src/components/TabGroup/TabGroup.module.css",
+      "content": ".tabGroup {\n  display: flex;\n  flex-direction: column;\n  position: relative;\n}\n\n.tabsRow {\n  display: flex;\n  gap: var(--dimension-space-025);\n}\n\n.track {\n  height: 2px;\n  background-color: var(--color-border-secondary);\n  position: relative;\n}\n\n.indicator {\n  position: absolute;\n  bottom: 0;\n  height: 2px;\n  background-color: var(--color-foreground-primary);\n  border-radius: 1px;\n  transition: transform var(--effect-motion-short-3), width var(--effect-motion-short-3);\n  will-change: transform, width;\n}\n",
+      "type": "registry:ui"
+    },
+    {
+      "path": "src/components/TabGroup/TabGroup.tsx",
+      "content": "import React, { forwardRef, useRef, useEffect, useState, useCallback } from 'react';\nimport { cn } from '@/utils/cn';\nimport { Tab } from '@/components/Tab';\nimport styles from './TabGroup.module.css';\n\nexport interface TabGroupTab {\n  label: string;\n  id?: string;\n}\n\nexport interface TabGroupProps {\n  /** Tab definitions. */\n  tabs: TabGroupTab[];\n  /** Index of the active tab. */\n  activeIndex?: number;\n  /** Called when a tab is clicked. */\n  onTabChange?: (index: number) => void;\n  className?: string;\n}\n\nexport const TabGroup = forwardRef<HTMLDivElement, TabGroupProps>(\n  ({ tabs, activeIndex = 0, onTabChange, className }, ref) => {\n    const tabsRef = useRef<(HTMLButtonElement | null)[]>([]);\n    const [indicator, setIndicator] = useState({ left: 0, width: 0 });\n\n    const updateIndicator = useCallback(() => {\n      const el = tabsRef.current[activeIndex];\n      if (el) {\n        const parent = el.parentElement;\n        if (parent) {\n          setIndicator({\n            left: el.offsetLeft,\n            width: el.offsetWidth,\n          });\n        }\n      }\n    }, [activeIndex]);\n\n    useEffect(() => {\n      updateIndicator();\n    }, [updateIndicator]);\n\n    // Recalculate on resize\n    useEffect(() => {\n      const observer = new ResizeObserver(updateIndicator);\n      const container = tabsRef.current[0]?.parentElement;\n      if (container) observer.observe(container);\n      return () => observer.disconnect();\n    }, [updateIndicator]);\n\n    return (\n      <div\n        ref={ref}\n        role=\"tablist\"\n        className={cn(styles.tabGroup, className)}\n      >\n        <div className={styles.tabsRow}>\n          {tabs.map((tab, i) => (\n            <Tab\n              key={tab.id ?? i}\n              ref={el => { tabsRef.current[i] = el; }}\n              id={tab.id}\n              label={tab.label}\n              isSelected={i === activeIndex}\n              onClick={() => onTabChange?.(i)}\n            />\n          ))}\n        </div>\n        <div className={styles.track}>\n          <div\n            className={styles.indicator}\n            style={{\n              transform: `translateX(${indicator.left}px)`,\n              width: indicator.width,\n            }}\n          />\n        </div>\n      </div>\n    );\n  }\n);\n\nTabGroup.displayName = 'TabGroup';\n",
+      "type": "registry:ui"
+    }
+  ]
+}
