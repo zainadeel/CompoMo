@@ -3,7 +3,7 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 import { RadioGroup } from './Radio';
 
 const meta: Meta<typeof RadioGroup> = {
-  title: 'Phoenix Gap/RadioGroup',
+  title: 'Classic/RadioGroup',
   component: RadioGroup,
   args: {
     direction: 'vertical',

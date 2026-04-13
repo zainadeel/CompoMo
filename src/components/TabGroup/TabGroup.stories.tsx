@@ -3,7 +3,7 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 import { TabGroup } from './TabGroup';
 
 const meta: Meta<typeof TabGroup> = {
-  title: 'Phoenix Gap/TabGroup',
+  title: 'Classic/TabGroup',
   component: TabGroup,
 };
 

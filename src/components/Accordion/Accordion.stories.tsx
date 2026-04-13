@@ -4,7 +4,7 @@ import { Accordion } from './Accordion';
 import { Text } from '@/components/Text';
 
 const meta: Meta<typeof Accordion> = {
-  title: 'Phoenix Gap/Accordion',
+  title: 'Classic/Accordion',
   component: Accordion,
   args: {
     multiple: false,

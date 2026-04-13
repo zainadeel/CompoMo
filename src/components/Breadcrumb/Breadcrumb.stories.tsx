@@ -3,7 +3,7 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 import { Breadcrumb } from './Breadcrumb';
 
 const meta: Meta<typeof Breadcrumb> = {
-  title: 'Phoenix Gap/Breadcrumb',
+  title: 'Classic/Breadcrumb',
   component: Breadcrumb,
 };
 
@@ -14,8 +14,8 @@ export const Playground: Story = {
   args: {
     items: [
       { label: 'Home', onClick: () => {} },
-      { label: 'Fleet', onClick: () => {} },
-      { label: 'Vehicle #1234' },
+      { label: 'Products', onClick: () => {} },
+      { label: 'Widget Pro' },
     ],
   },
 };
@@ -37,9 +37,9 @@ export const Deep: Story = {
     <Breadcrumb
       items={[
         { label: 'Home', onClick: () => {} },
-        { label: 'Fleet', onClick: () => {} },
-        { label: 'Vehicles', onClick: () => {} },
-        { label: 'Truck #482', onClick: () => {} },
+        { label: 'Products', onClick: () => {} },
+        { label: 'Inventory', onClick: () => {} },
+        { label: 'Item #482', onClick: () => {} },
         { label: 'Maintenance' },
       ]}
     />

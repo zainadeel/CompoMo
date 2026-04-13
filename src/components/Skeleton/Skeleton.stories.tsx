@@ -3,7 +3,7 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 import { Skeleton } from './Skeleton';
 
 const meta: Meta<typeof Skeleton> = {
-  title: 'Phoenix Gap/Skeleton',
+  title: 'Classic/Skeleton',
   component: Skeleton,
   args: {
     variant: 'text',

@@ -4,7 +4,7 @@ import { Divider } from './Divider';
 import { Text } from '@/components/Text';
 
 const meta: Meta<typeof Divider> = {
-  title: 'Phoenix Gap/Divider',
+  title: 'Classic/Divider',
   component: Divider,
   args: {
     orientation: 'horizontal',

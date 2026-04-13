@@ -4,7 +4,7 @@ import { ToastContainer, toast } from './Toast';
 import type { ToastIntent } from './Toast';
 
 const meta: Meta<typeof ToastContainer> = {
-  title: 'Phoenix Gap/Toast',
+  title: 'Classic/Toast',
   component: ToastContainer,
   args: {
     position: 'top-center',

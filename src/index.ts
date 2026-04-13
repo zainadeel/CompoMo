@@ -125,7 +125,7 @@ export type { SidebarItemProps } from './components/Sidebar';
 export { Header } from './components/Header';
 export type { HeaderProps, HeaderBackground } from './components/Header';
 
-// Phoenix Gap — Components filling parity gaps with Phoenix (Angular) library
+// Classic — Additional components
 export { RadioGroup, RadioItem } from './components/Radio';
 export type { RadioGroupProps, RadioItemProps, RadioOption } from './components/Radio';
 

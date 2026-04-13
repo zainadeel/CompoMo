@@ -516,7 +516,7 @@ const COMPONENTS = [
     internalDeps: ['Surface'],
   }],
 
-  // Phoenix Gap
+  // Classic
   ['Radio', {
     title: 'RadioGroup',
     description: 'Radio selection group with vertical/horizontal layout, per-option inactive, and keyboard navigation.',
