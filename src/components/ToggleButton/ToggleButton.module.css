@@ -66,9 +66,9 @@
 }
 
 .onAlwaysDark {
-  --_hover-bg: var(--color-interaction-on-bold-background-hover);
-  --_pressed-bg: var(--color-interaction-on-bold-background-pressed);
-  --_border: var(--color-border-on-bold-background-tertiary);
+  --_hover-bg: var(--color-always-dark-interaction-hover);
+  --_pressed-bg: var(--color-always-dark-interaction-pressed);
+  --_border: var(--color-always-dark-border-tertiary);
 }
 
 /* ==========================================================================
@@ -108,12 +108,17 @@
   --_pressed-bg: color-mix(in oklch, var(--color-background-primary) 85%, var(--color-foreground-primary));
 }
 
-/* ── Fg on bold / always-dark surface ───────────────────────────────────── */
+/* ── Fg on bold / strong surface ────────────────────────────────────────── */
 
 .onBold.elevationNone, .onBold.elevationFlat,
-.onAlwaysDark.elevationNone, .onAlwaysDark.elevationFlat,
 .onStrong.elevationNone, .onStrong.elevationFlat {
   color: var(--color-foreground-on-bold-background-secondary);
+}
+
+/* ── Fg on always-dark surface ─────────────────────────────────────────── */
+
+.onAlwaysDark.elevationNone, .onAlwaysDark.elevationFlat {
+  color: var(--color-always-dark-foreground-secondary);
 }
 
 /* ==========================================================================

@@ -65,9 +65,9 @@
 }
 
 .onAlwaysDark {
-  --_hover-bg: var(--color-interaction-on-bold-background-hover);
-  --_pressed-bg: var(--color-interaction-on-bold-background-pressed);
-  --_border: var(--color-border-on-bold-background-tertiary);
+  --_hover-bg: var(--color-always-dark-interaction-hover);
+  --_pressed-bg: var(--color-always-dark-interaction-pressed);
+  --_border: var(--color-always-dark-border-tertiary);
 }
 
 /* ==========================================================================
@@ -176,16 +176,27 @@
 .secondary.onMedium.intentCaution  { color: var(--color-foreground-strong-caution); }
 .secondary.onMedium.intentAi       { color: var(--color-foreground-strong-ai); }
 
-/* ── Secondary fg on bold / always-dark surface ─────────────────────── */
+/* ── Secondary fg on bold surface ──────────────────────────────────── */
 
-.secondary.onBold, .secondary.onAlwaysDark { color: var(--color-foreground-on-bold-background-secondary); }
-.secondary.onBold.intentBrand,    .secondary.onAlwaysDark.intentBrand    { color: var(--color-foreground-faint-brand); }
-.secondary.onBold.intentNeutral,  .secondary.onAlwaysDark.intentNeutral  { color: var(--color-foreground-faint-neutral); }
-.secondary.onBold.intentPositive, .secondary.onAlwaysDark.intentPositive { color: var(--color-foreground-faint-positive); }
-.secondary.onBold.intentNegative, .secondary.onAlwaysDark.intentNegative { color: var(--color-foreground-faint-negative); }
-.secondary.onBold.intentWarning,  .secondary.onAlwaysDark.intentWarning  { color: var(--color-foreground-faint-warning); }
-.secondary.onBold.intentCaution,  .secondary.onAlwaysDark.intentCaution  { color: var(--color-foreground-faint-caution); }
-.secondary.onBold.intentAi,       .secondary.onAlwaysDark.intentAi       { color: var(--color-foreground-faint-ai); }
+.secondary.onBold { color: var(--color-foreground-on-bold-background-secondary); }
+.secondary.onBold.intentBrand    { color: var(--color-foreground-faint-brand); }
+.secondary.onBold.intentNeutral  { color: var(--color-foreground-faint-neutral); }
+.secondary.onBold.intentPositive { color: var(--color-foreground-faint-positive); }
+.secondary.onBold.intentNegative { color: var(--color-foreground-faint-negative); }
+.secondary.onBold.intentWarning  { color: var(--color-foreground-faint-warning); }
+.secondary.onBold.intentCaution  { color: var(--color-foreground-faint-caution); }
+.secondary.onBold.intentAi       { color: var(--color-foreground-faint-ai); }
+
+/* ── Secondary fg on always-dark surface ──────────────────────────── */
+
+.secondary.onAlwaysDark { color: var(--color-always-dark-foreground-secondary); }
+.secondary.onAlwaysDark.intentBrand    { color: var(--color-always-dark-foreground-brand); }
+.secondary.onAlwaysDark.intentNeutral  { color: var(--color-always-dark-foreground-neutral); }
+.secondary.onAlwaysDark.intentPositive { color: var(--color-always-dark-foreground-positive); }
+.secondary.onAlwaysDark.intentNegative { color: var(--color-always-dark-foreground-negative); }
+.secondary.onAlwaysDark.intentWarning  { color: var(--color-always-dark-foreground-warning); }
+.secondary.onAlwaysDark.intentCaution  { color: var(--color-always-dark-foreground-caution); }
+.secondary.onAlwaysDark.intentAi       { color: var(--color-always-dark-foreground-ai); }
 
 /* ── Secondary fg on strong surface ─────────────────────────────────── */
 

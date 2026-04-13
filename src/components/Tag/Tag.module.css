@@ -95,8 +95,8 @@
 }
 
 .onAlwaysDark {
-  --_hover-bg: var(--color-interaction-on-bold-background-hover);
-  --_pressed-bg: var(--color-interaction-on-bold-background-pressed);
+  --_hover-bg: var(--color-always-dark-interaction-hover);
+  --_pressed-bg: var(--color-always-dark-interaction-pressed);
 }
 
 /* ==========================================================================

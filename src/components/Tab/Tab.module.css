@@ -57,9 +57,9 @@
 .onStrong.tabSelected { color: var(--color-foreground-on-bold-background-primary); }
 
 .onAlwaysDark {
-  --_hover-bg: var(--color-interaction-on-bold-background-hover);
-  --_pressed-bg: var(--color-interaction-on-bold-background-pressed);
-  color: var(--color-foreground-on-bold-background-secondary);
+  --_hover-bg: var(--color-always-dark-interaction-hover);
+  --_pressed-bg: var(--color-always-dark-interaction-pressed);
+  color: var(--color-always-dark-foreground-secondary);
 }
 
-.onAlwaysDark.tabSelected { color: var(--color-foreground-on-bold-background-primary); }
+.onAlwaysDark.tabSelected { color: var(--color-always-dark-foreground-primary); }
