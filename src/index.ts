@@ -125,5 +125,30 @@ export type { SidebarItemProps } from './components/Sidebar';
 export { Header } from './components/Header';
 export type { HeaderProps, HeaderBackground } from './components/Header';
 
+// Phoenix Gap — Components filling parity gaps with Phoenix (Angular) library
+export { RadioGroup, RadioItem } from './components/Radio';
+export type { RadioGroupProps, RadioItemProps, RadioOption } from './components/Radio';
+
+export { TabGroup } from './components/TabGroup';
+export type { TabGroupProps, TabGroupTab } from './components/TabGroup';
+
+export { Accordion, AccordionItem } from './components/Accordion';
+export type { AccordionProps, AccordionItemProps, AccordionItemData } from './components/Accordion';
+
+export { Breadcrumb } from './components/Breadcrumb';
+export type { BreadcrumbProps, BreadcrumbItem } from './components/Breadcrumb';
+
+export { Pagination } from './components/Pagination';
+export type { PaginationProps } from './components/Pagination';
+
+export { Divider } from './components/Divider';
+export type { DividerProps, DividerOrientation } from './components/Divider';
+
+export { Skeleton } from './components/Skeleton';
+export type { SkeletonProps, SkeletonVariant } from './components/Skeleton';
+
+export { ToastContainer, toast, useToasts } from './components/Toast';
+export type { ToastContainerProps, ToastData, ToastOptions, ToastIntent, ToastPosition } from './components/Toast';
+
 // Types
 export type { IconProps, IconComponent } from './types';
