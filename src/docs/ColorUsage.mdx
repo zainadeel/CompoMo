@@ -71,10 +71,10 @@ Typical mapping:
 
 | Use case | Token |
 |----------|-------|
-| Nested card or panel surface | `background.primary` |
-| App shell or secondary panel | `background.secondary` |
-| Bold status banner | `background.bold.negative` |
-| Subtle info container | `background.faint.neutral` |
+| Nested card or panel surface | <code>background.primary</code> |
+| App shell or secondary panel | <code>background.secondary</code> |
+| Bold status banner | <code>background.bold.negative</code> |
+| Subtle info container | <code>background.faint.neutral</code> |
 
 #### Foreground
 
@@ -89,11 +89,11 @@ Typical mapping:
 
 | Use case | Token |
 |----------|-------|
-| Main body text | `foreground.primary` |
-| Helper text or secondary icon | `foreground.secondary` |
-| Inactive or de-emphasized content | `foreground.tertiary` |
-| Disabled or very low-emphasis ornament | `foreground.quaternary` |
-| Text on a bold brand fill | `foreground.on-bold-background.primary` |
+| Main body text | <code>foreground.primary</code> |
+| Helper text or secondary icon | <code>foreground.secondary</code> |
+| Inactive or de-emphasized content | <code>foreground.tertiary</code> |
+| Disabled or very low-emphasis ornament | <code>foreground.quaternary</code> |
+| Text on a bold brand fill | <code>foreground.on-bold-background.primary</code> |
 
 > **Note:** `foreground.tertiary` is only about 3.35:1 in light mode and 3.23:1 in dark mode, so it does not meet AA for standard text sizes. Use it only for genuinely low-emphasis content.
 
@@ -123,10 +123,10 @@ When multiple semantic intensities exist, choose the one that matches the amount
 
 | Tone | Purpose |
 |------|---------|
-| `strong` | Highest-emphasis fills or content |
-| `bold` | Strong but less dominant than strong |
-| `medium` | Mid-emphasis |
-| `faint` | Low-emphasis tinting or supporting treatment |
+| <code>strong</code> | Highest-emphasis fills or content |
+| <code>bold</code> | Strong but less dominant than strong |
+| <code>medium</code> | Mid-emphasis |
+| <code>faint</code> | Low-emphasis tinting or supporting treatment |
 
 When a surface uses a strong semantic background, pair it with the matching `on-background` content token rather than reusing normal foreground tokens.
 
@@ -148,11 +148,11 @@ Do **not** use data tokens for page backgrounds, standard text hierarchy, button
 
 | Family | Purpose | Examples |
 |--------|---------|----------|
-| `data-misc` | Neutral visualization elements | Gridlines, reference lines, axes |
-| `data-category` | Nominal categories (unordered) | Multi-series bars, pie slices, legend palettes |
-| `data-win-loss` | Outcome polarity | Pass/fail, win/loss, positive/negative |
-| `data-sequence-*` | Ordered single-direction values | Intensity ramps, ordered buckets, choropleths |
-| `data-diverging-*` | Values extending from a midpoint | Above/below target, deviation from baseline |
+| <code>data-misc</code> | Neutral visualization elements | Gridlines, reference lines, axes |
+| <code>data-category</code> | Nominal categories (unordered) | Multi-series bars, pie slices, legend palettes |
+| <code>data-win-loss</code> | Outcome polarity | Pass/fail, win/loss, positive/negative |
+| <code>data-sequence-*</code> | Ordered single-direction values | Intensity ramps, ordered buckets, choropleths |
+| <code>data-diverging-*</code> | Values extending from a midpoint | Above/below target, deviation from baseline |
 
 > **Important:** When using `data-category` colors together, use them in numeric order (1, 2, 3...). This is especially important when categories touch each other (donut charts, stacked bars).
 
@@ -160,11 +160,11 @@ Do **not** use data tokens for page backgrounds, standard text hierarchy, button
 
 | Element | Token source |
 |---------|-------------|
-| Chart card background | `background.primary` (semantic) |
-| Chart title | `foreground.primary` (semantic) |
-| Axis labels | `foreground.secondary` (semantic) |
-| Chart bars/lines | `data-category.*` or `data-sequence-*` (data) |
-| Alert banner around chart | `background.faint.warning` (semantic) |
+| Chart card background | <code>background.primary</code> (semantic) |
+| Chart title | <code>foreground.primary</code> (semantic) |
+| Axis labels | <code>foreground.secondary</code> (semantic) |
+| Chart bars/lines | <code>data-category.*</code> or <code>data-sequence-*</code> (data) |
+| Alert banner around chart | <code>background.faint.warning</code> (semantic) |
 
 ## 5. Accessibility & Pairing
 
@@ -172,9 +172,9 @@ Do **not** use data tokens for page backgrounds, standard text hierarchy, button
 
 | Background | Safe foreground | Lowest contrast |
 |-----------|----------------|-----------------|
-| `background.primary` | `foreground.primary` or `.secondary` | ~5.74:1 light, ~6.13:1 dark |
-| `background.strong.*` | `foreground.on-strong-background.primary` or `.secondary` | ~6.54:1 light, ~5.28:1 dark |
-| `background.bold.*` | `foreground.on-bold-background.primary` or `.secondary` | ~5.45:1 light, ~4.89:1 dark |
+| <code>background.primary</code> | <code>foreground.primary</code> or <code>.secondary</code> | ~5.74:1 light, ~6.13:1 dark |
+| <code>background.strong.*</code> | <code>foreground.on-strong-background.primary</code> or <code>.secondary</code> | ~6.54:1 light, ~5.28:1 dark |
+| <code>background.bold.*</code> | <code>foreground.on-bold-background.primary</code> or <code>.secondary</code> | ~5.45:1 light, ~4.89:1 dark |
 
 ### Tone Pairs
 
