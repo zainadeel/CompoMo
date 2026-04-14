@@ -151,8 +151,8 @@ Do **not** use data tokens for page backgrounds, standard text hierarchy, button
 | <code>data-misc</code> | Neutral visualization elements | Gridlines, reference lines, axes |
 | <code>data-category</code> | Nominal categories (unordered) | Multi-series bars, pie slices, legend palettes |
 | <code>data-win-loss</code> | Outcome polarity | Pass/fail, win/loss, positive/negative |
-| <code>data-sequence-*</code> | Ordered single-direction values | Intensity ramps, ordered buckets, choropleths |
-| <code>data-diverging-*</code> | Values extending from a midpoint | Above/below target, deviation from baseline |
+| <code>data-sequence-&#42;</code> | Ordered single-direction values | Intensity ramps, ordered buckets, choropleths |
+| <code>data-diverging-&#42;</code> | Values extending from a midpoint | Above/below target, deviation from baseline |
 
 > **Important:** When using `data-category` colors together, use them in numeric order (1, 2, 3...). This is especially important when categories touch each other (donut charts, stacked bars).
 
@@ -163,7 +163,7 @@ Do **not** use data tokens for page backgrounds, standard text hierarchy, button
 | Chart card background | <code>background.primary</code> (semantic) |
 | Chart title | <code>foreground.primary</code> (semantic) |
 | Axis labels | <code>foreground.secondary</code> (semantic) |
-| Chart bars/lines | <code>data-category.*</code> or <code>data-sequence-*</code> (data) |
+| Chart bars/lines | <code>data-category.&#42;</code> or <code>data-sequence-&#42;</code> (data) |
 | Alert banner around chart | <code>background.faint.warning</code> (semantic) |
 
 ## 5. Accessibility & Pairing
@@ -173,8 +173,8 @@ Do **not** use data tokens for page backgrounds, standard text hierarchy, button
 | Background | Safe foreground | Lowest contrast |
 |-----------|----------------|-----------------|
 | <code>background.primary</code> | <code>foreground.primary</code> or <code>.secondary</code> | ~5.74:1 light, ~6.13:1 dark |
-| <code>background.strong.*</code> | <code>foreground.on-strong-background.primary</code> or <code>.secondary</code> | ~6.54:1 light, ~5.28:1 dark |
-| <code>background.bold.*</code> | <code>foreground.on-bold-background.primary</code> or <code>.secondary</code> | ~5.45:1 light, ~4.89:1 dark |
+| <code>background.strong.&#42;</code> | <code>foreground.on-strong-background.primary</code> or <code>.secondary</code> | ~6.54:1 light, ~5.28:1 dark |
+| <code>background.bold.&#42;</code> | <code>foreground.on-bold-background.primary</code> or <code>.secondary</code> | ~5.45:1 light, ~4.89:1 dark |
 
 ### Tone Pairs
 
