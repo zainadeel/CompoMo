@@ -80,6 +80,7 @@
 
 .sectionHeader {
   padding: var(--dimension-space-050) var(--dimension-space-075);
+  -webkit-user-select: none;
   user-select: none;
 }
 

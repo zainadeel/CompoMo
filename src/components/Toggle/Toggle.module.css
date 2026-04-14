@@ -9,6 +9,7 @@
   border: none;
   border-radius: var(--dimension-radius-half);
   cursor: pointer;
+  -webkit-user-select: none;
   user-select: none;
   outline: none;
   flex-shrink: 0;

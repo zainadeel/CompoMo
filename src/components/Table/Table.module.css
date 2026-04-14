@@ -28,6 +28,7 @@
   padding: var(--dimension-space-075) var(--dimension-space-100);
   background-color: var(--color-background-secondary);
   border-bottom: var(--dimension-stroke-width-015) solid var(--color-border-primary);
+  -webkit-user-select: none;
   user-select: none;
   position: sticky;
   top: 0;

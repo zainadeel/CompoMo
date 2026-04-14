@@ -41,5 +41,6 @@
 .separator {
   color: var(--color-foreground-tertiary);
   font-size: 12px;
+  -webkit-user-select: none;
   user-select: none;
 }

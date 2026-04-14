@@ -18,6 +18,7 @@
   background: transparent;
   box-sizing: border-box;
   text-decoration: none;
+  -webkit-user-select: none;
   user-select: none;
 
   /* Interaction — ghost defaults (semi-transparent overlay) */
