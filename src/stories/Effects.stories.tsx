@@ -169,7 +169,7 @@ function EasingDemo({ token, bezier }: { token: string; bezier: string }) {
           height: 20,
           borderRadius: 10,
           backgroundColor: 'var(--color-background-bold-positive)',
-          transition: `left var(--effect-motion-medium-2) var(--effect-animation-easing-${token})`,
+          transition: `left var(--effect-motion-medium-3) var(--effect-animation-easing-${token})`,
         }} />
       </div>
     </div>
@@ -185,7 +185,7 @@ function Motion() {
         ))}
       </Section>
 
-      <Section title="Easing Curves" subtitle="--effect-animation-easing-* — hover to compare curves (all use 400ms duration)">
+      <Section title="Easing Curves" subtitle="--effect-animation-easing-* — hover to compare curves (all use 500ms duration)">
         {[
           { token: 'ease-in', bezier: '0.47, 0, 0.75, 0.72' },
           { token: 'ease-out', bezier: '0.17, 0.84, 0.44, 1' },
