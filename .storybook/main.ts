@@ -1,5 +1,4 @@
 import type { StorybookConfig } from '@storybook/react-vite';
-import { resolve } from 'path';
 
 const config: StorybookConfig = {
   stories: ['../src/**/*.mdx', '../src/**/*.stories.@(ts|tsx)'],
@@ -9,13 +8,10 @@ const config: StorybookConfig = {
     options: {},
   },
   viteFinal: (config) => {
-    // Mirror the @/ path alias from the library's vite.config.ts so story
-    // imports like `@/components/Text` resolve correctly inside Storybook.
-    config.resolve = config.resolve || {};
-    config.resolve.alias = {
-      ...((config.resolve.alias as Record<string, string>) || {}),
-      '@': resolve(__dirname, '../src'),
-    };
+    // The @/ path alias is defined in vite.config.ts and auto-merged by
+    // @storybook/builder-vite. Do NOT re-add it here — the merged
+    // config.resolve.alias is an array, and spreading it as an object
+    // destroys all existing aliases.
 
     // When deploying to GitHub Pages the site lives at /CompoMo/ — set the
     // Vite base path so all asset URLs (JS chunks, CSS, fonts) resolve correctly.
