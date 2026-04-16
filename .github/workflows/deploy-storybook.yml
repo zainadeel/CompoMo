@@ -36,7 +36,7 @@ jobs:
         env:
           # GitHub Pages project sites live at /RepoName/ — Storybook
           # needs this so all asset paths resolve correctly.
-          STORYBOOK_BASE_URL: /CompoMo/
+          STORYBOOK_BASE_URL: /compomo/
 
       - name: Build component registry
         run: npm run registry:build
