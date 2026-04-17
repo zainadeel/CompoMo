@@ -80,10 +80,13 @@
   color: var(--color-foreground-on-bold-background-primary);
 }
 
-/* Primary intent: none — surface colors, ghost hover */
+/* Primary intent: none — inverted surface (black in light mode, white in dark mode) */
 .primary.intentNone {
-  background-color: var(--color-background-primary);
-  color: var(--color-foreground-primary);
+  background-color: var(--color-inverted-background);
+  color: var(--color-inverted-foreground-primary);
+  --_hover-bg: color-mix(in oklch, var(--color-inverted-background) 90%, var(--color-inverted-foreground-primary));
+  --_pressed-bg: color-mix(in oklch, var(--color-inverted-background) 85%, var(--color-inverted-foreground-primary));
+  --_border: var(--color-inverted-border-tertiary);
 }
 
 /* Filled primary — background from --_bg, bold-contrast hover via color-mix.
@@ -247,9 +250,20 @@
 /* flat = inset ring against the page background (not the button fill) */
 .primary.elevationFlat { box-shadow: inset 0 0 0 1px var(--_border); }
 
-/* intentNone: also clear the background */
-.primary.intentNone.elevationFlat { background-color: transparent; }
-.primary.intentNone.elevationNone { background-color: transparent; box-shadow: none; }
+/* intentNone flat: inverted fill + default border ring (bg/fg inherited from .primary.intentNone) */
+.primary.intentNone.elevationFlat {
+  --_border: var(--color-border-tertiary);
+}
+
+/* intentNone on strong/always-dark: flip to surface bg/fg — inverted (black) would be invisible */
+.primary.intentNone.onStrong,
+.primary.intentNone.onAlwaysDark {
+  background-color: var(--color-background-primary);
+  color: var(--color-foreground-primary);
+  --_hover-bg: color-mix(in oklch, var(--color-background-primary) 90%, var(--color-foreground-primary));
+  --_pressed-bg: color-mix(in oklch, var(--color-background-primary) 85%, var(--color-foreground-primary));
+  --_border: var(--color-border-tertiary);
+}
 
 /* floating = FAB-strength shadow for both variants */
 .primary.elevationFloating   { box-shadow: var(--effect-elevation-elevated-floating) !important; }
