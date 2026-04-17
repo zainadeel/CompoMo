@@ -2,6 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 import React from 'react';
 import { Button } from './Button';
 import { Surface } from '@/components/Surface';
+import type { SurfaceIntent, SurfaceContrast } from '@/components/Surface';
 import type { ButtonVariant, ButtonElevation, ButtonIntent, ButtonContrast, ButtonSize, ButtonBackground } from './Button';
 import type { IconComponent } from '@/types/icons';
 
@@ -407,51 +408,166 @@ export const AsLink: Story = {
 
 // ─── Background Context ──────────────────────────────────────────────────────
 
-const BG_CONTEXTS: { bg: ButtonBackground; intent: 'brand'; contrast: 'faint' | 'medium' | 'bold' | 'strong' }[] = [
-  { bg: 'faint',  intent: 'brand', contrast: 'faint'  },
-  { bg: 'medium', intent: 'brand', contrast: 'medium' },
-  { bg: 'bold',   intent: 'brand', contrast: 'bold'   },
-  { bg: 'strong', intent: 'brand', contrast: 'strong' },
+type SurfaceConfig = { bg: ButtonBackground; intent: SurfaceIntent; contrast: SurfaceContrast };
+
+const COLORED_SURFACES: SurfaceConfig[] = [
+  { bg: 'faint',  intent: 'brand',    contrast: 'faint'  },
+  { bg: 'medium', intent: 'brand',    contrast: 'medium' },
+  { bg: 'bold',   intent: 'brand',    contrast: 'bold'   },
+  { bg: 'strong', intent: 'brand',    contrast: 'strong' },
+  { bg: 'faint',  intent: 'neutral',  contrast: 'faint'  },
+  { bg: 'bold',   intent: 'neutral',  contrast: 'bold'   },
+  { bg: 'strong', intent: 'neutral',  contrast: 'strong' },
+  { bg: 'faint',  intent: 'negative', contrast: 'faint'  },
+  { bg: 'bold',   intent: 'negative', contrast: 'bold'   },
+  { bg: 'bold',   intent: 'ai',       contrast: 'bold'   },
+  { bg: 'bold',   intent: 'positive', contrast: 'bold'   },
+  { bg: 'bold',   intent: 'warning',  contrast: 'bold'   },
 ];
+
+const bgRow = (label: string, children: React.ReactNode) => (
+  <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
+    <span style={{ fontSize: 10, fontFamily: 'monospace', opacity: 0.6, minWidth: 96, flexShrink: 0 }}>{label}</span>
+    {children}
+  </div>
+);
 
 export const BackgroundContext: Story = {
   parameters: { layout: 'padded' },
   render: () => (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 24, fontFamily: 'sans-serif' }}>
       <div style={{ fontSize: 11, fontWeight: 600, letterSpacing: '0.05em', textTransform: 'uppercase', color: '#555' }}>
-        Secondary + ghost buttons on colored surfaces — hover to test interaction
+        All button variants on colored surfaces — hover to test interaction layers
       </div>
 
-      {BG_CONTEXTS.map(({ bg, intent, contrast }) => (
-        <Surface key={bg} intent={intent} contrast={contrast} radius="md" style={{ padding: 20 }}>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-            <span style={{ fontSize: 10, fontFamily: 'monospace', opacity: 0.7 }}>
+      {COLORED_SURFACES.map(({ bg, intent, contrast }) => (
+        <Surface key={`${bg}-${intent}`} intent={intent} contrast={contrast} radius="md" style={{ padding: 20 }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+            <span style={{ fontSize: 10, fontFamily: 'monospace', opacity: 0.7, marginBottom: 2 }}>
               background="{bg}" — {contrast} {intent}
             </span>
-            <div style={{ display: 'flex', gap: 8, alignItems: 'center', flexWrap: 'wrap' }}>
-              <Button variant="secondary" elevation="flat" label="Flat" background={bg} />
-              <Button variant="secondary" elevation="none" label="Ghost" background={bg} />
-              <Button variant="secondary" elevation="flat" intent="brand" label="Brand" background={bg} />
-              <Button variant="secondary" elevation="none" intent="brand" label="Brand ghost" background={bg} />
+
+            {bgRow('primary', <>
+              <Button variant="primary" intent="brand"    label="Brand"    background={bg} />
+              <Button variant="primary" intent="neutral"  label="Neutral"  background={bg} />
+              <Button variant="primary" intent="ai"       label="AI"       background={bg} />
+              <Button variant="primary" intent="negative" label="Negative" background={bg} />
+              <Button variant="primary" intent="positive" label="Positive" background={bg} />
+              <Button variant="primary" intent="warning"  label="Warning"  background={bg} />
+              <Button variant="primary" intent="none"     label="Inverted" background={bg} />
+            </>)}
+
+            {bgRow('primary +icon', <>
+              <Button variant="primary" intent="brand"    icon={PlaceholderIcon} label="Brand"    background={bg} />
+              <Button variant="primary" intent="neutral"  icon={PlaceholderIcon} label="Neutral"  background={bg} />
+              <Button variant="primary" intent="negative" icon={PlaceholderIcon} label="Negative" background={bg} />
+              <Button variant="primary" intent="none"     icon={PlaceholderIcon} label="Inverted" background={bg} />
+              <Button variant="primary" intent="brand"    icon={PlaceholderIcon} aria-label="brand"    background={bg} />
+              <Button variant="primary" intent="none"     icon={PlaceholderIcon} aria-label="inverted" background={bg} />
+            </>)}
+
+            {bgRow('sec. flat', <>
+              <Button variant="secondary" elevation="flat" label="Default"  background={bg} />
+              <Button variant="secondary" elevation="flat" intent="brand"    label="Brand"    background={bg} />
+              <Button variant="secondary" elevation="flat" intent="neutral"  label="Neutral"  background={bg} />
+              <Button variant="secondary" elevation="flat" intent="negative" label="Negative" background={bg} />
+              <Button variant="secondary" elevation="flat" intent="ai"       label="AI"       background={bg} />
               <Button variant="secondary" elevation="flat" icon={PlaceholderIcon} label="Icon" background={bg} />
-              <Button variant="primary" intent="none" label="Primary none" background={bg} />
-            </div>
+              <Button variant="secondary" elevation="flat" icon={PlaceholderIcon} aria-label="icon" background={bg} />
+            </>)}
+
+            {bgRow('sec. ghost', <>
+              <Button variant="secondary" elevation="none" label="Default"  background={bg} />
+              <Button variant="secondary" elevation="none" intent="brand"    label="Brand"    background={bg} />
+              <Button variant="secondary" elevation="none" intent="neutral"  label="Neutral"  background={bg} />
+              <Button variant="secondary" elevation="none" intent="negative" label="Negative" background={bg} />
+              <Button variant="secondary" elevation="none" intent="ai"       label="AI"       background={bg} />
+              <Button variant="secondary" elevation="none" icon={PlaceholderIcon} label="Icon" background={bg} />
+              <Button variant="secondary" elevation="none" icon={PlaceholderIcon} aria-label="icon" background={bg} />
+            </>)}
+
+            {bgRow('inverted', <>
+              <Button variant="primary" intent="none" elevation="none"     label="None"     background={bg} />
+              <Button variant="primary" intent="none" elevation="flat"     label="Flat"     background={bg} />
+              <Button variant="primary" intent="none" elevation="elevated" label="Elevated" background={bg} />
+              <Button variant="primary" intent="none" icon={PlaceholderIcon} label="Icon"  background={bg} />
+              <Button variant="primary" intent="none" rounded label="Rounded"               background={bg} />
+              <Button variant="primary" intent="none" inactive label="Inactive"             background={bg} />
+            </>)}
+
+            {bgRow('states', <>
+              <Button variant="primary"   intent="brand" inactive label="Inactive" background={bg} />
+              <Button variant="secondary" elevation="flat" inactive label="Inactive" background={bg} />
+              <Button variant="primary"   intent="brand" rounded label="Rounded" background={bg} />
+              <Button variant="secondary" elevation="flat" rounded label="Rounded" background={bg} />
+              <Button variant="primary"   intent="brand" loading label="Loading" background={bg} />
+              <Button variant="secondary" elevation="flat" dropdown label="Dropdown" background={bg} />
+            </>)}
           </div>
         </Surface>
       ))}
 
       {/* Always-dark surface */}
-      <div style={{ background: '#1a1a2e', borderRadius: 8, padding: 20 }}>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-          <span style={{ fontSize: 10, fontFamily: 'monospace', color: 'rgba(255,255,255,0.5)' }}>
+      <div style={{ background: 'var(--color-always-dark-background)', borderRadius: 8, padding: 20 }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+          <span style={{ fontSize: 10, fontFamily: 'monospace', color: 'rgba(255,255,255,0.5)', marginBottom: 2 }}>
             background="always-dark" — custom dark surface
           </span>
-          <div style={{ display: 'flex', gap: 8, alignItems: 'center', flexWrap: 'wrap' }}>
-            <Button variant="secondary" elevation="flat" label="Flat" background="always-dark" />
-            <Button variant="secondary" elevation="none" label="Ghost" background="always-dark" />
-            <Button variant="secondary" elevation="flat" intent="brand" label="Brand" background="always-dark" />
+
+          {bgRow('primary', <>
+            <Button variant="primary" intent="brand"    label="Brand"    background="always-dark" />
+            <Button variant="primary" intent="neutral"  label="Neutral"  background="always-dark" />
+            <Button variant="primary" intent="ai"       label="AI"       background="always-dark" />
+            <Button variant="primary" intent="negative" label="Negative" background="always-dark" />
+            <Button variant="primary" intent="positive" label="Positive" background="always-dark" />
+            <Button variant="primary" intent="warning"  label="Warning"  background="always-dark" />
+            <Button variant="primary" intent="none"     label="Inverted" background="always-dark" />
+          </>)}
+
+          {bgRow('primary +icon', <>
+            <Button variant="primary" intent="brand"    icon={PlaceholderIcon} label="Brand"    background="always-dark" />
+            <Button variant="primary" intent="negative" icon={PlaceholderIcon} label="Negative" background="always-dark" />
+            <Button variant="primary" intent="none"     icon={PlaceholderIcon} label="Inverted" background="always-dark" />
+            <Button variant="primary" intent="brand"    icon={PlaceholderIcon} aria-label="brand"    background="always-dark" />
+            <Button variant="primary" intent="none"     icon={PlaceholderIcon} aria-label="inverted" background="always-dark" />
+          </>)}
+
+          {bgRow('sec. flat', <>
+            <Button variant="secondary" elevation="flat" label="Default"  background="always-dark" />
+            <Button variant="secondary" elevation="flat" intent="brand"    label="Brand"    background="always-dark" />
+            <Button variant="secondary" elevation="flat" intent="neutral"  label="Neutral"  background="always-dark" />
+            <Button variant="secondary" elevation="flat" intent="negative" label="Negative" background="always-dark" />
+            <Button variant="secondary" elevation="flat" intent="ai"       label="AI"       background="always-dark" />
+            <Button variant="secondary" elevation="flat" icon={PlaceholderIcon} label="Icon" background="always-dark" />
+            <Button variant="secondary" elevation="flat" icon={PlaceholderIcon} aria-label="icon" background="always-dark" />
+          </>)}
+
+          {bgRow('sec. ghost', <>
+            <Button variant="secondary" elevation="none" label="Default"  background="always-dark" />
+            <Button variant="secondary" elevation="none" intent="brand"    label="Brand"    background="always-dark" />
+            <Button variant="secondary" elevation="none" intent="neutral"  label="Neutral"  background="always-dark" />
             <Button variant="secondary" elevation="none" intent="negative" label="Negative" background="always-dark" />
-          </div>
+            <Button variant="secondary" elevation="none" intent="ai"       label="AI"       background="always-dark" />
+            <Button variant="secondary" elevation="none" icon={PlaceholderIcon} label="Icon" background="always-dark" />
+            <Button variant="secondary" elevation="none" icon={PlaceholderIcon} aria-label="icon" background="always-dark" />
+          </>)}
+
+          {bgRow('inverted', <>
+            <Button variant="primary" intent="none" elevation="none"     label="None"     background="always-dark" />
+            <Button variant="primary" intent="none" elevation="flat"     label="Flat"     background="always-dark" />
+            <Button variant="primary" intent="none" elevation="elevated" label="Elevated" background="always-dark" />
+            <Button variant="primary" intent="none" icon={PlaceholderIcon} label="Icon"  background="always-dark" />
+            <Button variant="primary" intent="none" rounded label="Rounded"               background="always-dark" />
+            <Button variant="primary" intent="none" inactive label="Inactive"             background="always-dark" />
+          </>)}
+
+          {bgRow('states', <>
+            <Button variant="primary"   intent="brand" inactive label="Inactive" background="always-dark" />
+            <Button variant="secondary" elevation="flat" inactive label="Inactive" background="always-dark" />
+            <Button variant="primary"   intent="brand" rounded label="Rounded" background="always-dark" />
+            <Button variant="primary"   intent="brand" loading label="Loading" background="always-dark" />
+            <Button variant="secondary" elevation="flat" dropdown label="Dropdown" background="always-dark" />
+          </>)}
         </div>
       </div>
     </div>
