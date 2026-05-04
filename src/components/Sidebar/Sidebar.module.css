@@ -66,6 +66,13 @@
   opacity: 0.5;
 }
 
+.resizeHandle:focus-visible {
+  outline: var(--dimension-stroke-width-025) solid var(--color-border-brand);
+  outline-offset: var(--dimension-stroke-width-015);
+  background-color: var(--color-border-brand);
+  opacity: 0.5;
+}
+
 /* Sections */
 .section {
   display: flex;
