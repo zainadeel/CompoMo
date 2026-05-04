@@ -101,6 +101,8 @@ export const Tooltip: React.FC<TooltipProps> = ({
     };
     document.addEventListener('keydown', onKeyDown);
     return () => document.removeEventListener('keydown', onKeyDown);
+    // handleClose is stable in effect — re-subscribing on each render would churn the listener
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [shouldRender]);
 
   useLayoutEffect(() => {

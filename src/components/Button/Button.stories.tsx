@@ -66,7 +66,7 @@ const ELEVATIONS: ButtonElevation[] = ['elevated', 'flat', 'none', 'floating'];
 
 const col: React.CSSProperties = { display: 'flex', flexDirection: 'column', gap: 8, alignItems: 'flex-start' };
 const row: React.CSSProperties = { display: 'flex', gap: 8, alignItems: 'center' };
-const lbl = (text: string): React.CSSProperties => ({ fontSize: 10, fontFamily: 'monospace', color: '#888', minWidth: 80, flexShrink: 0 });
+const lbl = (_text: string): React.CSSProperties => ({ fontSize: 10, fontFamily: 'monospace', color: '#888', minWidth: 80, flexShrink: 0 });
 const section = (text: string) => (
   <div style={{ fontSize: 11, fontWeight: 600, letterSpacing: '0.05em', textTransform: 'uppercase', color: '#555', marginTop: 8 }}>
     {text}
