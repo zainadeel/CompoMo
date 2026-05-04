@@ -1,33 +1,35 @@
-import React, { forwardRef, useState } from 'react';
+import React, { forwardRef } from 'react';
 import { cn } from '@/utils/cn';
 import styles from './Toggle.module.css';
 
-export interface ToggleProps {
+interface ToggleBaseProps {
   checked?: boolean;
   onChange?: (checked: boolean) => void;
   inactive?: boolean;
   className?: string;
-  'aria-label'?: string;
 }
 
+export type ToggleProps = ToggleBaseProps &
+  (
+    | { 'aria-label': string; 'aria-labelledby'?: never }
+    | { 'aria-label'?: never; 'aria-labelledby': string }
+  );
+
 export const Toggle = forwardRef<HTMLButtonElement, ToggleProps>(
-  ({ checked = false, onChange, inactive = false, className, 'aria-label': ariaLabel }, ref) => {
-    const [isPressed, setIsPressed] = useState(false);
-
-    const handleMouseDown = (e: React.MouseEvent) => {
+  (
+    {
+      checked = false,
+      onChange,
+      inactive = false,
+      className,
+      'aria-label': ariaLabel,
+      'aria-labelledby': ariaLabelledby,
+    },
+    ref,
+  ) => {
+    const handleClick = () => {
       if (inactive) return;
-      e.preventDefault();
-      setIsPressed(true);
-    };
-
-    const handleMouseUp = () => {
-      if (inactive || !isPressed) return;
-      setIsPressed(false);
       onChange?.(!checked);
-    };
-
-    const handleMouseLeave = () => {
-      if (isPressed) setIsPressed(false);
     };
 
     return (
@@ -37,16 +39,15 @@ export const Toggle = forwardRef<HTMLButtonElement, ToggleProps>(
         role="switch"
         aria-checked={checked}
         aria-label={ariaLabel}
+        aria-labelledby={ariaLabelledby}
         disabled={inactive}
         className={cn(styles.toggle, checked && styles.checked, inactive && styles.inactive, className)}
-        onMouseDown={handleMouseDown}
-        onMouseUp={handleMouseUp}
-        onMouseLeave={handleMouseLeave}
+        onClick={handleClick}
       >
         <span className={styles.thumb} />
       </button>
     );
-  }
+  },
 );
 
 Toggle.displayName = 'Toggle';
