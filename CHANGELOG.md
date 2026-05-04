@@ -1,5 +1,36 @@
 # Changelog
 
+## [0.3.0](https://github.com/zainadeel/compomo/compare/v0.2.4...v0.3.0) (2026-05-04)
+
+
+### Added
+
+* **Badge:** make aria-label configurable ([#39](https://github.com/zainadeel/compomo/issues/39)) ([458abef](https://github.com/zainadeel/compomo/commit/458abef7351decf506bdb66c79a5f9a1b9cb18bb))
+* **Input:** enforce labeling and add error-state a11y ([#38](https://github.com/zainadeel/compomo/issues/38)) ([f10e9ed](https://github.com/zainadeel/compomo/commit/f10e9ed8ca814e4175723ed227146b219deeb013))
+* **Loader:** add optional label for standalone a11y announcement ([#42](https://github.com/zainadeel/compomo/issues/42)) ([4976f4a](https://github.com/zainadeel/compomo/commit/4976f4a3876662f14afde43be84b0cd6dffa1f39))
+* **menu:** add WAI-ARIA keyboard pattern, roles, and focus management ([#50](https://github.com/zainadeel/compomo/issues/50)) ([15f76ff](https://github.com/zainadeel/compomo/commit/15f76ff44106a9312111d15514e97b0cca4e334e))
+* **Slider:** add valueText prop and clean up a11y ([#45](https://github.com/zainadeel/compomo/issues/45)) ([6137305](https://github.com/zainadeel/compomo/commit/6137305a43171723713e0aaa13c39152ced02d83))
+
+
+### Fixed
+
+* **a11y:** make Table sortable headers and clickable rows keyboard-accessible ([#46](https://github.com/zainadeel/compomo/issues/46)) ([4849522](https://github.com/zainadeel/compomo/commit/4849522664769bd045b46988818086073e08b4e5))
+* **Accordion:** wire disclosure-pattern ARIA on trigger and panel ([#34](https://github.com/zainadeel/compomo/issues/34)) ([10865ea](https://github.com/zainadeel/compomo/commit/10865ea722da5cd42e8820bf5bfc3f7c3d29c332))
+* **Banner:** announce content to screen readers and add dismiss button ([#51](https://github.com/zainadeel/compomo/issues/51)) ([996f3b1](https://github.com/zainadeel/compomo/commit/996f3b11dde86933db618ab496a986f07d74b076))
+* **Button:** tighten icon-only and polymorphic a11y ([#47](https://github.com/zainadeel/compomo/issues/47)) ([1235699](https://github.com/zainadeel/compomo/commit/1235699042c59a706c1df425bcd5f5731649212d))
+* **checkbox:** communicate inactive state to assistive tech ([#40](https://github.com/zainadeel/compomo/issues/40)) ([f39d3d4](https://github.com/zainadeel/compomo/commit/f39d3d440153890f220f4f14906a4e00fde1af4a))
+* **Field:** auto-associate label with child input ([#36](https://github.com/zainadeel/compomo/issues/36)) ([95db1e8](https://github.com/zainadeel/compomo/commit/95db1e806fb192d14c5197618919459a357b2206))
+* **modal:** trap focus, restore on close, link aria-describedby ([#35](https://github.com/zainadeel/compomo/issues/35)) ([865b374](https://github.com/zainadeel/compomo/commit/865b37423518808884781c54754108cee24d78ef))
+* **Radio:** implement WAI-ARIA radiogroup keyboard pattern ([#49](https://github.com/zainadeel/compomo/issues/49)) ([59d0f13](https://github.com/zainadeel/compomo/commit/59d0f138933e227b8af5d07e3200d537366c931f))
+* **Scrollbar:** keyboard-focusable scroll region, decorative thumbs ([#37](https://github.com/zainadeel/compomo/issues/37)) ([76e919e](https://github.com/zainadeel/compomo/commit/76e919e5452338c8621cb60cb79d8d67745cd01d))
+* **Select:** use WAI-ARIA 1.2 combobox + listbox pattern ([#52](https://github.com/zainadeel/compomo/issues/52)) ([61783d5](https://github.com/zainadeel/compomo/commit/61783d5643c8c7aadca0253683b8da751dad5a02))
+* **Sidebar:** improve resize handle and mobile overlay a11y ([#55](https://github.com/zainadeel/compomo/issues/55)) ([851fc26](https://github.com/zainadeel/compomo/commit/851fc26c1f99340c201164687f0da9835596e9da))
+* **TabGroup:** implement WAI-ARIA tabs pattern with keyboard nav ([#48](https://github.com/zainadeel/compomo/issues/48)) ([8f293c9](https://github.com/zainadeel/compomo/commit/8f293c97a00edd795085d3af82dab44a6e3b8b20))
+* **Tag:** tighten a11y for interactive and pressed states ([#44](https://github.com/zainadeel/compomo/issues/44)) ([7a0457b](https://github.com/zainadeel/compomo/commit/7a0457be907eb75d5f1030f9096152c62641ba42))
+* **Toast:** improve a11y for role, live region, and timer pausing ([#41](https://github.com/zainadeel/compomo/issues/41)) ([6b546ae](https://github.com/zainadeel/compomo/commit/6b546ae621fbf1fb8f9be0f012fc3cd16585fa84))
+* **toggle:** make Toggle keyboard-activatable and require accessible name ([#54](https://github.com/zainadeel/compomo/issues/54)) ([117e724](https://github.com/zainadeel/compomo/commit/117e7247dab1d58fd468cb0c6956fa914e96c7a0))
+* **tooltip:** wire keyboard and screen-reader accessibility ([#43](https://github.com/zainadeel/compomo/issues/43)) ([cc6516e](https://github.com/zainadeel/compomo/commit/cc6516e2a458e808b8b5a1a8c582b87d1aaea256))
+
 ## [0.2.4](https://github.com/zainadeel/compomo/compare/v0.2.3...v0.2.4) (2026-04-29)
 
 
