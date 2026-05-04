@@ -21,16 +21,18 @@ export interface MenuItemProps {
   showTrailingChevron?: boolean;
   checkIcon?: IconComponent;
   chevronIcon?: IconComponent;
-  /** Override the implicit `button` role — e.g. `'option'` when used inside a listbox. */
+  /** Override the implicit role. Defaults derive from menu context: `menuitem`, `menuitemcheckbox` (showToggle), or `menuitemradio` (radio selectionStyle). Pass `'option'` for listbox usage. */
   role?: string;
   /** Element id — required when used as an `option` referenced by `aria-activedescendant`. */
   id?: string;
-  /** Maps to `aria-selected`. Only emitted when role is set (e.g. listbox option). */
+  /** Maps to `aria-selected`. Used when role is `option`. */
   ariaSelected?: boolean;
   /** Visual highlight for keyboard "active" cursor (separate from selection state). */
   isActive?: boolean;
   /** Override default tabIndex (e.g. -1 for listbox options driven by aria-activedescendant). */
   tabIndex?: number;
+  onKeyDown?: (e: React.KeyboardEvent<HTMLButtonElement>) => void;
+  onFocus?: (e: React.FocusEvent<HTMLButtonElement>) => void;
 }
 
 export const MenuItem = forwardRef<HTMLButtonElement, MenuItemProps>(
@@ -54,10 +56,28 @@ export const MenuItem = forwardRef<HTMLButtonElement, MenuItemProps>(
     ariaSelected,
     isActive = false,
     tabIndex,
+    onKeyDown,
+    onFocus,
   }, ref) => {
     const useRadioStyle = selectionStyle === 'radio';
     const noOverlay = selectionStyle === 'noOverlay' || useRadioStyle;
     const showSelectedOverlay = isSelected && !noOverlay;
+
+    const resolvedRole = role ?? (
+      showToggle ? 'menuitemcheckbox'
+        : useRadioStyle ? 'menuitemradio'
+          : 'menuitem'
+    );
+
+    const ariaCheckedValue: boolean | undefined = role
+      ? undefined
+      : resolvedRole === 'menuitemcheckbox'
+        ? !!toggleValue
+        : resolvedRole === 'menuitemradio'
+          ? !!isSelected
+          : undefined;
+
+    const ariaSelectedValue: boolean | undefined = role && ariaSelected !== undefined ? ariaSelected : undefined;
 
     return (
       <Surface
@@ -70,13 +90,17 @@ export const MenuItem = forwardRef<HTMLButtonElement, MenuItemProps>(
         onClick={onClick}
         type="button"
         inactive={isInactive}
-        role={role}
+        role={resolvedRole}
         id={id}
-        aria-selected={role && ariaSelected !== undefined ? ariaSelected : undefined}
+        aria-checked={ariaCheckedValue}
+        aria-selected={ariaSelectedValue}
+        aria-disabled={isInactive || undefined}
         tabIndex={tabIndex}
+        onKeyDown={onKeyDown}
+        onFocus={onFocus}
       >
         {Icon && (
-          <div className={styles.iconPrefix}>
+          <div className={styles.iconPrefix} aria-hidden="true">
             <Icon size={20} />
           </div>
         )}
@@ -96,19 +120,19 @@ export const MenuItem = forwardRef<HTMLButtonElement, MenuItemProps>(
           )}
         </div>
         {showToggle && (
-          <div className={styles.toggleSuffix}>
+          <div className={styles.toggleSuffix} aria-hidden="true">
             <div className={`${styles.toggle} ${toggleValue ? styles.toggleOn : ''}`}>
               <div className={styles.toggleThumb} />
             </div>
           </div>
         )}
         {useRadioStyle && isSelected && CheckIcon && (
-          <div className={styles.checkSuffix}>
+          <div className={styles.checkSuffix} aria-hidden="true">
             <CheckIcon size={20} />
           </div>
         )}
         {showTrailingChevron && ChevronIcon && (
-          <div className={styles.chevronSuffix}>
+          <div className={styles.chevronSuffix} aria-hidden="true">
             <ChevronIcon size={20} />
           </div>
         )}

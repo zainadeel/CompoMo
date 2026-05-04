@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useLayoutEffect, useRef, useMemo } from 'react';
+import React, { useState, useEffect, useLayoutEffect, useRef, useMemo, useCallback } from 'react';
 import { createPortal } from 'react-dom';
 import { Text } from '@/components/Text';
 import { Surface } from '@/components/Surface';
@@ -53,7 +53,7 @@ export interface MenuProps {
   matchAnchorWidth?: boolean;
   matchAnchorWidthOffset?: number;
   usePortal?: boolean;
-  /** Container role + item role semantics. Defaults to `menu` (items are buttons). `listbox` makes items render as `option` with `aria-selected`. */
+  /** Container role + item role semantics. Defaults to `menu` (items are buttons with menuitem* roles, keyboard nav handled internally). `listbox` makes items render as `option` with `aria-selected`, with keyboard nav handled by the consumer via `activeIndex`. */
   role?: 'menu' | 'listbox';
   /** DOM id for the popup container — required when an external combobox references it via `aria-controls`/`aria-activedescendant`. */
   id?: string;
@@ -96,9 +96,12 @@ export const Menu: React.FC<MenuProps> = ({
   const [position, setPosition] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
   const [menuSize, setMenuSize] = useState<{ width: number; height: number }>({ width: 0, height: 0 });
   const [anchorSize, setAnchorSize] = useState<{ width: number; height: number }>({ width: 0, height: 0 });
+  const [focusedIndex, setFocusedIndex] = useState(0);
   const positionCalculatedRef = useRef(false);
   const menuRef = useRef<HTMLDivElement>(null);
   const lastSectionsRef = useRef<MenuSection[]>([]);
+  const itemRefs = useRef<Array<HTMLButtonElement | null>>([]);
+  const focusedOnOpenRef = useRef(false);
 
   const menuSections: MenuSection[] = sections || (items ? [{ items }] : []);
 
@@ -107,6 +110,14 @@ export const Menu: React.FC<MenuProps> = ({
     lastSectionsRef.current = menuSections;
   }
   const sectionsToRender = isClosing ? lastSectionsRef.current : menuSections;
+
+  const flatItems = useMemo(() => {
+    const list: MenuItemData[] = [];
+    sectionsToRender.forEach((section) => {
+      section.items.forEach((it) => list.push(it));
+    });
+    return list;
+  }, [sectionsToRender]);
 
   useEffect(() => {
     if (isOpen) {
@@ -194,6 +205,15 @@ export const Menu: React.FC<MenuProps> = ({
     };
   }, [isOpen, shouldRender, anchorRef, side, align, sideOffset, alignOffset, sideOffsetToken, alignOffsetToken, menuSize.width, menuSize.height, menuSections.length, matchAnchorWidthOffset]);
 
+  const closeAndRestoreFocus = useCallback(() => {
+    const active = document.activeElement as HTMLElement | null;
+    const focusInside = !!(active && menuRef.current?.contains(active));
+    if (focusInside && anchorRef.current) {
+      anchorRef.current.focus();
+    }
+    onClose();
+  }, [onClose, anchorRef]);
+
   useEffect(() => {
     if (!isOpen || !shouldRender) return;
     const handleClickOutside = (event: MouseEvent) => {
@@ -208,33 +228,126 @@ export const Menu: React.FC<MenuProps> = ({
 
   useEffect(() => {
     if (!isOpen) return;
-    const handleEscape = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose(); };
+    const handleEscape = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        if (isListbox) {
+          onClose();
+        } else {
+          e.preventDefault();
+          closeAndRestoreFocus();
+        }
+      }
+    };
     document.addEventListener('keydown', handleEscape);
     return () => document.removeEventListener('keydown', handleEscape);
-  }, [isOpen, onClose]);
+  }, [isOpen, isListbox, onClose, closeAndRestoreFocus]);
+
+  useEffect(() => {
+    if (!isOpen) {
+      focusedOnOpenRef.current = false;
+      return;
+    }
+    if (isListbox || !isPositionReady || focusedOnOpenRef.current) return;
+    const firstEnabled = flatItems.findIndex((it) => !it.isInactive);
+    const targetIdx = firstEnabled >= 0 ? firstEnabled : 0;
+    setFocusedIndex(targetIdx);
+    itemRefs.current[targetIdx]?.focus();
+    focusedOnOpenRef.current = true;
+  }, [isOpen, isListbox, isPositionReady, flatItems]);
+
+  const moveFocus = useCallback((idx: number) => {
+    setFocusedIndex(idx);
+    itemRefs.current[idx]?.focus();
+  }, []);
+
+  const handleKeyDown = useCallback((e: React.KeyboardEvent<HTMLDivElement>) => {
+    if (isListbox || !flatItems.length) return;
+    const enabled: number[] = [];
+    flatItems.forEach((it, i) => { if (!it.isInactive) enabled.push(i); });
+    if (!enabled.length) return;
+    const currentPos = enabled.indexOf(focusedIndex);
+    const safePos = currentPos < 0 ? 0 : currentPos;
+
+    switch (e.key) {
+      case 'ArrowDown': {
+        e.preventDefault();
+        e.stopPropagation();
+        moveFocus(enabled[(safePos + 1) % enabled.length]);
+        break;
+      }
+      case 'ArrowUp': {
+        e.preventDefault();
+        e.stopPropagation();
+        moveFocus(enabled[(safePos - 1 + enabled.length) % enabled.length]);
+        break;
+      }
+      case 'Home': {
+        e.preventDefault();
+        e.stopPropagation();
+        moveFocus(enabled[0]);
+        break;
+      }
+      case 'End': {
+        e.preventDefault();
+        e.stopPropagation();
+        moveFocus(enabled[enabled.length - 1]);
+        break;
+      }
+      case 'Tab': {
+        e.preventDefault();
+        closeAndRestoreFocus();
+        break;
+      }
+    }
+  }, [isListbox, flatItems, focusedIndex, moveFocus, closeAndRestoreFocus]);
 
   if (!shouldRender || sectionsToRender.length === 0) return null;
 
+  const setItemRef = (flatIndex: number) => (el: HTMLButtonElement | null) => {
+    itemRefs.current[flatIndex] = el;
+  };
+
+  const handleItemFocus = (flatIndex: number) => () => {
+    setFocusedIndex(flatIndex);
+  };
+
+  const handleItemActivate = (item: MenuItemData) => {
+    if (item.isInactive) return;
+    item.onClick();
+    if (item.keepOpenOnClick) return;
+    if (isListbox) {
+      onClose();
+    } else {
+      closeAndRestoreFocus();
+    }
+  };
+
   const renderMenuItem = (item: MenuItemData, key: number, flatIndex: number) => {
     if (item.isDestructive) {
+      const tabIndexValue = isListbox ? -1 : (focusedIndex === flatIndex ? 0 : -1);
       return (
         <DestructiveMenuItem
           key={key}
+          ref={setItemRef(flatIndex)}
           label={item.label}
           subtext={item.subtext}
           holdDuration={item.holdDuration ?? 4000}
-          onClick={() => { item.onClick(); if (!item.keepOpenOnClick) onClose(); }}
+          onClick={() => { item.onClick(); if (!item.keepOpenOnClick) { if (isListbox) onClose(); else closeAndRestoreFocus(); } }}
+          tabIndex={tabIndexValue}
+          onFocus={handleItemFocus(flatIndex)}
         />
       );
     }
     const optionId = isListbox && getOptionId ? getOptionId(flatIndex) : undefined;
+    const tabIndexValue = isListbox ? -1 : (focusedIndex === flatIndex ? 0 : -1);
     return (
       <MenuItemComponent
         key={key}
+        ref={setItemRef(flatIndex)}
         icon={item.icon}
         label={item.label}
         subtext={item.subtext}
-        onClick={() => { if (!item.isInactive) { item.onClick(); if (!item.keepOpenOnClick) onClose(); } }}
+        onClick={() => handleItemActivate(item)}
         isSelected={item.isSelected}
         isInactive={item.isInactive}
         intent={item.intent}
@@ -245,7 +358,8 @@ export const Menu: React.FC<MenuProps> = ({
         id={optionId}
         ariaSelected={isListbox ? !!item.isSelected : undefined}
         isActive={isListbox && activeIndex === flatIndex}
-        tabIndex={isListbox ? -1 : undefined}
+        tabIndex={tabIndexValue}
+        onFocus={handleItemFocus(flatIndex)}
       />
     );
   };
@@ -273,6 +387,8 @@ export const Menu: React.FC<MenuProps> = ({
       style={menuStyle}
       role={role}
       aria-label={containerLabel}
+      aria-orientation="vertical"
+      onKeyDown={handleKeyDown}
     >
       {sectionsToRender.map((section, sectionIndex) => (
         <Surface
@@ -281,9 +397,11 @@ export const Menu: React.FC<MenuProps> = ({
           className={styles.menuSection}
           edge={sectionIndex < sectionsToRender.length - 1 ? 'bottom' : undefined}
           elevation="none"
+          role={section.header ? 'group' : undefined}
+          aria-label={section.header}
         >
           {section.header && (
-            <div className={styles.sectionHeader}>
+            <div className={styles.sectionHeader} aria-hidden="true">
               <Text variant="text-body-small-emphasis" as="span" className={styles.sectionLabel}>{section.header}</Text>
             </div>
           )}
